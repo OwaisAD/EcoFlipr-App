@@ -50,6 +50,11 @@ export default function TabLayout() {
         options={{
           headerTitle: "",
           title: "Home",
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "bold",
+            fontVariant: ["small-caps"],
+          },
           tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
           headerLeft: () => (
             <Image
@@ -78,6 +83,11 @@ export default function TabLayout() {
         options={{
           title: "Search",
           headerTitle: "",
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "bold",
+            fontVariant: ["small-caps"],
+          },
           tabBarIcon: ({ color }) => <AntDesign name="search1" size={24} color={color} />,
           headerLeft: () => (
             <Image
@@ -106,6 +116,11 @@ export default function TabLayout() {
         options={{
           title: "Create",
           headerTitle: "",
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "bold",
+            fontVariant: ["small-caps"],
+          },
           tabBarIcon: ({ color }) => <AntDesign name="pluscircle" size={24} color={color} />,
           headerLeft: () => (
             <Image
@@ -134,6 +149,11 @@ export default function TabLayout() {
         options={{
           title: "Saved",
           headerTitle: "",
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "bold",
+            fontVariant: ["small-caps"],
+          },
           tabBarIcon: ({ color }) => <Feather name="bookmark" size={24} color={color} />,
           headerLeft: () => (
             <Image
@@ -162,6 +182,11 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           headerTitle: "",
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "bold",
+            fontVariant: ["small-caps"],
+          },
           tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle-outline" size={24} color={color} />,
           headerLeft: () => (
             <Image
