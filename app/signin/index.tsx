@@ -1,20 +1,21 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { Image, ImageBackground, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { Image, ImageBackground, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AntDesign, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 
 export default function SignIn() {
   const router = useRouter();
+  const [signInWithEmail, setSignInWithEmail] = useState(false);
 
   return (
-    <>
-      <StatusBar style="dark" />
-      <ImageBackground
-        source={require("../../assets/images/auth-background.png")}
-        style={{ flex: 1, justifyContent: "center" }}
-      >
+    <ImageBackground
+      source={require("../../assets/images/auth-background.png")}
+      style={{ flex: 1, justifyContent: "center" }}
+    >
+      <ScrollView className="">
+        <StatusBar style="dark" />
         <View className="flex-1 w-full">
           {/* TOP */}
           <View style={{ paddingTop: hp(8), paddingLeft: wp(5), paddingBottom: hp(10) }}>
@@ -28,7 +29,7 @@ export default function SignIn() {
           </View>
 
           {/* MIDDLE */}
-          <View className="mx-8" style={{ paddingBottom: hp(10) }}>
+          <View className="mx-8" style={{ paddingBottom: signInWithEmail ? 0 : hp(8) }}>
             <Text className="text-center text-3xl font-semibold">
               Flipping the market in favor of the planet. Sign in and make eco-friendly choices.
             </Text>
@@ -39,9 +40,53 @@ export default function SignIn() {
             <View className="items-center justify-center mx-8 mt-8 space-y-4 bg-[#D1D5DB] p-4 rounded-xl">
               {/* sign in with email btn */}
 
-              <Pressable className="bg-[#101827] p-4 rounded-xl w-full" onPress={() => router.push("/signin/signInWithEmail")}>
-                <Text className="text-white text-center text-base font-medium">Sign in with email</Text>
-              </Pressable>
+              {signInWithEmail ? (
+                <>
+                  {/* sign in with email form */}
+                  <View className="w-full space-y-4">
+                    {/* inputs */}
+                    <View
+                      style={{ height: hp(7) }}
+                      className="flex-row space-x-5 px-4 bg-neutral-100 items-center rounded-2xl"
+                    >
+                      <Octicons name="mail" size={hp(2.7)} color="gray" />
+                      <TextInput
+                        style={{ fontSize: hp(2) }}
+                        className="flex-1 font-semibold text-neutral-700"
+                        placeholder="Email address"
+                        placeholderTextColor={"gray"}
+                      />
+                    </View>
+                    <View className="space-y-2">
+                      <View
+                        style={{ height: hp(7) }}
+                        className="flex-row space-x-5 px-4 bg-neutral-100 items-center rounded-2xl"
+                      >
+                        <Octicons name="lock" size={hp(2.7)} color="gray" />
+                        <TextInput
+                          style={{ fontSize: hp(2) }}
+                          className="flex-1 font-semibold text-neutral-700"
+                          placeholder="Password"
+                          placeholderTextColor={"gray"}
+                        />
+                      </View>
+                      <Text style={{ fontSize: hp(1.6) }} className="font-semibold text-right text-neutral-500">
+                        Forgot password?
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity style={{height: hp(6.5)}} className="bg-indigo-500 rounded-xl justify-center items-center">
+                      <Text style={{ fontSize: hp(2.7) }} className="text-white font-bold tracking-wider">
+                        Sign In
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <Pressable className="bg-[#101827] p-4 rounded-xl w-full" onPress={() => setSignInWithEmail(true)}>
+                  <Text className="text-white text-center text-base font-medium">Sign in with email</Text>
+                </Pressable>
+              )}
 
               <Text className="font-medium text-sm">Or continue with</Text>
 
@@ -77,7 +122,7 @@ export default function SignIn() {
             </Text>
           </View> */}
         </View>
-      </ImageBackground>
-    </>
+      </ScrollView>
+    </ImageBackground>
   );
 }
