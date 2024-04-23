@@ -3,9 +3,9 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import { Image, Pressable } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { useColorScheme } from "../../components/useColorScheme";
-import { useClientOnlyValue } from "../../components/useClientOnlyValue";
+import Colors from "../../../constants/Colors";
+import { useColorScheme } from "../../../components/useColorScheme";
+import { useClientOnlyValue } from "../../../components/useClientOnlyValue";
 import { AntDesign, Feather, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -46,7 +46,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home/index"
         options={{
           headerTitle: "",
           title: "Home",
@@ -56,12 +56,12 @@ export default function TabLayout() {
             fontVariant: ["small-caps"],
           },
           tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/ecoflipr-logo-black.png")}
-              style={{ width: 100, height: 20, marginLeft: 15 }}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     source={require("../../../../assets/images/ecoflipr-logo-black.png")}
+          //     style={{ width: 100, height: 20, marginLeft: 15 }}
+          //   />
+          // ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -89,12 +89,12 @@ export default function TabLayout() {
             fontVariant: ["small-caps"],
           },
           tabBarIcon: ({ color }) => <AntDesign name="search1" size={24} color={color} />,
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/ecoflipr-logo-black.png")}
-              style={{ width: 100, height: 20, marginLeft: 15 }}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
+          //     style={{ width: 100, height: 20, marginLeft: 15 }}
+          //   />
+          // ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -122,12 +122,12 @@ export default function TabLayout() {
             fontVariant: ["small-caps"],
           },
           tabBarIcon: ({ color }) => <AntDesign name="pluscircle" size={24} color={color} />,
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/ecoflipr-logo-black.png")}
-              style={{ width: 100, height: 20, marginLeft: 15 }}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
+          //     style={{ width: 100, height: 20, marginLeft: 15 }}
+          //   />
+          // ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -155,12 +155,12 @@ export default function TabLayout() {
             fontVariant: ["small-caps"],
           },
           tabBarIcon: ({ color }) => <Feather name="bookmark" size={24} color={color} />,
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/ecoflipr-logo-black.png")}
-              style={{ width: 100, height: 20, marginLeft: 15 }}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
+          //     style={{ width: 100, height: 20, marginLeft: 15 }}
+          //   />
+          // ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -188,12 +188,12 @@ export default function TabLayout() {
             fontVariant: ["small-caps"],
           },
           tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle-outline" size={24} color={color} />,
-          headerLeft: () => (
-            <Image
-              source={require("../../assets/images/ecoflipr-logo-black.png")}
-              style={{ width: 100, height: 20, marginLeft: 15 }}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
+          //     style={{ width: 100, height: 20, marginLeft: 15 }}
+          //   />
+          // ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>

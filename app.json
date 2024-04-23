@@ -4,11 +4,11 @@
     "slug": "ReactNativeExam",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/images/ecoflipr-logo-black.png",
+    "scheme": "EcoFliprApp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/ecoflipr-logo-black.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
