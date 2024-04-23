@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
@@ -19,6 +19,7 @@ import Loading from "../../components/Loading";
 export default function SignUp() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const firstNameRef = useRef("");
   const lastNameRef = useRef("");
@@ -118,12 +119,17 @@ export default function SignUp() {
                   <Octicons name="lock" size={hp(2.7)} color="gray" />
                   <TextInput
                     onChangeText={(text) => (passwordRef.current = text)}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     style={{ fontSize: hp(2) }}
                     className="flex-1 font-semibold text-neutral-700"
                     placeholder="Password"
                     placeholderTextColor={"gray"}
                   />
+                  {showPassword ? (
+                    <Entypo name="eye-with-line" size={hp(2.7)} color="gray" onPress={() => setShowPassword(!showPassword)} />
+                  ) : (
+                    <Entypo name="eye" size={hp(2.7)} color="gray" onPress={() => setShowPassword(!showPassword)} />
+                  )}
                 </View>
 
                 <View
@@ -174,7 +180,7 @@ export default function SignUp() {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className="flex-row items-center justify-center space-x-1">
+            <View className="flex-row items-center justify-center space-x-1 mb-10">
               <Text style={{ fontSize: hp(1.8) }} className="font-semibold">
                 Already have an account?
               </Text>

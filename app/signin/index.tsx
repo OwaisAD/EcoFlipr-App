@@ -8,19 +8,22 @@ import {
   ScrollView,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AntDesign, Octicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
+import { openBrowserAsync } from "expo-web-browser";
 
 export default function SignIn() {
   const router = useRouter();
   const [signInWithEmail, setSignInWithEmail] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -93,12 +96,27 @@ export default function SignIn() {
                         <Octicons name="lock" size={hp(2.7)} color="gray" />
                         <TextInput
                           onChangeText={(text) => (passwordRef.current = text)}
-                          secureTextEntry
+                          secureTextEntry={!showPassword}
                           style={{ fontSize: hp(2) }}
                           className="flex-1 font-semibold text-neutral-700"
                           placeholder="Password"
                           placeholderTextColor={"gray"}
                         />
+                        {showPassword ? (
+                          <Entypo
+                            name="eye-with-line"
+                            size={hp(2.7)}
+                            color="gray"
+                            onPress={() => setShowPassword(!showPassword)}
+                          />
+                        ) : (
+                          <Entypo
+                            name="eye"
+                            size={hp(2.7)}
+                            color="gray"
+                            onPress={() => setShowPassword(!showPassword)}
+                          />
+                        )}
                       </View>
                       <TouchableOpacity>
                         <Text style={{ fontSize: hp(1.6) }} className="font-semibold text-right text-neutral-500">
@@ -159,11 +177,14 @@ export default function SignIn() {
             </View>
           </View>
 
-          {/* <View className="flex-1 items-center justify-center">
-            <Text className="text-white text-center text-sm font-medium mt-4">
+          <TouchableOpacity
+            className="flex-1 items-center justify-center"
+            onPress={() => openBrowserAsync("https://github.com/OwaisAD")}
+          >
+            <Text className="text-indigo-500 text-center text-sm font-medium mx-10 my-10">
               By signing in, you agree to our Terms of Service and Privacy Policy
             </Text>
-          </View> */}
+          </TouchableOpacity>
         </View>
       </CustomKeyboardView>
     </ImageBackground>
