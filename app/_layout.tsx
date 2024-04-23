@@ -39,7 +39,7 @@ const MainLayout = () => {
       router.replace("/(app)/(tabs)/home");
     } else if (isAuthenticated === false) {
       // redirect to signIn
-      router.replace("/signIn");
+      router.replace("/signin/");
     } else {
     }
   }, [isAuthenticated]);
