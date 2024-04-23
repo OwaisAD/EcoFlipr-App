@@ -1,20 +1,47 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import { Image, ImageBackground, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState } from "react";
+import {
+  Alert,
+  Image,
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
+import Loading from "../../components/Loading";
+import CustomKeyboardView from "../../components/CustomKeyboardView";
 
 export default function SignIn() {
   const router = useRouter();
   const [signInWithEmail, setSignInWithEmail] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+
+  const handleLogin = async () => {
+    if (!emailRef.current || !passwordRef.current) {
+      Alert.alert("Sign in", "Please fill in all fields");
+      return;
+    }
+
+    // validate with ZOD
+
+    // login process
+  };
 
   return (
     <ImageBackground
       source={require("../../assets/images/auth-background.png")}
       style={{ flex: 1, justifyContent: "center" }}
     >
-      <ScrollView className="">
+      <CustomKeyboardView>
         <StatusBar style="dark" />
         <View className="flex-1 w-full">
           {/* TOP */}
@@ -30,7 +57,7 @@ export default function SignIn() {
 
           {/* MIDDLE */}
           <View className="mx-8" style={{ paddingBottom: signInWithEmail ? 0 : hp(8) }}>
-            <Text className="text-center text-3xl font-semibold">
+            <Text style={{ fontSize: hp(2.7) }} className="text-center text-3xl font-semibold">
               Flipping the market in favor of the planet. Sign in and make eco-friendly choices.
             </Text>
           </View>
@@ -51,6 +78,7 @@ export default function SignIn() {
                     >
                       <Octicons name="mail" size={hp(2.7)} color="gray" />
                       <TextInput
+                        onChangeText={(text) => (emailRef.current = text)}
                         style={{ fontSize: hp(2) }}
                         className="flex-1 font-semibold text-neutral-700"
                         placeholder="Email address"
@@ -64,22 +92,37 @@ export default function SignIn() {
                       >
                         <Octicons name="lock" size={hp(2.7)} color="gray" />
                         <TextInput
+                          onChangeText={(text) => (passwordRef.current = text)}
+                          secureTextEntry
                           style={{ fontSize: hp(2) }}
                           className="flex-1 font-semibold text-neutral-700"
                           placeholder="Password"
                           placeholderTextColor={"gray"}
                         />
                       </View>
-                      <Text style={{ fontSize: hp(1.6) }} className="font-semibold text-right text-neutral-500">
-                        Forgot password?
-                      </Text>
+                      <TouchableOpacity>
+                        <Text style={{ fontSize: hp(1.6) }} className="font-semibold text-right text-neutral-500">
+                          Forgot password?
+                        </Text>
+                      </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={{height: hp(6.5)}} className="bg-indigo-500 rounded-xl justify-center items-center">
-                      <Text style={{ fontSize: hp(2.7) }} className="text-white font-bold tracking-wider">
-                        Sign In
-                      </Text>
-                    </TouchableOpacity>
+                    {/* submit btn */}
+                    {loading ? (
+                      <View className="flex-row justify-center">
+                        <Loading size={hp(8)} />
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={handleLogin}
+                        style={{ height: hp(6.5) }}
+                        className="bg-indigo-500 rounded-xl justify-center items-center"
+                      >
+                        <Text style={{ fontSize: hp(2.7) }} className="text-white font-bold tracking-wider">
+                          Sign In
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </>
               ) : (
@@ -92,16 +135,16 @@ export default function SignIn() {
 
               <View className="flex-row w-full space-x-4">
                 {/* sign in with google btn */}
-                <View className="bg-[#6B7280] p-4 rounded-xl flex-1 flex-row items-center justify-center space-x-2">
+                <TouchableOpacity className="bg-[#6B7280] p-4 rounded-xl flex-1 flex-row items-center justify-center space-x-2">
                   <AntDesign name="google" size={24} color="white" />
                   <Text className="text-white text-center text-base font-medium">Google</Text>
-                </View>
+                </TouchableOpacity>
 
                 {/* sign in with facebook btn */}
-                <View className="bg-[#6B7280] p-4 rounded-xl flex-1 flex-row items-center justify-center space-x-2">
+                <TouchableOpacity className="bg-[#6B7280] p-4 rounded-xl flex-1 flex-row items-center justify-center space-x-2">
                   <AntDesign name="facebook-square" size={24} color="white" />
                   <Text className="text-white text-center text-base font-medium">Facebook</Text>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
             <View className="flex-row items-center justify-center space-x-1">
@@ -122,7 +165,7 @@ export default function SignIn() {
             </Text>
           </View> */}
         </View>
-      </ScrollView>
+      </CustomKeyboardView>
     </ImageBackground>
   );
 }
