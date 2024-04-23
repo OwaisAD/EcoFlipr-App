@@ -181,7 +181,7 @@ export default function SignIn() {
             className="flex-1 items-center justify-center"
             onPress={() => openBrowserAsync("https://github.com/OwaisAD")}
           >
-            <Text className="text-indigo-500 text-center text-sm font-medium mx-10 my-10">
+            <Text className="text-indigo-500 text-center text-xs font-medium mx-10 my-10">
               By signing in, you agree to our Terms of Service and Privacy Policy
             </Text>
           </TouchableOpacity>

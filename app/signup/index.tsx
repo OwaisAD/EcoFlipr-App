@@ -15,6 +15,7 @@ import { AntDesign, Entypo, Feather, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
+import CustomKeyboardView from "../../components/CustomKeyboardView";
 
 export default function SignUp() {
   const router = useRouter();
@@ -126,7 +127,12 @@ export default function SignUp() {
                     placeholderTextColor={"gray"}
                   />
                   {showPassword ? (
-                    <Entypo name="eye-with-line" size={hp(2.7)} color="gray" onPress={() => setShowPassword(!showPassword)} />
+                    <Entypo
+                      name="eye-with-line"
+                      size={hp(2.7)}
+                      color="gray"
+                      onPress={() => setShowPassword(!showPassword)}
+                    />
                   ) : (
                     <Entypo name="eye" size={hp(2.7)} color="gray" onPress={() => setShowPassword(!showPassword)} />
                   )}
@@ -191,15 +197,8 @@ export default function SignUp() {
               </Pressable>
             </View>
           </View>
-
-          {/* <View className="flex-1 items-center justify-center">
-            <Text className="text-white text-center text-sm font-medium mt-4">
-              By signing in, you agree to our Terms of Service and Privacy Policy
-            </Text>
-          </View> */}
         </View>
       </CustomKeyboardView>
     </ImageBackground>
   );
 }
-import CustomKeyboardView from "../../components/CustomKeyboardView";
