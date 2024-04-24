@@ -18,6 +18,9 @@ import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
 import { openBrowserAsync } from "expo-web-browser";
+import { signInSchema } from "../../validations/signInSchema";
+import { ZodError } from "zod";
+import { useAuth } from "../../context/authContext";
 
 export default function SignIn() {
   const router = useRouter();
@@ -27,16 +30,36 @@ export default function SignIn() {
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
+  const { login } = useAuth();
 
   const handleLogin = async () => {
-    if (!emailRef.current || !passwordRef.current) {
-      Alert.alert("Sign in", "Please fill in all fields");
-      return;
+    try {
+      if (!emailRef.current || !passwordRef.current) {
+        Alert.alert("Sign in", "Please fill in all fields");
+        return;
+      }
+
+      setLoading(true);
+
+      // validate with ZOD
+      signInSchema.parse({
+        email: emailRef.current,
+        password: passwordRef.current,
+      });
+
+      // login process
+      const response = await login(emailRef.current, passwordRef.current);
+      setLoading(false);
+
+      if (!response.success) {
+        Alert.alert("Sign in", response.msg);
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error instanceof ZodError) {
+        Alert.alert("Sign in", error.errors[0].message);
+      }
     }
-
-    // validate with ZOD
-
-    // login process
   };
 
   return (
@@ -86,6 +109,7 @@ export default function SignIn() {
                         className="flex-1 font-semibold text-neutral-700"
                         placeholder="Email address"
                         placeholderTextColor={"gray"}
+                        autoCapitalize="none"
                       />
                     </View>
                     <View className="space-y-2">

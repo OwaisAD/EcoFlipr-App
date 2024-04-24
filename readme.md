@@ -5,3 +5,5 @@ Styling: Nativewind https://www.nativewind.dev/quick-starts/expo
 Responsiveness: https://www.npmjs.com/package/react-native-responsive-screen
 
 Animation with lottieanimations
+
+Zod for data schema validation
