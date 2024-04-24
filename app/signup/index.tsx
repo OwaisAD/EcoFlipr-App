@@ -16,6 +16,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
+import { signUpSchema } from "../../validations/signUpSchema";
+import { ZodError } from "zod";
+import { useAuth } from "../../context/authContext";
 
 export default function SignUp() {
   const router = useRouter();
@@ -28,21 +31,54 @@ export default function SignUp() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
+  const { register } = useAuth();
+
   const handleRegister = async () => {
-    if (
-      !emailRef.current ||
-      !passwordRef.current ||
-      !firstNameRef.current ||
-      !lastNameRef.current ||
-      !phoneNumberRef.current
-    ) {
-      Alert.alert("Sign up", "Please fill in all fields");
-      return;
+    try {
+      if (
+        !emailRef.current ||
+        !passwordRef.current ||
+        !firstNameRef.current ||
+        !lastNameRef.current ||
+        !phoneNumberRef.current
+      ) {
+        Alert.alert("Sign up", "Please fill in all fields");
+        return;
+      }
+
+      setLoading(true);
+
+      // validate with ZOD
+      signUpSchema.parse({
+        firstName: firstNameRef.current,
+        lastName: lastNameRef.current,
+        email: emailRef.current,
+        password: passwordRef.current,
+        phoneNumber: phoneNumberRef.current,
+      });
+
+      // register process
+      let response = await register(
+        firstNameRef.current,
+        lastNameRef.current,
+        emailRef.current,
+        passwordRef.current,
+        phoneNumberRef.current
+      );
+      setLoading(false);
+
+      console.log("got result", response);
+
+      if (!response.success) {
+        Alert.alert("Sign up", response.msg);
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        Alert.alert("Sign up", error.errors[0].message);
+      }
+
+      setLoading(false);
     }
-
-    // validate with ZOD
-
-    // register process
   };
 
   return (
@@ -110,6 +146,7 @@ export default function SignUp() {
                     className="flex-1 font-semibold text-neutral-700"
                     placeholder="Email address"
                     placeholderTextColor={"gray"}
+                    autoCapitalize="none"
                   />
                 </View>
 
@@ -148,6 +185,7 @@ export default function SignUp() {
                     style={{ fontSize: hp(2) }}
                     className="flex-1 font-semibold text-neutral-700"
                     placeholder="Phone number"
+                    keyboardType="phone-pad"
                     placeholderTextColor={"gray"}
                   />
                 </View>
