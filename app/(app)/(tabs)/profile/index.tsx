@@ -1,11 +1,12 @@
 import { Alert, Button, StyleSheet } from "react-native";
-
 import EditScreenInfo from "../../../../components/EditScreenInfo";
 import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 
 export default function ProfileScreen() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+
+  console.log("here", user)
 
   const handleLogout = async () => {
     try {
@@ -27,6 +28,9 @@ export default function ProfileScreen() {
       <Text style={styles.title}>Profile</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="app/(tabs)/two.tsx" />
+
+      <Text>{user?.email}</Text>
+
 
       <Button title="Logout" onPress={handleLogout} />
     </View>

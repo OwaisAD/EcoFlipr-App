@@ -11,9 +11,16 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const AuthContext = createContext(
   {} as {
-    user: null | any;
+    user: null | {
+      firstName: string;
+      lastName: string;
+      userId: string;
+      phoneNumber: string;
+      profileUrl?: string;
+      email: string;
+    };
     isAuthenticated: undefined | boolean;
-    login: (email: string, password: string) => Promise<{ success: boolean, msg?: any}>;
+    login: (email: string, password: string) => Promise<{ success: boolean; msg?: any }>;
     register: (
       firstName: string,
       lastName: string,
@@ -34,10 +41,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // onAuthStateChanged is a Firebase method that listens for changes in the user's authentication state.
     const unsub = onAuthStateChanged(auth, (user) => {
-      console.log("got user", user);
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
+        updateUserData(user.uid);
       } else {
         setIsAuthenticated(false);
         setUser(null);
@@ -45,6 +52,22 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     });
     return unsub;
   }, []);
+
+  const updateUserData = async (userId: string) => {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      let data = docSnap.data();
+      setUser({
+        ...user,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        userId: data.userId,
+        phoneNumber: data.phoneNumber,
+        profileUrl: data.profileUrl,
+      });
+    }
+  };
 
   const login = async (email: string, password: string) => {
     // signInWithEmailAndPassword is a Firebase method that signs in the user with the provided email and password.
