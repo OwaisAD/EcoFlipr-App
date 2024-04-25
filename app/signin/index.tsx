@@ -62,6 +62,10 @@ export default function SignIn() {
     }
   };
 
+  const handlePassWordReset = async () => {
+    
+  };
+
   return (
     <ImageBackground
       source={require("../../assets/images/auth-background.png")}
@@ -142,7 +146,7 @@ export default function SignIn() {
                           />
                         )}
                       </View>
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={() => router.push("/forgotPassword/")}>
                         <Text style={{ fontSize: hp(1.6) }} className="font-semibold text-right text-neutral-500">
                           Forgot password?
                         </Text>

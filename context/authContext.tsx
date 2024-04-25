@@ -8,6 +8,8 @@ import {
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { GoogleAuthProvider } from "firebase/auth";
+import "expo-dev-client";
 
 export const AuthContext = createContext(
   {} as {
@@ -80,6 +82,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       return { success: false, msg };
     }
   };
+
+  const googleLogin = async () => {};
 
   const logout = async () => {
     // signOut is a Firebase method that signs out the current user.
