@@ -1,17 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
-import {
-  Alert,
-  Image,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Image, ImageBackground, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AntDesign, Entypo, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";

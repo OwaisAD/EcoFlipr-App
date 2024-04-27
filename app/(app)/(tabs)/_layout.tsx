@@ -50,6 +50,9 @@ export default function TabLayout() {
         options={{
           headerTitle: "",
           title: "Home",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: "bold",
@@ -83,6 +86,9 @@ export default function TabLayout() {
         options={{
           title: "Search",
           headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: "bold",
@@ -116,6 +122,9 @@ export default function TabLayout() {
         options={{
           title: "Create",
           headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: "bold",
@@ -149,6 +158,9 @@ export default function TabLayout() {
         options={{
           title: "Saved",
           headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: "bold",
@@ -182,6 +194,9 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
           tabBarLabelStyle: {
             fontSize: 10,
             fontWeight: "bold",

@@ -1,26 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
-import {
-  Alert,
-  Image,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { AntDesign, Entypo, Octicons } from "@expo/vector-icons";
+import { Alert, Image, ImageBackground, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
 import { openBrowserAsync } from "expo-web-browser";
-import { signInSchema } from "../../validations/signInSchema";
 import { ZodError } from "zod";
-import { useAuth } from "../../context/authContext";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import { z } from "zod";

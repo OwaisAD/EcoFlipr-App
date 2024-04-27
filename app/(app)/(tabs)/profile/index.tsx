@@ -1,4 +1,4 @@
-import { Alert, Button, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, Button, Image, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 import { useRouter } from "expo-router";
@@ -7,12 +7,19 @@ import { useState } from "react";
 import Modal from "react-native-modal";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage, userRef } from "../../../../firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import Loading from "../../../../components/Loading";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default function ProfileScreen() {
   const { logout, user } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<null | string>(null);
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(user?.profileUrl ? user?.profileUrl : null);
 
   console.log("here", user);
 
@@ -31,12 +38,43 @@ export default function ProfileScreen() {
     }
   };
 
+  const getBlobFroUri = async (uri: any) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    return blob;
+  };
+
   const saveImage = async (image: any) => {
     try {
-      // update displayed image
-      setImage(image);
+      setLoading(true);
+      // save to firebase
+      const blob = await getBlobFroUri(image);
+      const storageRef = ref(storage, `${user?.userId}/profilepic/${user?.userId}`);
+      const snapshot = await uploadBytes(storageRef, blob as Blob);
+      console.log("Uploaded a blob or file!", snapshot);
+      const url = await getDownloadURL(storageRef);
+
+      // store on the user
+      const userRefDoc = doc(db, "users", user!.userId);
+      await setDoc(userRefDoc, { profileUrl: url }, { merge: true });
+
+      //update displayed image
+      setImageUrl(url);
       setModalVisible(false);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log("error", error);
     }
   };
@@ -48,8 +86,8 @@ export default function ProfileScreen() {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         cameraType: ImagePicker.CameraType.front,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        aspect: [1, 1],
+        quality: 0.1,
       });
 
       if (!result.canceled) {
@@ -68,12 +106,11 @@ export default function ProfileScreen() {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        aspect: [1, 1],
+        quality: 0.1,
       });
 
       if (!result.canceled) {
-        // save image to firebase
         await saveImage(result.assets[0].uri);
       }
     } catch (error: any) {
@@ -84,21 +121,36 @@ export default function ProfileScreen() {
 
   const handleRemoveProfilePicture = async () => {
     try {
+      setLoading(true);
+
+      if (!imageUrl) {
+        setLoading(false);
+        Alert.alert("No Image", "There is no profile picture to remove.");
+        return;
+      }
+
       Alert.alert("Remove Profile Picture", "Are you sure you want to remove your profile picture?", [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
         {
           text: "OK",
           onPress: async () => {
-            console.log("OK Pressed");
+            // remove from firebase database and storage
+            const userRefDoc = doc(db, "users", user!.userId);
+            await setDoc(userRefDoc, { profileUrl: "" }, { merge: true });
+            setImage(null);
+            const storageRef = ref(storage, `${user?.userId}/profilepic/${user?.userId}`);
+            await deleteObject(storageRef);
+            setImageUrl(null);
+            setLoading(false);
             setModalVisible(false);
           },
         },
       ]);
     } catch (error) {
+      setLoading(false);
       console.log("error", error);
     }
   };
@@ -112,23 +164,32 @@ export default function ProfileScreen() {
           animationIn={"fadeInUp"}
           animationOut={"fadeOutDown"}
         >
-          <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
-            {/* CAMERA */}
-            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
-              <Feather name="camera" size={24} color="black" />
-              <Text>Camera</Text>
-            </TouchableOpacity>
-            {/* Gallery */}
-            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
-              <Feather name="image" size={24} color="black" />
-              <Text>Gallery</Text>
-            </TouchableOpacity>
-            {/* Remove */}
-            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleRemoveProfilePicture}>
-              <Feather name="trash" size={24} color="black" />
-              <Text>Remove</Text>
-            </TouchableOpacity>
-          </View>
+          {loading ? (
+            <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
+              <Loading size={hp(8)} />
+            </View>
+          ) : (
+            <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
+              {/* CAMERA */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
+                <Feather name="camera" size={24} color="black" />
+                <Text>Camera</Text>
+              </TouchableOpacity>
+              {/* Gallery */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
+                <Feather name="image" size={24} color="black" />
+                <Text>Gallery</Text>
+              </TouchableOpacity>
+              {/* Remove */}
+              <TouchableOpacity
+                className="items-center p-3 bg-[#e1dcdc] rounded-lg"
+                onPress={handleRemoveProfilePicture}
+              >
+                <Feather name="trash" size={24} color="black" />
+                <Text>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </Modal>
       </View>
       <View className="flex-1 items-center bg-[#EEE] w-full">
@@ -137,9 +198,9 @@ export default function ProfileScreen() {
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Image
                 source={
-                  user?.profileUrl != undefined
+                  imageUrl
                     ? {
-                        uri: user?.profileUrl,
+                        uri: imageUrl,
                       }
                     : require("../../../../assets/images/default_profile_icon.jpg")
                 }
