@@ -6,7 +6,7 @@ import { useAuth } from "../../../../context/authContext";
 export default function ProfileScreen() {
   const { logout, user } = useAuth();
 
-  console.log("here", user)
+  console.log("here", user);
 
   const handleLogout = async () => {
     try {
@@ -29,8 +29,12 @@ export default function ProfileScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="app/(tabs)/two.tsx" />
 
-      <Text>{user?.email}</Text>
-
+      <Text>Profile picture</Text>
+      <Text>
+        {user?.firstName} {user?.lastName}
+      </Text>
+      <Text>email</Text>
+      <Text>{user?.phoneNumber}</Text>
 
       <Button title="Logout" onPress={handleLogout} />
     </View>
