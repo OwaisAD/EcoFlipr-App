@@ -224,7 +224,7 @@ export default function ProfileScreen() {
                 {user?.createdAt}
               </Moment>
             </Text>
-            <Text className="text-xs">{user?.createdAt}</Text>
+            <Text className="text-[10px]">{user?.createdAt}</Text>
           </View>
         </View>
 

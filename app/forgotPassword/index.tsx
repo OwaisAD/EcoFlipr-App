@@ -75,8 +75,10 @@ export default function ForgotPassword() {
           {/* BOTTOM */}
           <View className="space-y-2">
             <View className="items-center justify-center mx-8 mt-8 space-y-4 bg-[#D1D5DB] p-4 rounded-xl">
+              <Text className="text-base font-light">
+                No worries. We'll send you a link where you can reset your password.
+              </Text>
               {/* email input */}
-
               <View className="w-full space-y-4">
                 {/* inputs */}
                 <View
@@ -106,32 +108,13 @@ export default function ForgotPassword() {
                     className="bg-indigo-500 rounded-xl justify-center items-center"
                   >
                     <Text style={{ fontSize: hp(2.7) }} className="text-white font-bold tracking-wider">
-                      Sign In
+                      Send
                     </Text>
                   </TouchableOpacity>
                 )}
               </View>
             </View>
-            <View className="flex-row items-center justify-center space-x-1">
-              <Text style={{ fontSize: hp(1.8) }} className="font-semibold">
-                Don't have an account?
-              </Text>
-              <Pressable onPress={() => router.push("/signup/")}>
-                <Text style={{ fontSize: hp(1.8) }} className="text-indigo-500 font-bold">
-                  Sign Up
-                </Text>
-              </Pressable>
-            </View>
           </View>
-
-          <TouchableOpacity
-            className="flex-1 items-center justify-center"
-            onPress={() => openBrowserAsync("https://github.com/OwaisAD")}
-          >
-            <Text className="text-indigo-500 text-center text-xs font-medium mx-10 my-10">
-              By signing in, you agree to our Terms of Service and Privacy Policy
-            </Text>
-          </TouchableOpacity>
         </View>
       </CustomKeyboardView>
     </ImageBackground>
