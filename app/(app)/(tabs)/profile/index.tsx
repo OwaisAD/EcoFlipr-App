@@ -112,19 +112,19 @@ export default function ProfileScreen() {
           animationIn={"fadeInUp"}
           animationOut={"fadeOutDown"}
         >
-          <View className="flex-row justify-around rounded-lg py-8">
+          <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
             {/* CAMERA */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleTakePicture}>
+            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
               <Feather name="camera" size={24} color="black" />
               <Text>Camera</Text>
             </TouchableOpacity>
             {/* Gallery */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleAddFromGallery}>
+            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
               <Feather name="image" size={24} color="black" />
               <Text>Gallery</Text>
             </TouchableOpacity>
             {/* Remove */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleRemoveProfilePicture}>
+            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleRemoveProfilePicture}>
               <Feather name="trash" size={24} color="black" />
               <Text>Remove</Text>
             </TouchableOpacity>
