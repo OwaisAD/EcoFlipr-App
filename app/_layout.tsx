@@ -43,7 +43,13 @@ const MainLayout = () => {
     } else {
     }
   }, [isAuthenticated]);
-  return <Slot />;
+  return (
+    <Stack>
+      <Stack.Screen name="signin/index" options={{ headerShown: false }} />
+      <Stack.Screen name="signup/index" options={{ headerShown: false }} />
+      <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", title: "Forgot password" }} />
+    </Stack>
+  );
 };
 
 export default function RootLayout() {
