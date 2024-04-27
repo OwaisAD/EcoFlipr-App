@@ -58,7 +58,10 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color, focused }) => <AntDesign name="home" size={focused ? 26 : 24} color={color} />,
+          tabBarActiveTintColor: "#1DAEFF",
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="home" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+          ),
           headerLeft: () => (
             <Image
               source={require("../../../assets/images/ecoflipr-logo-black.png")}
@@ -94,7 +97,10 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color, focused }) => <AntDesign name="search1" size={focused ? 26 : 24} color={color} />,
+          tabBarActiveTintColor: "#1DAEFF",
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="search1" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+          ),
           headerLeft: () => (
             <Image
               source={require("../../../assets/images/ecoflipr-logo-black.png")}
@@ -130,7 +136,10 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color, focused }) => <AntDesign name="pluscircle" size={focused ? 26 : 24} color={color} />,
+          tabBarActiveTintColor: "#1DAEFF",
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="pluscircle" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+          ),
           headerLeft: () => (
             <Image
               source={require("../../../assets/images/ecoflipr-logo-black.png")}
@@ -166,7 +175,10 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color, focused }) => <Feather name="bookmark" size={focused ? 26 : 24} color={color} />,
+          tabBarActiveTintColor: "#1DAEFF",
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="bookmark" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+          ),
           headerLeft: () => (
             <Image
               source={require("../../../assets/images/ecoflipr-logo-black.png")}
@@ -202,8 +214,13 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
+          tabBarActiveTintColor: "#1DAEFF",
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name="account-circle-outline" size={focused ? 26 : 24} color={color} />
+            <MaterialCommunityIcons
+              name="account-circle-outline"
+              size={focused ? 26 : 24}
+              color={focused ? "#1DAEFF" : color}
+            />
           ),
           headerLeft: () => (
             <Image
