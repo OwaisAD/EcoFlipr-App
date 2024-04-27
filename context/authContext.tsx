@@ -8,7 +8,6 @@ import {
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { GoogleAuthProvider } from "firebase/auth";
 import "expo-dev-client";
 
 export const AuthContext = createContext(
@@ -18,8 +17,9 @@ export const AuthContext = createContext(
       lastName: string;
       userId: string;
       phoneNumber: string;
+      email?: string;
       profileUrl?: string;
-      email: string;
+      createdAt?: string;
     };
     isAuthenticated: undefined | boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; msg?: any }>;
@@ -59,15 +59,24 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      let data = docSnap.data();
-      setUser({
+      const data = docSnap.data();
+      const userData = {
         ...user,
         firstName: data.firstName,
         lastName: data.lastName,
         userId: data.userId,
         phoneNumber: data.phoneNumber,
         profileUrl: data.profileUrl,
-      });
+      };
+
+      // Get user data from Firebase Authentication
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        userData.createdAt = currentUser.metadata.creationTime;
+        userData.email = currentUser.email;
+      }
+
+      setUser(userData);
     }
   };
 

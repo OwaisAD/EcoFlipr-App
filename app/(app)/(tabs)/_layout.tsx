@@ -55,13 +55,13 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
-          // headerLeft: () => (
-          //   <Image
-          //     source={require("../../../../assets/images/ecoflipr-logo-black.png")}
-          //     style={{ width: 100, height: 20, marginLeft: 15 }}
-          //   />
-          // ),
+          tabBarIcon: ({ color, focused }) => <AntDesign name="home" size={focused ? 26 : 24} color={color} />,
+          headerLeft: () => (
+            <Image
+              source={require("../../../assets/images/ecoflipr-logo-black.png")}
+              style={{ width: 100, height: 20, marginLeft: 15 }}
+            />
+          ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -69,7 +69,7 @@ export default function TabLayout() {
                   <Ionicons
                     name="notifications"
                     size={24}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={"gray"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -88,13 +88,13 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color }) => <AntDesign name="search1" size={24} color={color} />,
-          // headerLeft: () => (
-          //   <Image
-          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
-          //     style={{ width: 100, height: 20, marginLeft: 15 }}
-          //   />
-          // ),
+          tabBarIcon: ({ color, focused }) => <AntDesign name="search1" size={focused ? 26 : 24} color={color} />,
+          headerLeft: () => (
+            <Image
+              source={require("../../../assets/images/ecoflipr-logo-black.png")}
+              style={{ width: 100, height: 20, marginLeft: 15 }}
+            />
+          ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -102,7 +102,7 @@ export default function TabLayout() {
                   <Ionicons
                     name="notifications"
                     size={24}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={"gray"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -121,13 +121,13 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color }) => <AntDesign name="pluscircle" size={24} color={color} />,
-          // headerLeft: () => (
-          //   <Image
-          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
-          //     style={{ width: 100, height: 20, marginLeft: 15 }}
-          //   />
-          // ),
+          tabBarIcon: ({ color, focused }) => <AntDesign name="pluscircle" size={focused ? 26 : 24} color={color} />,
+          headerLeft: () => (
+            <Image
+              source={require("../../../assets/images/ecoflipr-logo-black.png")}
+              style={{ width: 100, height: 20, marginLeft: 15 }}
+            />
+          ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -135,7 +135,7 @@ export default function TabLayout() {
                   <Ionicons
                     name="notifications"
                     size={24}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={"gray"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -154,13 +154,13 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color }) => <Feather name="bookmark" size={24} color={color} />,
-          // headerLeft: () => (
-          //   <Image
-          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
-          //     style={{ width: 100, height: 20, marginLeft: 15 }}
-          //   />
-          // ),
+          tabBarIcon: ({ color, focused }) => <Feather name="bookmark" size={focused ? 26 : 24} color={color} />,
+          headerLeft: () => (
+            <Image
+              source={require("../../../assets/images/ecoflipr-logo-black.png")}
+              style={{ width: 100, height: 20, marginLeft: 15 }}
+            />
+          ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -168,7 +168,7 @@ export default function TabLayout() {
                   <Ionicons
                     name="notifications"
                     size={24}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={"gray"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -187,13 +187,15 @@ export default function TabLayout() {
             fontWeight: "bold",
             fontVariant: ["small-caps"],
           },
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle-outline" size={24} color={color} />,
-          // headerLeft: () => (
-          //   <Image
-          //     source={require("../../../assets/images/ecoflipr-logo-black.png")}
-          //     style={{ width: 100, height: 20, marginLeft: 15 }}
-          //   />
-          // ),
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name="account-circle-outline" size={focused ? 26 : 24} color={color} />
+          ),
+          headerLeft: () => (
+            <Image
+              source={require("../../../assets/images/ecoflipr-logo-black.png")}
+              style={{ width: 100, height: 20, marginLeft: 15 }}
+            />
+          ),
           headerRight: () => (
             <Link href="/notificationModalScreen" asChild>
               <Pressable>
@@ -201,7 +203,7 @@ export default function TabLayout() {
                   <Ionicons
                     name="notifications"
                     size={24}
-                    color={Colors[colorScheme ?? "light"].text}
+                    color={"gray"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
