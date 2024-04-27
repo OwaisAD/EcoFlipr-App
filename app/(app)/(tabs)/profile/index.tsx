@@ -6,11 +6,13 @@ import Moment from "react-moment";
 import { useState } from "react";
 import Modal from "react-native-modal";
 import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 export default function ProfileScreen() {
   const { logout, user } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
+  const [image, setImage] = useState(null);
 
   console.log("here", user);
 
@@ -29,23 +31,100 @@ export default function ProfileScreen() {
     }
   };
 
+  const saveImage = async (image: any) => {
+    try {
+      // update displayed image
+      setImage(image);
+      setModalVisible(false);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleTakePicture = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        cameraType: ImagePicker.CameraType.front,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        // save image to firebase
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      alert("An error occurred" + error.message);
+      setModalVisible(false);
+    }
+  };
+
+  const handleAddFromGallery = async () => {
+    try {
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        // save image to firebase
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      alert("An error occurred" + error.message);
+      setModalVisible(false);
+    }
+  };
+
+  const handleRemoveProfilePicture = async () => {
+    try {
+      Alert.alert("Remove Profile Picture", "Are you sure you want to remove your profile picture?", [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            console.log("OK Pressed");
+            setModalVisible(false);
+          },
+        },
+      ]);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <>
       <View>
-        <Modal isVisible={modalVisible} onBackdropPress={() => setModalVisible(false)}>
+        <Modal
+          isVisible={modalVisible}
+          onBackdropPress={() => setModalVisible(false)}
+          animationIn={"fadeInUp"}
+          animationOut={"fadeOutDown"}
+        >
           <View className="flex-row justify-around rounded-lg py-8">
             {/* CAMERA */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg">
+            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleTakePicture}>
               <Feather name="camera" size={24} color="black" />
               <Text>Camera</Text>
             </TouchableOpacity>
             {/* Gallery */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg">
+            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleAddFromGallery}>
               <Feather name="image" size={24} color="black" />
               <Text>Gallery</Text>
             </TouchableOpacity>
             {/* Remove */}
-            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg">
+            <TouchableOpacity className="items-center p-3 bg-[#EEE] rounded-lg" onPress={handleRemoveProfilePicture}>
               <Feather name="trash" size={24} color="black" />
               <Text>Remove</Text>
             </TouchableOpacity>
