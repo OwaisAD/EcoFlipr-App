@@ -62,9 +62,7 @@ export default function SignIn() {
     }
   };
 
-  const handlePassWordReset = async () => {
-    
-  };
+  const handlePassWordReset = async () => {};
 
   return (
     <ImageBackground

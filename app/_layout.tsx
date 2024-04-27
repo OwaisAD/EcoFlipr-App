@@ -47,7 +47,7 @@ const MainLayout = () => {
     <Stack>
       <Stack.Screen name="signin/index" options={{ headerShown: false }} />
       <Stack.Screen name="signup/index" options={{ headerShown: false }} />
-      <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", title: "Forgot password" }} />
+      <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
     </Stack>
   );
 };
