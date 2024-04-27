@@ -121,8 +121,6 @@ export default function ProfileScreen() {
 
   const handleRemoveProfilePicture = async () => {
     try {
-      setLoading(true);
-
       if (!imageUrl) {
         setLoading(false);
         Alert.alert("No Image", "There is no profile picture to remove.");
@@ -132,11 +130,16 @@ export default function ProfileScreen() {
       Alert.alert("Remove Profile Picture", "Are you sure you want to remove your profile picture?", [
         {
           text: "Cancel",
+          onPress: () => {
+            setLoading(false);
+            console.log("Cancel Pressed");
+          },
           style: "cancel",
         },
         {
           text: "OK",
           onPress: async () => {
+            setLoading(true);
             // remove from firebase database and storage
             const userRefDoc = doc(db, "users", user!.userId);
             await setDoc(userRefDoc, { profileUrl: "" }, { merge: true });
