@@ -210,9 +210,7 @@ export default function ProfileScreen() {
                 style={{ width: 100, height: 100, borderRadius: 60 }}
               />
             </TouchableOpacity>
-            <View className="bg-[#EEE]">
-              <Button title="Edit profile" onPress={() => router.push("/editprofile/")} />
-            </View>
+            
           </View>
 
           <View className="bg-[#eee]">
@@ -229,6 +227,22 @@ export default function ProfileScreen() {
             </Text>
             <Text className="text-[10px]">{user?.createdAt}</Text>
           </View>
+        </View>
+
+        <View className="bg-[#EEE] w-full px-6 flex-col gap-2 mt-10">
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+            <Text className="text-base font-medium">My sale offers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+            <Text className="text-base font-medium">Sale offers I have interacted with</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+            <Text className="text-base font-medium">Edit profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+            <Text className="text-base font-medium">Settings</Text>
+          </TouchableOpacity>
+         
         </View>
 
         <Button title="Logout" onPress={handleLogout} />
