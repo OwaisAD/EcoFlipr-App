@@ -207,10 +207,9 @@ export default function ProfileScreen() {
                       }
                     : require("../../../../assets/images/default_profile_icon.jpg")
                 }
-                style={{ width: 100, height: 100, borderRadius: 60 }}
+                style={{ width: 100, height: 100, borderRadius: 60, borderWidth: 0.3, borderColor: "#1DAEFF"}}
               />
             </TouchableOpacity>
-            
           </View>
 
           <View className="bg-[#eee]">
@@ -230,11 +229,14 @@ export default function ProfileScreen() {
         </View>
 
         <View className="bg-[#EEE] w-full px-6 flex-col gap-2 mt-10">
-          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
-            <Text className="text-base font-medium">My sale offers</Text>
+          <TouchableOpacity
+            className="bg-[#D9D9D9] p-4 rounded-lg"
+            onPress={() => router.push("/(app)/offersinteractedwith")}
+          >
+            <Text className="text-base font-medium">Sale offers interacted with</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
-            <Text className="text-base font-medium">Sale offers I have interacted with</Text>
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg" onPress={() => router.push("/(app)/myoffers")}>
+            <Text className="text-base font-medium">My sale offers</Text>
           </TouchableOpacity>
           <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg" onPress={() => router.push("/(app)/editprofile")}>
             <Text className="text-base font-medium">Edit profile</Text>
@@ -242,7 +244,6 @@ export default function ProfileScreen() {
           <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg" onPress={() => router.push("/(app)/settings")}>
             <Text className="text-base font-medium">Settings</Text>
           </TouchableOpacity>
-         
         </View>
 
         <Button title="Logout" onPress={handleLogout} />

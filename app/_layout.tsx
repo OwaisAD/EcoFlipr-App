@@ -72,7 +72,7 @@ const MainLayout = () => {
           },
         }}
       />
-      <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", title: "Notifications" }} />
+      <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
       {/* why does the above not work? */}
     </Stack>
   );
