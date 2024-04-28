@@ -8,6 +8,7 @@ import { useColorScheme } from "../../../components/useColorScheme";
 import { useClientOnlyValue } from "../../../components/useClientOnlyValue";
 import { AntDesign, Feather, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import HeaderMenu from "../../../components/HeaderMenu";
+import { useAuth } from "../../../context/authContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
@@ -16,6 +17,7 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["nam
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { logout, user } = useAuth();
 
   return (
     <Tabs
@@ -71,21 +73,19 @@ export default function TabLayout() {
           ),
           headerRight: () => (
             <View className="flex-row items-start gap-2 mr-4 ">
-              <View>
-                <Link href="/notificationModalScreen" asChild>
-                  <Pressable>
-                    {({ pressed }) => (
-                      <Ionicons
-                        name="notifications"
-                        size={26}
-                        color={"gray"}
-                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                      />
-                    )}
-                  </Pressable>
-                </Link>
-              </View>
-              <HeaderMenu />
+              <Link href="/notificationModalScreen" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <Ionicons
+                      name="notifications"
+                      size={26}
+                      color={"gray"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              <HeaderMenu imageUrl={user?.profileUrl} />
             </View>
           ),
         }}
@@ -114,18 +114,21 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/notificationModalScreen" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <Ionicons
-                    name="notifications"
-                    size={24}
-                    color={"gray"}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <View className="flex-row items-start gap-2 mr-4 ">
+              <Link href="/notificationModalScreen" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <Ionicons
+                      name="notifications"
+                      size={24}
+                      color={"gray"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              <HeaderMenu imageUrl={user?.profileUrl} />
+            </View>
           ),
         }}
       />
@@ -153,18 +156,21 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/notificationModalScreen" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <Ionicons
-                    name="notifications"
-                    size={24}
-                    color={"gray"}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <View className="flex-row items-start gap-2 mr-4 ">
+              <Link href="/notificationModalScreen" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <Ionicons
+                      name="notifications"
+                      size={24}
+                      color={"gray"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              <HeaderMenu imageUrl={user?.profileUrl} />
+            </View>
           ),
         }}
       />
@@ -192,18 +198,21 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/notificationModalScreen" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <Ionicons
-                    name="notifications"
-                    size={24}
-                    color={"gray"}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <View className="flex-row items-start gap-2 mr-4 ">
+              <Link href="/notificationModalScreen" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <Ionicons
+                      name="notifications"
+                      size={24}
+                      color={"gray"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              <HeaderMenu imageUrl={user?.profileUrl} />
+            </View>
           ),
         }}
       />
@@ -235,18 +244,21 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/notificationModalScreen" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <Ionicons
-                    name="notifications"
-                    size={24}
-                    color={"gray"}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <View className="flex-row items-start gap-2 mr-4 ">
+              <Link href="/notificationModalScreen" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <Ionicons
+                      name="notifications"
+                      size={24}
+                      color={"gray"}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
+                  )}
+                </Pressable>
+              </Link>
+              <HeaderMenu imageUrl={user?.profileUrl} />
+            </View>
           ),
         }}
       />

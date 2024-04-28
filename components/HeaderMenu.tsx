@@ -4,9 +4,11 @@ import { useAuth } from "../context/authContext";
 import MenuItem from "./MenuItem";
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { useRouter } from "expo-router";
 
-const HeaderMenu = () => {
-  const { logout, user } = useAuth();
+const HeaderMenu = ({ imageUrl }: { imageUrl?: String }) => {
+  const { logout } = useAuth();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
@@ -34,9 +36,9 @@ const HeaderMenu = () => {
       >
         <Image
           source={
-            user?.profileUrl
+            imageUrl
               ? {
-                  uri: user.profileUrl,
+                  uri: imageUrl,
                 }
               : require("../assets/images/default_profile_icon.jpg")
           }
@@ -59,21 +61,21 @@ const HeaderMenu = () => {
       >
         <MenuItem
           text="Profile"
-          action={() => {}}
+          action={() => router.navigate("/(app)/(tabs)/profile")}
           value={null}
           icon={<MaterialCommunityIcons name="account-circle-outline" size={hp(2.5)} color={"#737373"} />}
         />
         <Divider />
         <MenuItem
           text="Offer engagements"
-          action={() => {}}
+          action={() => router.push("/(app)/offersinteractedwith")}
           value={null}
           icon={<FontAwesome name="comments-o" size={hp(2.5)} color={"#737373"} />}
         />
         <Divider />
         <MenuItem
           text="My sale offers"
-          action={() => {}}
+          action={() => router.push("/(app)/myoffers")}
           value={null}
           icon={<MaterialCommunityIcons name="offer" size={hp(2.5)} color={"#737373"} />}
         />
