@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useColorScheme } from "../components/useColorScheme";
 import { AuthContext, AuthContextProvider, useAuth } from "../context/authContext";
 import { Text, View } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -100,9 +101,11 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthContextProvider>
-      <MainLayout />
-    </AuthContextProvider>
+    <MenuProvider>
+      <AuthContextProvider>
+        <MainLayout />
+      </AuthContextProvider>
+    </MenuProvider>
   );
 }
 

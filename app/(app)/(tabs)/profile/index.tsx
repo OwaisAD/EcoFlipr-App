@@ -207,7 +207,7 @@ export default function ProfileScreen() {
                       }
                     : require("../../../../assets/images/default_profile_icon.jpg")
                 }
-                style={{ width: 100, height: 100, borderRadius: 60, borderWidth: 0.3, borderColor: "#1DAEFF"}}
+                style={{ width: 100, height: 100, borderRadius: 60, borderWidth: 0.3, borderColor: "#1DAEFF" }}
               />
             </TouchableOpacity>
           </View>

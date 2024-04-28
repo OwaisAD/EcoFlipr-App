@@ -17,7 +17,9 @@ export default function HomeScreen() {
             placeholder="Search on EcoFlipr"
             autoCapitalize="none"
           />
-          <FontAwesome5 name="search" size={24} color="#1DAEFF" />
+          <View className="px-1">
+            <FontAwesome5 name="search" size={20} color="#1DAEFF" />
+          </View>
         </View>
 
         <View className="bg-[#EEE] mb-4">
