@@ -1,32 +1,12 @@
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import EditScreenInfo from "../../../../components/EditScreenInfo";
 import { Text, View } from "../../../../components/Themed";
 
 export default function SavedScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Saved</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
-    </View>
+    <ScrollView className="bg-[#EEE]">
+      <Text className="text-2xl font-light">Saved offers</Text>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#EEE",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});

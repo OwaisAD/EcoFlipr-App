@@ -3,27 +3,39 @@ import { ScrollView, StyleSheet, TextInput, TouchableOpacity } from "react-nativ
 import EditScreenInfo from "../../../../components/EditScreenInfo";
 import { Text, View } from "../../../../components/Themed";
 import CustomKeyboardView from "../../../../components/CustomKeyboardView";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const options = ["For you", "Recent", "Random", "Viewed", "Saved"];
 
   return (
     <CustomKeyboardView>
-      <View className="bg-[#EEE] h-full">
-        <TextInput className="bg-white p-2 rounded-lg w-full" placeholder="Search on EcoFlipr" autoCapitalize="none" />
-        <View className="h-10">
+      <View className="bg-[#EEE] flex-1 px-4">
+        <View className="flex-row space-x-5  px-4 py-1 items-center rounded-xl border-blue-100 border my-4">
+          <TextInput
+            className="bg-white p-2 rounded-lg w-full flex-1 font-semibold text-neutral-700"
+            placeholder="Search on EcoFlipr"
+            autoCapitalize="none"
+          />
+          <FontAwesome5 name="search" size={24} color="#1DAEFF" />
+        </View>
+
+        <View className="bg-[#EEE] mb-4">
           <ScrollView className="flex-row space-x-2 bg-[#EEE]" horizontal>
             {options.map((option, idx) => (
-              <TouchableOpacity className="items-center justify-center p-2 rounded-lg bg-[#AFDBF3]">
-                <Text key={idx} className="text-sm font-medium">
-                  {option}
-                </Text>
+              <TouchableOpacity
+                key={idx}
+                className="items-center justify-center px-[10px] py-[6px] rounded-lg bg-[#AFDBF3]"
+              >
+                <Text className="text-sm font-medium">{option}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        <Text>Hu</Text>
+        <View className="flex-1 bg-[#EEE]">
+          <Text>Sale offers</Text>
+        </View>
       </View>
     </CustomKeyboardView>
   );

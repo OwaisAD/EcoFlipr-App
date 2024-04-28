@@ -5,28 +5,18 @@ import { Text, View } from "../../../../components/Themed";
 
 export default function CreateScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+    <View className="bg-[#EEE]">
+      <Text className="text-2xl font-light">Create offer</Text>
+      <Text>Title</Text>
+      <Text>Add offer description</Text>
+      {/* Have a list of categories */}
+      <Text>Select category</Text>
+      <Text>Do you offer shipping?</Text>
+      {/* Have a json file of all danish zip codes */}
+      <Text>Enter zip code</Text>
+      <Text>Enter a price</Text>
+      <Text>Image upload</Text>
+      <Text>Share offer button</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#EEE",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});

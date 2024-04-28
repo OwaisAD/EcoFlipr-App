@@ -1,4 +1,4 @@
-import { Alert, Button, Image, TouchableOpacity } from "react-native";
+import { Alert, Button, Image, ScrollView, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 import { useRouter } from "expo-router";
@@ -195,10 +195,10 @@ export default function ProfileScreen() {
           )}
         </Modal>
       </View>
-      <View className="flex-1 items-center bg-[#EEE] w-full">
-        <View className="flex-row justify-evenly  w-full bg-[#EEE] items-center mt-10">
+      <ScrollView className="flex-1 bg-[#EEE] w-full">
+        <View className="flex-row justify-evenly w-full bg-[#EEE] items-center mt-10">
           <View className="bg-[#EEE] items-center gap-2">
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} className="shadow-xl">
               <Image
                 source={
                   imageUrl
@@ -236,17 +236,17 @@ export default function ProfileScreen() {
           <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
             <Text className="text-base font-medium">Sale offers I have interacted with</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg" onPress={() => router.push("/(app)/editprofile")}>
             <Text className="text-base font-medium">Edit profile</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg">
+          <TouchableOpacity className="bg-[#D9D9D9] p-4 rounded-lg" onPress={() => router.push("/(app)/settings")}>
             <Text className="text-base font-medium">Settings</Text>
           </TouchableOpacity>
          
         </View>
 
         <Button title="Logout" onPress={handleLogout} />
-      </View>
+      </ScrollView>
     </>
   );
 }

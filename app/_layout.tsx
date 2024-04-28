@@ -50,8 +50,29 @@ const MainLayout = () => {
       <Stack.Screen name="signup/index" options={{ headerShown: false }} />
       <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
       <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(app)/editprofile/index"
+        options={{
+          headerShown: true,
+          headerBackTitle: "Profile",
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="(app)/settings/index"
+        options={{
+          headerShown: true,
+          headerBackTitle: "Profile",
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
       <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", title: "Notifications" }} />
-      <Stack.Screen name="(app)/editprofile/index" options={{ headerShown: false }} />
       {/* why does the above not work? */}
     </Stack>
   );
