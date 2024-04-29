@@ -139,7 +139,7 @@ export default function TabLayout() {
                   {({ pressed }) => (
                     <Ionicons
                       name="notifications"
-                      size={24}
+                      size={26}
                       color={"gray"}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
@@ -181,7 +181,7 @@ export default function TabLayout() {
                   {({ pressed }) => (
                     <Ionicons
                       name="notifications"
-                      size={24}
+                      size={26}
                       color={"gray"}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
@@ -223,7 +223,7 @@ export default function TabLayout() {
                   {({ pressed }) => (
                     <Ionicons
                       name="notifications"
-                      size={24}
+                      size={26}
                       color={"gray"}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
@@ -269,7 +269,7 @@ export default function TabLayout() {
                   {({ pressed }) => (
                     <Ionicons
                       name="notifications"
-                      size={24}
+                      size={26}
                       color={"gray"}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
