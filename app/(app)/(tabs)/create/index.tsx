@@ -51,12 +51,11 @@ export default function CreateScreen() {
       </View>
 
       {/* OFFER CATEGORY */}
-      <View className="rounded-xl px-2 py-1">
-        <TouchableOpacity
-          onPress={() => setCategoryModalVisible(true)}
-          className="flex-row space-x-5 items-center h-9"
-        >
-          <Text className={`${selectedCategory == "Select a category" ? "text-gray-400" : "font-medium"}`}>{selectedCategory != "Select a category" ? selectedCategory : "Select a category"}</Text>
+      <View className="rounded-xl px-4 py-1">
+        <TouchableOpacity onPress={() => setCategoryModalVisible(true)} className="flex-row space-x-5 items-center h-9">
+          <Text className={`font-semibold ${selectedCategory == "Select a category" ? "text-gray-400" : ""}`}>
+            {selectedCategory != "Select a category" ? selectedCategory : "Select a category"}
+          </Text>
         </TouchableOpacity>
       </View>
       <Modal
@@ -72,7 +71,7 @@ export default function CreateScreen() {
             onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
           >
             <Picker.Item enabled={false} label={"Please select a category"} value={"Select a category"} />
-            {categories.map((category) => (
+            {categories.sort().map((category) => (
               <Picker.Item key={category.id} label={category.name} value={category.name} />
             ))}
           </Picker>
