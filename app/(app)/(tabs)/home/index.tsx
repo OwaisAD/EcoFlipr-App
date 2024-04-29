@@ -48,7 +48,7 @@ export default function HomeScreen() {
 
       <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <View className="flex-1 bg-[#EEE]">{displayContent()}</View>
+      <View className=" my-4 flex-1 bg-[#EEE]">{displayContent()}</View>
     </View>
   );
 }

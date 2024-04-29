@@ -2,8 +2,9 @@
 import { initializeApp } from "firebase/app";
 import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getFirestore, collection } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { categories } from "./data/categories";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,3 +30,15 @@ export const auth = initializeAuth(app, {
 export const db = getFirestore(app);
 
 export const userRef = collection(db, "users");
+export const categoriesRef = collection(db, "categories");
+
+// categories.forEach(async (category) => {
+//   try {
+//     const docRef = await addDoc(categoriesRef, category);
+//     console.log("Document written with ID: ", docRef.id);
+//   } catch (e) {
+//     console.error("Error adding document: ", e);
+//   }
+// });
+
+// console.log("Categories added to Firestore successfully!");
