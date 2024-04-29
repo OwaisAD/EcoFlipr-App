@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import { Image, Pressable, View } from "react-native";
@@ -16,8 +16,27 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["nam
 }
 
 export default function TabLayout() {
+  const { user } = useAuth();
   const colorScheme = useColorScheme();
-  const { logout, user } = useAuth();
+  const [cachedImage, setCachedImage] = useState<any>(null);
+
+  useEffect(() => {
+    // Preload image when the tab is mounted
+    if (user?.profileUrl) {
+      const preloadImage = async () => {
+        try {
+          const response = await fetch(user.profileUrl as string);
+          if (response.ok) {
+            const blob = await response.blob();
+            setCachedImage(URL.createObjectURL(blob));
+          }
+        } catch (error) {
+          console.error("Error preloading image:", error);
+        }
+      };
+      preloadImage();
+    }
+  }, [user?.profileUrl]);
 
   return (
     <Tabs
@@ -85,7 +104,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-              <HeaderMenu imageUrl={user?.profileUrl} />
+              <HeaderMenu imageUrl={cachedImage ?? user?.profileUrl} />
             </View>
           ),
         }}
@@ -127,7 +146,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-              <HeaderMenu imageUrl={user?.profileUrl} />
+              <HeaderMenu imageUrl={cachedImage ?? user?.profileUrl} />
             </View>
           ),
         }}
@@ -169,7 +188,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-              <HeaderMenu imageUrl={user?.profileUrl} />
+              <HeaderMenu imageUrl={cachedImage ?? user?.profileUrl} />
             </View>
           ),
         }}
@@ -211,7 +230,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-              <HeaderMenu imageUrl={user?.profileUrl} />
+              <HeaderMenu imageUrl={cachedImage ?? user?.profileUrl} />
             </View>
           ),
         }}
@@ -257,7 +276,7 @@ export default function TabLayout() {
                   )}
                 </Pressable>
               </Link>
-              <HeaderMenu imageUrl={user?.profileUrl} />
+              <HeaderMenu imageUrl={cachedImage ?? user?.profileUrl} />
             </View>
           ),
         }}
