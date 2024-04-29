@@ -166,32 +166,38 @@ export default function ProfileScreen() {
           onBackdropPress={() => setModalVisible(false)}
           animationIn={"fadeInUp"}
           animationOut={"fadeOutDown"}
+          className="space-y-4"
         >
           {loading ? (
             <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
               <Loading size={hp(8)} />
             </View>
           ) : (
-            <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
-              {/* CAMERA */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
-                <Feather name="camera" size={24} color="black" />
-                <Text>Camera</Text>
-              </TouchableOpacity>
-              {/* Gallery */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
-                <Feather name="image" size={24} color="black" />
-                <Text>Gallery</Text>
-              </TouchableOpacity>
-              {/* Remove */}
-              <TouchableOpacity
-                className="items-center p-3 bg-[#e1dcdc] rounded-lg"
-                onPress={handleRemoveProfilePicture}
-              >
-                <Feather name="trash" size={24} color="black" />
-                <Text>Remove</Text>
-              </TouchableOpacity>
-            </View>
+            <>
+              <View className="bg-[#EEE] rounded-lg  items-center py-2">
+                <Text className="text-xl">Profile Picture</Text>
+              </View>
+              <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8">
+                {/* CAMERA */}
+                <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
+                  <Feather name="camera" size={24} color="black" />
+                  <Text>Camera</Text>
+                </TouchableOpacity>
+                {/* Gallery */}
+                <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
+                  <Feather name="image" size={24} color="black" />
+                  <Text>Gallery</Text>
+                </TouchableOpacity>
+                {/* Remove */}
+                <TouchableOpacity
+                  className="items-center p-3 bg-[#e1dcdc] rounded-lg"
+                  onPress={handleRemoveProfilePicture}
+                >
+                  <Feather name="trash" size={24} color="black" />
+                  <Text>Remove</Text>
+                </TouchableOpacity>
+              </View>
+            </>
           )}
         </Modal>
       </View>

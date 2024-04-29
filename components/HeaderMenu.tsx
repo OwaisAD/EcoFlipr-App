@@ -1,5 +1,5 @@
 import { Alert, Image, View } from "react-native";
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import { useAuth } from "../context/authContext";
 import MenuItem from "./MenuItem";
 import { AntDesign, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
