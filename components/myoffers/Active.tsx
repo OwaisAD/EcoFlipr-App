@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { FlatList, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { OfferType } from "../../types/offerType";
 import { useAuth } from "../../context/authContext";
 import { DocumentData, getDocs, query, where } from "firebase/firestore";
 import { saleOfferRef } from "../../firebaseConfig";
 import { StatusTypes } from "../../constants/StatusTypes";
+import SaleOffer from "../SaleOffer";
 
 export const Active = () => {
   const { user } = useAuth();
@@ -37,6 +38,7 @@ export const Active = () => {
           const offersData: OfferType[] = offersSnapshot.docs.map((doc) => {
             const data = doc.data() as DocumentData; // Assuming DocumentData is the type of your Firestore documents
             return {
+              saleOfferId: data.saleOfferId,
               title: data.title,
               description: data.description,
               category: data.category,
@@ -71,16 +73,15 @@ export const Active = () => {
   }, [user]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View>
-          <Text>Active</Text>
-        </View>
-
-        {loading && <Text>Loading...</Text>}
-
-        <Text>{JSON.stringify(offers)}</Text>
-      </ScrollView>
+    <SafeAreaView style={{ flex: 1 }} className="bg-[#eee]">
+      <FlatList
+        data={offers}
+        renderItem={({ item }) => <SaleOffer saleOffer={item} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListEmptyComponent={<Text>No offers available</Text>}
+        ListHeaderComponent={<Text>Active</Text>}
+        ListFooterComponent={<Text>END OF LIST</Text>}
+      />
     </SafeAreaView>
   );
 };

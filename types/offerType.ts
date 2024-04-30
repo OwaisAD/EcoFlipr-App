@@ -1,4 +1,5 @@
 export interface OfferType {
+  saleOfferId: string;
   title: string;
   description: string;
   category: string;
@@ -6,8 +7,14 @@ export interface OfferType {
   zipCode: string;
   price: number;
   status: string;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: {
+    nanoseconds: number;
+    seconds: number;
+  };
+  updatedAt: {
+    nanoseconds: number;
+    seconds: number;
+  };
   userId: string;
   id: string;
   cityInfo?: {

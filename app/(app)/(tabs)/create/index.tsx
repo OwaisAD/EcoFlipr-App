@@ -18,6 +18,8 @@ import { db } from "../../../../firebaseConfig";
 import { useRouter } from "expo-router";
 import Loading from "../../../../components/Loading";
 import CustomKeyboardView from "../../../../components/CustomKeyboardView";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 interface cityInfoProps {
   zipCode?: number;
@@ -50,17 +52,18 @@ export default function CreateScreen() {
     try {
       setLoading(true);
       // validate
-      createOfferSchema.parse({
-        title: titleRef.current,
-        description: offerDescription,
-        category: selectedCategory,
-        shipping: shipping,
-        zipCode: cityInfo.zipCode ?? 0,
-        price: price,
-      });
+      // createOfferSchema.parse({
+      //   title: titleRef.current,
+      //   description: offerDescription,
+      //   category: selectedCategory,
+      //   shipping: shipping,
+      //   zipCode: cityInfo.zipCode ?? 0,
+      //   price: price,
+      // });
 
       // create offer
-      const offer = {
+      const saleoffer = {
+        saleOfferId: uuidv4().toString(),
         userId: user!.userId,
         title: titleRef.current,
         description: offerDescription,
@@ -74,8 +77,10 @@ export default function CreateScreen() {
         status: StatusTypes.ACTIVE,
       };
 
-      console.log("Creating offer", offer);
-      const saleOfferRef = await addDoc(collection(db, "saleoffers"), offer);
+      console.log("REACHED", saleoffer);
+
+      console.log("Creating offer", saleoffer);
+      const saleOfferRef = await addDoc(collection(db, "saleoffers"), saleoffer);
       console.log("Document written with ID: ", saleOfferRef.id);
       // clear fields
       // titleRef.current = "";
@@ -92,6 +97,7 @@ export default function CreateScreen() {
       if (error instanceof ZodError) {
         Alert.alert("Create offer", error.errors[0].message);
       }
+      console.log("error", error);
     }
   };
 
