@@ -10,7 +10,7 @@ import { Recent } from "../../../../components/homeoffers/Recent";
 import { Random } from "../../../../components/homeoffers/Random";
 import { Viewed } from "../../../../components/homeoffers/Viewed";
 import { Saved } from "../../../../components/homeoffers/Saved";
-import Tabs from "../../../../components/homeoffers/Tabs";
+import Tabs from "../../../../components/Tabs";
 
 export default function HomeScreen() {
   const options = ["For you", "Recent", "Random", "Viewed", "Saved"];
