@@ -16,8 +16,11 @@
     "@expo/vector-icons": "^14.0.0",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-firebase/app": "^19.2.2",
+    "@react-native-picker/picker": "2.6.1",
     "@react-navigation/native": "^6.0.2",
+    "axios": "^1.6.8",
     "expo": "~50.0.14",
+    "expo-checkbox": "~2.7.0",
     "expo-dev-client": "~3.3.11",
     "expo-font": "~11.10.3",
     "expo-image-picker": "~14.7.1",
@@ -41,8 +44,7 @@
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.6",
     "zod": "^3.23.4",
-    "@react-native-picker/picker": "2.6.1",
-    "expo-checkbox": "~2.7.0"
+    "react-native-maps": "1.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
