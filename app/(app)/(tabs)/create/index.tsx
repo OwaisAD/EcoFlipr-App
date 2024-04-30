@@ -17,6 +17,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
 import { useRouter } from "expo-router";
 import Loading from "../../../../components/Loading";
+import CustomKeyboardView from "../../../../components/CustomKeyboardView";
 
 interface cityInfoProps {
   zipCode?: number;
@@ -180,153 +181,158 @@ export default function CreateScreen() {
   };
 
   return (
-    <ScrollView className="flex-1  bg-[#eee] gap-4 p-4">
-      <Text className="text-2xl font-light">Create new sale offer</Text>
+    <CustomKeyboardView>
+      <View className="flex-1 bg-[#eee] gap-4 p-4 pb-[100px]">
+        <Text className="text-2xl font-light">Create new sale offer</Text>
 
-      {/* OFFER TITLE */}
-      <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
-        <TextInput
-          onChangeText={(text) => (titleRef.current = text)}
-          className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
-          placeholder="Title"
-          autoCapitalize="none"
-        />
-      </View>
+        {/* OFFER TITLE */}
+        <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
+          <TextInput
+            onChangeText={(text) => (titleRef.current = text)}
+            className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
+            placeholder="Title"
+            autoCapitalize="none"
+          />
+        </View>
 
-      {/* OFFER DESCRIPTION */}
-      <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
-        <TextInput
-          onChangeText={(value) => setOfferDescription(value)}
-          className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
-          placeholder="Add offer description"
-          autoCapitalize="none"
-          multiline={true}
-          maxLength={MAX_DESCRIPTION_LENGTH}
-          numberOfLines={10}
-          style={{ height: 200, textAlignVertical: "top", padding: 10 }}
-          scrollEnabled={true}
-        />
-        <Text
-          className={`absolute bottom-2 right-2 font-light text-[12px] text-gray-400 ${
-            offerDescription.length > MAX_DESCRIPTION_LENGTH && "text-red-500"
-          }`}
-        >
-          {offerDescription.length}/{MAX_DESCRIPTION_LENGTH}
-        </Text>
-      </View>
-
-      {/* OFFER CATEGORY */}
-      <View className="rounded-xl px-4 py-1">
-        <TouchableOpacity onPress={() => setCategoryModalVisible(true)} className="flex-row space-x-5 items-center h-9">
-          <Text className={`font-semibold ${selectedCategory == "Select a category" ? "text-gray-400" : ""}`}>
-            {selectedCategory != "Select a category" ? selectedCategory : "Select a category"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <Modal
-        isVisible={categoryModalVisible}
-        onBackdropPress={() => setCategoryModalVisible(false)}
-        animationIn={"fadeInUp"}
-        animationOut={"fadeOutDown"}
-      >
-        {/* Have a list of categories */}
-        <View className="rounded-lg bg-[#EEE] py-8">
-          <Picker
-            selectedValue={selectedCategory}
-            onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
+        {/* OFFER DESCRIPTION */}
+        <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
+          <TextInput
+            onChangeText={(value) => setOfferDescription(value)}
+            className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
+            placeholder="Add offer description"
+            autoCapitalize="none"
+            multiline={true}
+            maxLength={MAX_DESCRIPTION_LENGTH}
+            numberOfLines={10}
+            style={{ height: 200, textAlignVertical: "top", padding: 10 }}
+            scrollEnabled={true}
+          />
+          <Text
+            className={`absolute bottom-2 right-2 font-light text-[12px] text-gray-400 ${
+              offerDescription.length > MAX_DESCRIPTION_LENGTH && "text-red-500"
+            }`}
           >
-            <Picker.Item enabled={false} label={"Please select a category"} value={"Select a category"} />
-            {categories.sort().map((category) => (
-              <Picker.Item key={category.id} label={category.name} value={category.name} />
-            ))}
-          </Picker>
-          <Button title="Confirm" onPress={() => setCategoryModalVisible(false)} />
-        </View>
-      </Modal>
-
-      {/* OFFER SHIPPING */}
-      <View className="flex-row items-center justify-between rounded-xl px-4 py-3">
-        <Text>Do you offer shipping?</Text>
-        <Checkbox value={shipping} onValueChange={setShipping} />
-      </View>
-
-      {/* OFFER ZIP */}
-      <View className="flex-row items-center justify-between rounded-xl">
-        <TextInput
-          onChangeText={(value) => handleSetZipCode(value)}
-          className="bg-white py-4 px-2 rounded-l-md w-full flex-1 font-semibold text-neutral-700"
-          placeholder="Enter a zip code"
-          autoCapitalize="none"
-        />
-        <TextInput
-          className="bg-[#D1D5DB] py-4 px-2 rounded-r-md w-full flex-1 font-semibold text-white"
-          placeholder="Chosen city"
-          autoCapitalize="none"
-          editable={false}
-          value={cityInfo.city}
-        />
-      </View>
-
-      {/* OFFER PRICE */}
-      <View className="flex-row items-center justify-between rounded-xl">
-        <TextInput
-          onChangeText={(value) => setPrice(parseInt(value))}
-          placeholder="Enter a price"
-          className="bg-white py-4 px-2 flex-1 rounded-md font-semibold text-neutral-700"
-          autoCapitalize="none"
-          keyboardType="number-pad"
-        />
-        <Text className="font-light text-neutral-700 absolute right-2">,-</Text>
-      </View>
-
-      {/* OFFER IMAGES */}
-      <View className="rounded-md">
-        <TouchableOpacity className="p-4" onPress={() => setImageUploadModalVisible(true)}>
-          <Text>Click to upload images (6 max)</Text>
-        </TouchableOpacity>
-        {/* IMAGES UPLOADED GRID VIEW HERE */}
-        <View></View>
-      </View>
-      <Modal
-        isVisible={imageUploadModalVisible}
-        onBackdropPress={() => setImageUploadModalVisible(false)}
-        animationIn={"fadeInUp"}
-        animationOut={"fadeOutDown"}
-        className="gap-4"
-      >
-        <View className="bg-[#EEE] rounded-lg  items-center py-2">
-          <Text className="text-xl">Upload Images</Text>
-        </View>
-        <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-10">
-          {/* CAMERA */}
-          <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
-            <Feather name="camera" size={24} color="black" />
-            <Text>Camera</Text>
-          </TouchableOpacity>
-          {/* Gallery */}
-          <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
-            <Feather name="image" size={24} color="black" />
-            <Text>Gallery</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      {/* OFFER SHARE BTN */}
-      {loading ? (
-        <View className="flex-row justify-around rounded-lg bg-[#EEE] py-2">
-          <Loading size={hp(8)} />
-        </View>
-      ) : (
-        <TouchableOpacity
-          onPress={handleCreateOffer}
-          style={{ height: hp(5) }}
-          className="bg-indigo-500 rounded-xl justify-center items-center"
-        >
-          <Text style={{ fontSize: hp(2.2) }} className="text-white font-bold tracking-wider">
-            Share offer
+            {offerDescription.length}/{MAX_DESCRIPTION_LENGTH}
           </Text>
-        </TouchableOpacity>
-      )}
-    </ScrollView>
+        </View>
+
+        {/* OFFER CATEGORY */}
+        <View className="rounded-xl px-4 py-1">
+          <TouchableOpacity
+            onPress={() => setCategoryModalVisible(true)}
+            className="flex-row space-x-5 items-center h-9"
+          >
+            <Text className={`font-semibold ${selectedCategory == "Select a category" ? "text-gray-400" : ""}`}>
+              {selectedCategory != "Select a category" ? selectedCategory : "Select a category"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <Modal
+          isVisible={categoryModalVisible}
+          onBackdropPress={() => setCategoryModalVisible(false)}
+          animationIn={"fadeInUp"}
+          animationOut={"fadeOutDown"}
+        >
+          {/* Have a list of categories */}
+          <View className="rounded-lg bg-[#EEE] py-8">
+            <Picker
+              selectedValue={selectedCategory}
+              onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
+            >
+              <Picker.Item enabled={false} label={"Please select a category"} value={"Select a category"} />
+              {categories.sort().map((category) => (
+                <Picker.Item key={category.id} label={category.name} value={category.name} />
+              ))}
+            </Picker>
+            <Button title="Confirm" onPress={() => setCategoryModalVisible(false)} />
+          </View>
+        </Modal>
+
+        {/* OFFER SHIPPING */}
+        <View className="flex-row items-center justify-between rounded-xl px-4 py-3">
+          <Text>Do you offer shipping?</Text>
+          <Checkbox value={shipping} onValueChange={setShipping} />
+        </View>
+
+        {/* OFFER ZIP */}
+        <View className="flex-row items-center justify-between rounded-xl">
+          <TextInput
+            onChangeText={(value) => handleSetZipCode(value)}
+            className="bg-white py-4 px-2 rounded-l-md w-full flex-1 font-semibold text-neutral-700"
+            placeholder="Enter a zip code"
+            autoCapitalize="none"
+          />
+          <TextInput
+            className="bg-[#D1D5DB] py-4 px-2 rounded-r-md w-full flex-1 font-semibold text-white"
+            placeholder="Chosen city"
+            autoCapitalize="none"
+            editable={false}
+            value={cityInfo.city}
+          />
+        </View>
+
+        {/* OFFER PRICE */}
+        <View className="flex-row items-center justify-between rounded-xl">
+          <TextInput
+            onChangeText={(value) => setPrice(parseInt(value))}
+            placeholder="Enter a price"
+            className="bg-white py-4 px-2 flex-1 rounded-md font-semibold text-neutral-700"
+            autoCapitalize="none"
+            keyboardType="number-pad"
+          />
+          <Text className="font-light text-neutral-700 absolute right-2">,-</Text>
+        </View>
+
+        {/* OFFER IMAGES */}
+        <View className="rounded-md">
+          <TouchableOpacity className="p-4" onPress={() => setImageUploadModalVisible(true)}>
+            <Text>Click to upload images (6 max)</Text>
+          </TouchableOpacity>
+          {/* IMAGES UPLOADED GRID VIEW HERE */}
+          <View></View>
+        </View>
+        <Modal
+          isVisible={imageUploadModalVisible}
+          onBackdropPress={() => setImageUploadModalVisible(false)}
+          animationIn={"fadeInUp"}
+          animationOut={"fadeOutDown"}
+          className="gap-4"
+        >
+          <View className="bg-[#EEE] rounded-lg  items-center py-2">
+            <Text className="text-xl">Upload Images</Text>
+          </View>
+          <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-10">
+            {/* CAMERA */}
+            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
+              <Feather name="camera" size={24} color="black" />
+              <Text>Camera</Text>
+            </TouchableOpacity>
+            {/* Gallery */}
+            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
+              <Feather name="image" size={24} color="black" />
+              <Text>Gallery</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        {/* OFFER SHARE BTN */}
+        {loading ? (
+          <View className="flex-row justify-around rounded-lg bg-[#EEE] py-2">
+            <Loading size={hp(8)} />
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={handleCreateOffer}
+            style={{ height: hp(5) }}
+            className="bg-indigo-500 rounded-xl justify-center items-center"
+          >
+            <Text style={{ fontSize: hp(2.2) }} className="text-white font-bold tracking-wider">
+              Share offer
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </CustomKeyboardView>
   );
 }
