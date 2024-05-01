@@ -74,12 +74,16 @@ export const Active = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-[#eee]">
-      <FlatList
-        data={offers}
-        renderItem={({ item }) => <SaleOffer saleOffer={item} />}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        ListEmptyComponent={<Text>You currently have no active offers</Text>}
-      />
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <FlatList
+          data={offers}
+          renderItem={({ item }) => <SaleOffer saleOffer={item} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={<Text>You currently have no active offers</Text>}
+        />
+      )}
     </SafeAreaView>
   );
 };
