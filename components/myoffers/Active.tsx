@@ -78,9 +78,7 @@ export const Active = () => {
         data={offers}
         renderItem={({ item }) => <SaleOffer saleOffer={item} />}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        ListEmptyComponent={<Text>No offers available</Text>}
-        ListHeaderComponent={<Text>Active</Text>}
-        ListFooterComponent={<Text>END OF LIST</Text>}
+        ListEmptyComponent={<Text>You currently have no active offers</Text>}
       />
     </SafeAreaView>
   );

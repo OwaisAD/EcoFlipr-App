@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../../context/authContext";
 import { db, saleOfferRef } from "../../../firebaseConfig";
 import { DocumentData, getDocs, query, where } from "firebase/firestore";
@@ -52,18 +52,20 @@ export default function MyOffersScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 gap-2 p-4">
-      <Text className="text-2xl font-light">My offers</Text>
+    <SafeAreaView className="flex-1">
+      <View className="flex-1 gap-2 p-4 bg-[#EEE]">
+        <Text className="text-2xl font-light">My offers</Text>
 
-      <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <View className="py-4 flex-1 bg-[#EEE]">{displayContent()}</View>
+        <View className="py-4 flex-1 bg-[#EEE]">{displayContent()}</View>
 
-      {/* 
+        {/* 
 
-      <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
-        <Marker coordinate={initialRegion} title="Seller location" description="Description" />
-      </MapView> */}
-    </ScrollView>
+<MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
+<Marker coordinate={initialRegion} title="Seller location" description="Description" />
+</MapView> */}
+      </View>
+    </SafeAreaView>
   );
 }
