@@ -224,6 +224,7 @@ export default function ProfileScreen() {
             </Text>
             <Text className="text-base font-light">{user?.email}</Text>
             <Text className="text-base font-light">{user?.phoneNumber}</Text>
+            <Text className="text-base font-light">{user?.address.tekst}</Text>
             <Text className="text-sm font-light">
               Member since{" "}
               <Moment element={Text} fromNow>

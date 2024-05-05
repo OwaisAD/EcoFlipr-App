@@ -19,6 +19,7 @@ export const AuthContext = createContext(
       userId: string;
       phoneNumber: string;
       email?: string;
+      address: Address;
       profileUrl?: string;
       createdAt?: string;
     };
@@ -69,6 +70,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         userId: data.userId,
         phoneNumber: data.phoneNumber,
         profileUrl: data.profileUrl,
+        address: data.address,
       };
 
       // Get user data from Firebase Authentication
