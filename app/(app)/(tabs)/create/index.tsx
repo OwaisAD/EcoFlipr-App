@@ -1,3 +1,4 @@
+import * as FileSystem from "expo-file-system";
 import { Alert, Button, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useRef, useState } from "react";
@@ -13,13 +14,17 @@ import { ZodError } from "zod";
 import axios from "axios";
 import { useAuth } from "../../../../context/authContext";
 import { StatusTypes } from "../../../../constants/StatusTypes";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../firebaseConfig";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { db, storage } from "../../../../firebaseConfig";
 import { useRouter } from "expo-router";
 import Loading from "../../../../components/Loading";
 import CustomKeyboardView from "../../../../components/CustomKeyboardView";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { Image } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { showMessage } from "react-native-flash-message";
 
 interface cityInfoProps {
   zipCode?: number;
@@ -44,22 +49,23 @@ export default function CreateScreen() {
     x: 0,
     y: 0,
   });
-  const [price, setPrice] = useState<number>();
+  const [price, setPrice] = useState<number>(0);
   const [imageUploadModalVisible, setImageUploadModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
   const handleCreateOffer = async () => {
     try {
       setLoading(true);
       // validate
-      // createOfferSchema.parse({
-      //   title: titleRef.current,
-      //   description: offerDescription,
-      //   category: selectedCategory,
-      //   shipping: shipping,
-      //   zipCode: cityInfo.zipCode ?? 0,
-      //   price: price,
-      // });
+      createOfferSchema.parse({
+        title: titleRef.current,
+        description: offerDescription,
+        category: selectedCategory,
+        shipping: shipping,
+        zipCode: cityInfo.zipCode ? +cityInfo.zipCode : 0,
+        price: price,
+      });
 
       // create offer
       const saleoffer = {
@@ -71,7 +77,7 @@ export default function CreateScreen() {
         shipping: shipping,
         price: price,
         cityInfo: cityInfo,
-        images: [],
+        images,
         createdAt: new Date(),
         lastUpdated: new Date(),
         status: StatusTypes.ACTIVE,
@@ -80,6 +86,7 @@ export default function CreateScreen() {
       console.log("REACHED", saleoffer);
 
       console.log("Creating offer", saleoffer);
+
       const saleOfferRef = await addDoc(collection(db, "saleoffers"), saleoffer);
       console.log("Document written with ID: ", saleOfferRef.id);
       // clear fields
@@ -101,25 +108,35 @@ export default function CreateScreen() {
     }
   };
 
+  const getBlobFromUri = async (uri: any) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    return blob;
+  };
+
   const saveImage = async (image: any) => {
     try {
-      // setLoading(true);
-      // // save to firebase
-      // const blob = await getBlobFroUri(image);
-      // const storageRef = ref(storage, `${user?.userId}/profilepic/${user?.userId}`);
-      // const snapshot = await uploadBytes(storageRef, blob as Blob);
-      // console.log("Uploaded a blob or file!", snapshot);
-      // const url = await getDownloadURL(storageRef);
-      // // store on the user
-      // const userRefDoc = doc(db, "users", user!.userId);
-      // await setDoc(userRefDoc, { profileUrl: url }, { merge: true });
-      // //update displayed image
-      // // setImageUrl(url);
-      // setImageUploadModalVisible(false);
-      // setLoading(false);
+      // save to firebase
+      const blob = await getBlobFromUri(image);
+      const storageRef = ref(storage, `${user?.userId}/saleoffer/${new Date().toISOString()}`);
+      const snapshot = await uploadBytes(storageRef, blob as Blob);
+      console.log("Uploaded a blob or file!", snapshot);
+      const url = await getDownloadURL(storageRef);
+      return url;
     } catch (error) {
-      setLoading(false);
       console.log("error", error);
+      throw error;
     }
   };
 
@@ -135,8 +152,10 @@ export default function CreateScreen() {
       });
 
       if (!result.canceled) {
-        // save image to firebase
+        setLoading(true);
         await saveImage(result.assets[0].uri);
+        setLoading(false);
+        setImageUploadModalVisible(false);
       }
     } catch (error: any) {
       alert("An error occurred" + error.message);
@@ -151,15 +170,24 @@ export default function CreateScreen() {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [1, 1],
         quality: 0.1,
-        allowsMultipleSelection: true,
         selectionLimit: 6,
+        allowsMultipleSelection: true,
       });
 
       if (!result.canceled) {
-        await saveImage(result.assets[0].uri);
+        setLoading(true);
+        const imagesUrls = []; // Collect all image URLs first
+        for (let i = 0; i < result.assets.length; i++) {
+          const url = await saveImage(result.assets[i].uri);
+          imagesUrls.push(url);
+        }
+        setImages([...images, ...imagesUrls]); // Update state after all uploads
+        setLoading(false);
+        setImageUploadModalVisible(false);
       }
     } catch (error: any) {
       alert("An error occurred" + error.message);
+      setLoading(false);
       setImageUploadModalVisible(false);
     }
   };
@@ -186,10 +214,69 @@ export default function CreateScreen() {
     }
   };
 
+  const handleClearFields = () => {
+    Alert.alert("Clear fields", "Are you sure you want to clear all fields?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          // remove images from storage
+          // TODO
+          // clear fields
+          titleRef.current = "";
+          setOfferDescription("");
+          setSelectedCategory("Select a category");
+          setShipping(false);
+          setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
+          setPrice(0);
+          setImages([]);
+        },
+      },
+    ]);
+  };
+
+  const handleRemoveImage = async (url: string) => {
+    Alert.alert("Remove image", "Are you sure you want to remove this image?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          //remove from storage url???
+          // TODO
+
+          const imageRef = ref(storage, `${user?.userId}/saleoffer/${url}`);
+          deleteObject(imageRef)
+            .then(() => {
+              //remove from state
+              setImages(images.filter((image) => image !== url));
+              showMessage({
+                message: `Image removed successfully`,
+                type: "info",
+              });
+            })
+            .catch((error) => {
+              console.log("error", error);
+            });
+        },
+      },
+    ]);
+  };
+
   return (
     <CustomKeyboardView>
       <View className="flex-1 bg-[#eee] gap-4 p-4 pb-[100px]">
-        <Text className="text-2xl font-light">Create new sale offer</Text>
+        <View className="flex-row items-center justify-between bg-[#eee]">
+          <Text className="text-2xl font-light">Create new sale offer</Text>
+          <TouchableOpacity className="bg-[#eee]" onPress={handleClearFields}>
+            <MaterialCommunityIcons name="broom" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
 
         {/* OFFER TITLE */}
         <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
@@ -292,11 +379,22 @@ export default function CreateScreen() {
 
         {/* OFFER IMAGES */}
         <View className="rounded-md">
-          <TouchableOpacity className="p-4" onPress={() => setImageUploadModalVisible(true)}>
-            <Text>Click to upload images (6 max)</Text>
-          </TouchableOpacity>
+          <View className="rounded-md flex-row items-center justify-between p-4">
+            <TouchableOpacity onPress={() => setImageUploadModalVisible(true)}>
+              <Text>Click to upload images</Text>
+            </TouchableOpacity>
+            <Text className="text-xs font-light">{images.length}/6</Text>
+          </View>
           {/* IMAGES UPLOADED GRID VIEW HERE */}
-          <View></View>
+          <View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              {images.map((image, index) => (
+                <TouchableOpacity key={index} className="rounded-md m-2" onPress={() => handleRemoveImage(image)}>
+                  <Image source={{ uri: image }} style={{ width: wp(20), height: hp(10), borderRadius: 10 }} />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
         </View>
         <Modal
           isVisible={imageUploadModalVisible}
@@ -305,21 +403,31 @@ export default function CreateScreen() {
           animationOut={"fadeOutDown"}
           className="gap-4"
         >
-          <View className="bg-[#EEE] rounded-lg  items-center py-2">
-            <Text className="text-xl">Upload Images</Text>
-          </View>
-          <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-10">
-            {/* CAMERA */}
-            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
-              <Feather name="camera" size={24} color="black" />
-              <Text>Camera</Text>
-            </TouchableOpacity>
-            {/* Gallery */}
-            <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
-              <Feather name="image" size={24} color="black" />
-              <Text>Gallery</Text>
-            </TouchableOpacity>
-          </View>
+          {loading ? (
+            <>
+              <View className="bg-[#EEE] rounded-lg  items-center py-8">
+                <Loading size={hp(8)} />
+              </View>
+            </>
+          ) : (
+            <>
+              <View className="bg-[#EEE] rounded-lg  items-center py-2">
+                <Text className="text-xl">Upload Images</Text>
+              </View>
+              <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-10">
+                {/* CAMERA */}
+                <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleTakePicture}>
+                  <Feather name="camera" size={24} color="black" />
+                  <Text>Camera</Text>
+                </TouchableOpacity>
+                {/* Gallery */}
+                <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg" onPress={handleAddFromGallery}>
+                  <Feather name="image" size={24} color="black" />
+                  <Text>Gallery</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </Modal>
 
         {/* OFFER SHARE BTN */}

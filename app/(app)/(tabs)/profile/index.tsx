@@ -38,7 +38,7 @@ export default function ProfileScreen() {
     }
   };
 
-  const getBlobFroUri = async (uri: any) => {
+  const getBlobFromUri = async (uri: any) => {
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -59,7 +59,7 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       // save to firebase
-      const blob = await getBlobFroUri(image);
+      const blob = await getBlobFromUri(image);
       const storageRef = ref(storage, `${user?.userId}/profilepic/${user?.userId}`);
       const snapshot = await uploadBytes(storageRef, blob as Blob);
       console.log("Uploaded a blob or file!", snapshot);
@@ -224,7 +224,7 @@ export default function ProfileScreen() {
             </Text>
             <Text className="text-base font-light">{user?.email}</Text>
             <Text className="text-base font-light">{user?.phoneNumber}</Text>
-            <Text className="text-base font-light">{user?.address.tekst}</Text>
+            <Text className="text-base font-light">{user?.address ? user.address.tekst : ""}</Text>
             <Text className="text-sm font-light">
               Member since{" "}
               <Moment element={Text} fromNow>

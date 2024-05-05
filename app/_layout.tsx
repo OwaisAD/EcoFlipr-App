@@ -45,38 +45,40 @@ const MainLayout = () => {
     }
   }, [isAuthenticated]);
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="signin/index" options={{ headerShown: false }} />
-      <Stack.Screen name="signup/index" options={{ headerShown: false }} />
-      <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
-      <Stack.Screen name="addressSearch/index" options={{ headerShown: false }} />
-      <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="(app)/editprofile/index"
-        options={{
-          headerShown: true,
-          headerBackTitle: "Profile",
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "#EEE",
-          },
-        }}
-      />
-      <Stack.Screen
-        name="(app)/settings/index"
-        options={{
-          headerShown: true,
-          headerBackTitle: "Profile",
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: "#EEE",
-          },
-        }}
-      />
-      <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
-      {/* why does the above not work? */}
-    </Stack>
+    <MenuProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="signin/index" options={{ headerShown: false }} />
+        <Stack.Screen name="signup/index" options={{ headerShown: false }} />
+        <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="addressSearch/index" options={{ headerShown: false }} />
+        <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(app)/editprofile/index"
+          options={{
+            headerShown: true,
+            headerBackTitle: "Profile",
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: "#EEE",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="(app)/settings/index"
+          options={{
+            headerShown: true,
+            headerBackTitle: "Profile",
+            headerTitle: "",
+            headerStyle: {
+              backgroundColor: "#EEE",
+            },
+          }}
+        />
+        <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
+        {/* why does the above not work? */}
+      </Stack>
+    </MenuProvider>
   );
 };
 
