@@ -9,6 +9,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import "expo-dev-client";
+import { Address } from "../stores/addressStore";
 
 export const AuthContext = createContext(
   {} as {
@@ -28,7 +29,8 @@ export const AuthContext = createContext(
       lastName: string,
       email: string,
       password: string,
-      phoneNumber: string
+      phoneNumber: string,
+      address: Address
     ) => Promise<{ success: boolean; data: User; msg?: undefined } | { success: boolean; msg: any; data?: undefined }>;
     logout: () => Promise<
       { success: boolean; msg?: undefined; error?: undefined } | { success: boolean; msg: any; error: any }
@@ -109,7 +111,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     lastName: string,
     email: string,
     password: string,
-    phoneNumber: string
+    phoneNumber: string,
+    address: Address
   ) => {
     // createUserWithEmailAndPassword is a Firebase method that creates a new user with the provided email and password.
     try {
@@ -121,10 +124,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
       // creates a document and returns id?
       await setDoc(doc(db, "users", response.user.uid), {
+        userId: response.user.uid,
         firstName,
         lastName,
+        address,
         phoneNumber,
-        userId: response.user.uid,
+        email,
       });
 
       return { success: true, data: response.user };

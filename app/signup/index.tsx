@@ -19,15 +19,18 @@ import CustomKeyboardView from "../../components/CustomKeyboardView";
 import { signUpSchema } from "../../validations/signUpSchema";
 import { ZodError } from "zod";
 import { useAuth } from "../../context/authContext";
+import { useAddressStore } from "../../stores/addressStore";
 
 export default function SignUp() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const addressStore = useAddressStore();
 
   const firstNameRef = useRef("");
   const lastNameRef = useRef("");
   const phoneNumberRef = useRef("");
+  const addressRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
@@ -40,7 +43,8 @@ export default function SignUp() {
         !passwordRef.current ||
         !firstNameRef.current ||
         !lastNameRef.current ||
-        !phoneNumberRef.current
+        !phoneNumberRef.current ||
+        !addressStore.address
       ) {
         Alert.alert("Sign up", "Please fill in all fields");
         return;
@@ -57,13 +61,16 @@ export default function SignUp() {
         phoneNumber: phoneNumberRef.current,
       });
 
+      console.log(addressStore.address);
+
       // register process
       let response = await register(
         firstNameRef.current,
         lastNameRef.current,
         emailRef.current,
         passwordRef.current,
-        phoneNumberRef.current
+        phoneNumberRef.current,
+        addressStore.address
       );
       setLoading(false);
 
@@ -190,6 +197,19 @@ export default function SignUp() {
                   />
                 </View>
 
+                <View style={{ height: hp(7) }} className="flex bg-neutral-100 rounded-2xl">
+                  <TouchableOpacity
+                    style={{ height: hp(7) }}
+                    className="flex-row space-x-5 px-4 items-center flex-1"
+                    onPress={() => router.push("/addressSearch/")}
+                  >
+                    <Feather name="map-pin" size={hp(2.7)} color="gray" />
+                    <Text style={{ fontSize: hp(2) }} className="font-semibold text-gray-500">
+                      {addressStore.address ? addressStore.address.tekst : "Select address"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
                 {/* submit btn */}
                 {loading ? (
                   <View className="flex-row justify-center">
@@ -199,7 +219,7 @@ export default function SignUp() {
                   <TouchableOpacity
                     onPress={handleRegister}
                     style={{ height: hp(6.5) }}
-                    className="bg-indigo-500 rounded-xl justify-center items-center"
+                    className="bg-indigo-500 rounded-xl justify-center items-center z-10"
                   >
                     <Text style={{ fontSize: hp(2.7) }} className="text-white font-bold tracking-wider">
                       Create Account

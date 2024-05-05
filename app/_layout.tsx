@@ -50,6 +50,7 @@ const MainLayout = () => {
       <Stack.Screen name="signin/index" options={{ headerShown: false }} />
       <Stack.Screen name="signup/index" options={{ headerShown: false }} />
       <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
+      <Stack.Screen name="addressSearch/index" options={{ headerShown: false }} />
       <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="(app)/editprofile/index"
