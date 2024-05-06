@@ -1,7 +1,7 @@
 import * as FileSystem from "expo-file-system";
 import { Alert, Button, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { categories } from "../../../../data/categories";
@@ -25,25 +25,20 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage
 import { Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-
-interface cityInfoProps {
-  zipCode?: number;
-  city?: string;
-  x?: number;
-  y?: number;
-}
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSaleOfferInCreationStore } from "../../../../stores/saleOfferStore";
 
 export default function CreateScreen() {
   const { user } = useAuth();
   const router = useRouter();
-
+  const saleOfferInCreationStore = useSaleOfferInCreationStore();
   const MAX_DESCRIPTION_LENGTH = 2000;
   const titleRef = useRef("");
   const [offerDescription, setOfferDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Select a category");
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [shipping, setShipping] = useState(false);
-  const [cityInfo, setCityInfo] = useState<cityInfoProps>({
+  const [cityInfo, setCityInfo] = useState({
     zipCode: 0,
     city: "",
     x: 0,
@@ -53,6 +48,24 @@ export default function CreateScreen() {
   const [imageUploadModalVisible, setImageUploadModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const getOfferInCreation = async () => {
+      try {
+        await saleOfferInCreationStore.getSaleOfferInCreation();
+        if (!saleOfferInCreationStore.saleOfferInCreation) return;
+        const saleOffer = saleOfferInCreationStore.saleOfferInCreation;
+        titleRef.current = saleOffer.title;
+        setOfferDescription(saleOffer.description);
+        setSelectedCategory(saleOffer.category);
+        setShipping(saleOffer.shipping);
+        setCityInfo(saleOffer.cityInfo);
+        setPrice(saleOffer.price);
+        setImages(saleOffer.images);
+      } catch (error) {}
+    };
+    getOfferInCreation();
+  }, []);
 
   const handleCreateOffer = async () => {
     try {
@@ -214,7 +227,7 @@ export default function CreateScreen() {
     }
   };
 
-  const handleClearFields = () => {
+  const handleClearFields = async () => {
     Alert.alert("Clear fields", "Are you sure you want to clear all fields?", [
       {
         text: "Cancel",
@@ -225,6 +238,15 @@ export default function CreateScreen() {
         onPress: () => {
           // remove images from storage
           // TODO
+          for (let i = 0; i < images.length; i++) {
+            deleteObject(ref(storage, images[i]))
+              .then(() => {
+                console.log("Image removed successfully");
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          }
           // clear fields
           titleRef.current = "";
           setOfferDescription("");
@@ -233,6 +255,10 @@ export default function CreateScreen() {
           setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
           setPrice(0);
           setImages([]);
+          showMessage({
+            message: `Cleared all fields successfully`,
+            type: "info",
+          });
         },
       },
     ]);
@@ -247,11 +273,7 @@ export default function CreateScreen() {
       {
         text: "OK",
         onPress: () => {
-          //remove from storage url???
-          // TODO
-
-          const imageRef = ref(storage, `${user?.userId}/saleoffer/${url}`);
-          deleteObject(imageRef)
+          deleteObject(ref(storage, url))
             .then(() => {
               //remove from state
               setImages(images.filter((image) => image !== url));
@@ -281,10 +303,17 @@ export default function CreateScreen() {
         {/* OFFER TITLE */}
         <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
           <TextInput
-            onChangeText={(text) => (titleRef.current = text)}
+            onChangeText={(text) => {
+              saleOfferInCreationStore.setSaleOfferInCreation({
+                ...saleOfferInCreationStore.saleOfferInCreation!,
+                title: text,
+              });
+              titleRef.current = text;
+            }}
             className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Title"
             autoCapitalize="none"
+            value={saleOfferInCreationStore.saleOfferInCreation?.title}
           />
         </View>
 
@@ -303,10 +332,10 @@ export default function CreateScreen() {
           />
           <Text
             className={`absolute bottom-2 right-2 font-light text-[12px] text-gray-400 ${
-              offerDescription.length > MAX_DESCRIPTION_LENGTH && "text-red-500"
+              offerDescription && offerDescription.length > MAX_DESCRIPTION_LENGTH && "text-red-500"
             }`}
           >
-            {offerDescription.length}/{MAX_DESCRIPTION_LENGTH}
+            {offerDescription && offerDescription.length}/{MAX_DESCRIPTION_LENGTH}
           </Text>
         </View>
 
@@ -361,7 +390,7 @@ export default function CreateScreen() {
             placeholder="Chosen city"
             autoCapitalize="none"
             editable={false}
-            value={cityInfo.city}
+            value={cityInfo && cityInfo.city}
           />
         </View>
 
@@ -383,16 +412,17 @@ export default function CreateScreen() {
             <TouchableOpacity onPress={() => setImageUploadModalVisible(true)}>
               <Text>Click to upload images</Text>
             </TouchableOpacity>
-            <Text className="text-xs font-light">{images.length}/6</Text>
+            <Text className="text-xs font-light">{images && images.length}/6</Text>
           </View>
           {/* IMAGES UPLOADED GRID VIEW HERE */}
           <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              {images.map((image, index) => (
-                <TouchableOpacity key={index} className="rounded-md m-2" onPress={() => handleRemoveImage(image)}>
-                  <Image source={{ uri: image }} style={{ width: wp(20), height: hp(10), borderRadius: 10 }} />
-                </TouchableOpacity>
-              ))}
+              {images &&
+                images.map((image, index) => (
+                  <TouchableOpacity key={index} className="rounded-md m-2" onPress={() => handleRemoveImage(image)}>
+                    <Image source={{ uri: image }} style={{ width: wp(20), height: hp(10), borderRadius: 10 }} />
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
           </View>
         </View>

@@ -1,14 +1,11 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot, Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
-import { useColorScheme } from "../components/useColorScheme";
 import { AuthContext, AuthContextProvider, useAuth } from "../context/authContext";
-import { Text, View } from "react-native";
-import { MenuProvider } from "react-native-popup-menu";
+import FlashMessage from "react-native-flash-message";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -45,40 +42,38 @@ const MainLayout = () => {
     }
   }, [isAuthenticated]);
   return (
-    <MenuProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="signin/index" options={{ headerShown: false }} />
-        <Stack.Screen name="signup/index" options={{ headerShown: false }} />
-        <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
-        <Stack.Screen name="addressSearch/index" options={{ headerShown: false }} />
-        <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(app)/editprofile/index"
-          options={{
-            headerShown: true,
-            headerBackTitle: "Profile",
-            headerTitle: "",
-            headerStyle: {
-              backgroundColor: "#EEE",
-            },
-          }}
-        />
-        <Stack.Screen
-          name="(app)/settings/index"
-          options={{
-            headerShown: true,
-            headerBackTitle: "Profile",
-            headerTitle: "",
-            headerStyle: {
-              backgroundColor: "#EEE",
-            },
-          }}
-        />
-        <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
-        {/* why does the above not work? */}
-      </Stack>
-    </MenuProvider>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="signin/index" options={{ headerShown: false }} />
+      <Stack.Screen name="signup/index" options={{ headerShown: false }} />
+      <Stack.Screen name="forgotPassword/index" options={{ presentation: "modal", headerShown: false }} />
+      <Stack.Screen name="addressSearch/index" options={{ headerShown: false }} />
+      <Stack.Screen name="(app)/(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(app)/editprofile/index"
+        options={{
+          headerShown: true,
+          headerBackTitle: "Profile",
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="(app)/settings/index"
+        options={{
+          headerShown: true,
+          headerBackTitle: "Profile",
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
+      {/* why does the above not work? */}
+    </Stack>
   );
 };
 
@@ -104,47 +99,9 @@ export default function RootLayout() {
   }
 
   return (
-    <MenuProvider>
-      <AuthContextProvider>
-        <MainLayout />
-      </AuthContextProvider>
-    </MenuProvider>
+    <AuthContextProvider>
+      <MainLayout />
+      <FlashMessage position="bottom" style={{ backgroundColor: "#333" }} />
+    </AuthContextProvider>
   );
 }
-
-// export default function RootLayout() {
-//   const [loaded, error] = useFonts({
-//     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-//     ...FontAwesome.font,
-//   });
-
-//   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-//   useEffect(() => {
-//     if (error) throw error;
-//   }, [error]);
-
-//   useEffect(() => {
-//     if (loaded) {
-//       SplashScreen.hideAsync();
-//     }
-//   }, [loaded]);
-
-//   if (!loaded) {
-//     return null;
-//   }
-
-//   return <RootLayoutNav />;
-// }
-
-// function RootLayoutNav() {
-//   const colorScheme = useColorScheme();
-
-//   return (
-//     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-//       <Stack>
-//         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-//         <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", title: "Notifications" }} />
-//       </Stack>
-//     </ThemeProvider>
-//   );
-// }
