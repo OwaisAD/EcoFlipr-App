@@ -44,9 +44,40 @@ export const useSaleOfferInCreationStore = create<SaleOfferStore>((set) => ({
     }
   },
   resetSaleOfferInCreation: async () => {
-    set({ saleOfferInCreation: null });
+    set({
+      saleOfferInCreation: {
+        title: "",
+        description: "",
+        category: "Select a category",
+        shipping: false,
+        cityInfo: {
+          zipCode: "",
+          city: "",
+          x: 0,
+          y: 0,
+        },
+        price: 0,
+        images: [],
+      },
+    });
     try {
-      await AsyncStorage.removeItem("saleOfferInCreation");
+      await AsyncStorage.setItem(
+        "saleOfferInCreation",
+        JSON.stringify({
+          title: "",
+          description: "",
+          category: "Select a category",
+          shipping: false,
+          cityInfo: {
+            zipCode: "",
+            city: "",
+            x: 0,
+            y: 0,
+          },
+          price: 0,
+          images: [],
+        })
+      );
     } catch (error) {
       console.error("Error removing sale offer in creation from AsyncStorage", error);
     }
