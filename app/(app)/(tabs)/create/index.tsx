@@ -376,8 +376,14 @@ export default function CreateScreen() {
             onPress={() => setCategoryModalVisible(true)}
             className="flex-row space-x-5 items-center h-9"
           >
-            <Text className={`font-semibold ${selectedCategory == "Select a category" ? "text-gray-400" : ""}`}>
-              {selectedCategory != "Select a category" ? selectedCategory : "Select a category"}
+            <Text
+              className={`font-semibold ${
+                saleOfferInCreationStore.saleOfferInCreation?.category == "Select a category" ? "text-gray-400" : ""
+              }`}
+            >
+              {saleOfferInCreationStore.saleOfferInCreation?.category != "Select a category"
+                ? saleOfferInCreationStore.saleOfferInCreation?.category
+                : "Select a category"}
             </Text>
           </TouchableOpacity>
         </View>
