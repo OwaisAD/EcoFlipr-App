@@ -27,7 +27,11 @@ const SaleOffer = ({ saleOffer }: SaleOfferProps) => {
 
       {/* IMAGE */}
       <Image
-        source={require("../assets/images/No-Image.png")}
+        source={
+          saleOffer.images && saleOffer.images.length > 0
+            ? { uri: saleOffer.images[0] }
+            : require("../assets/images/No-Image.png")
+        }
         className="h-full w-28 object-contain rounded-bl-xl rounded-tl-xl rounded-br-[31px]"
       />
       <View className="flex flex-col justify-between p-2">

@@ -50,6 +50,7 @@ export const Active = () => {
               updatedAt: data.updatedAt,
               userId: data.userId,
               id: data.id,
+              images: data.images,
               cityInfo: data.cityInfo
                 ? {
                     x: data.cityInfo.x,
@@ -78,8 +79,13 @@ export const Active = () => {
         <Text>Loading...</Text>
       ) : (
         <FlatList
+          className=""
           data={offers}
-          renderItem={({ item }) => <SaleOffer saleOffer={item} />}
+          renderItem={({ item }) => (
+            <View className="my-[6px]">
+              <SaleOffer saleOffer={item} />
+            </View>
+          )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           ListEmptyComponent={<Text>You currently have no active offers</Text>}
         />

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import { AuthContext, AuthContextProvider, useAuth } from "../context/authContext";
 import FlashMessage from "react-native-flash-message";
+import { View } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -64,7 +65,7 @@ const MainLayout = () => {
         name="(app)/settings/index"
         options={{
           headerShown: true,
-          headerBackTitle: "Profile",
+          headerBackTitle: "Back",
           headerTitle: "",
           headerStyle: {
             backgroundColor: "#EEE",
@@ -73,10 +74,27 @@ const MainLayout = () => {
       />
       <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
       <Stack.Screen
+        name="(app)/offersinteractedwith/index"
+        options={{
+          headerShown: true,
+          headerTransparent: true,
+          headerTitle: "",
+          headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen
         name="(app)/myoffers/index"
         options={{
-          headerTitle: "My Offers",
+          headerShown: true,
+          headerTransparent: true,
+          headerTitle: "",
           headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
         }}
       />
       {/* why does the above not work? */}
