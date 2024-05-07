@@ -26,14 +26,14 @@ import { Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSaleOfferInCreationStore } from "../../../../stores/saleOfferStore";
+import { SaleOfferType, useSaleOfferInCreationStore } from "../../../../stores/saleOfferStore";
 
 export default function CreateScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const saleOfferInCreationStore = useSaleOfferInCreationStore();
   const MAX_DESCRIPTION_LENGTH = 2000;
-  const titleRef = useRef("");
+  const [title, setTitle] = useState("");
   const [offerDescription, setOfferDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Select a category");
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
@@ -47,32 +47,41 @@ export default function CreateScreen() {
   const [price, setPrice] = useState<number>(0);
   const [imageUploadModalVisible, setImageUploadModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingShare, setLoadingShare] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  // const [newSaleOffer, setNewSaleOffer] = useState<SaleOfferType>({
+  //   title: "",
+  //   description: "",
+  //   category: "",
+  //   shipping: false,
+  //   cityInfo: {
+  //     zipCode: 0,
+  //     city: "",
+  //     x: 0,
+  //     y: 0,
+  //   },
+  //   price: 0,
+  //   images: [],
+  // });
+
+  const getOfferInCreation = async () => {
+    try {
+      await saleOfferInCreationStore.getSaleOfferInCreation();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const getOfferInCreation = async () => {
-      try {
-        await saleOfferInCreationStore.getSaleOfferInCreation();
-        if (!saleOfferInCreationStore.saleOfferInCreation) return;
-        const saleOffer = saleOfferInCreationStore.saleOfferInCreation;
-        titleRef.current = saleOffer.title;
-        setOfferDescription(saleOffer.description);
-        setSelectedCategory(saleOffer.category);
-        setShipping(saleOffer.shipping);
-        setCityInfo(saleOffer.cityInfo);
-        setPrice(saleOffer.price);
-        setImages(saleOffer.images);
-      } catch (error) {}
-    };
     getOfferInCreation();
   }, []);
 
   const handleCreateOffer = async () => {
     try {
-      setLoading(true);
+      setLoadingShare(true);
       // validate
       createOfferSchema.parse({
-        title: titleRef.current,
+        title: title,
         description: offerDescription,
         category: selectedCategory,
         shipping: shipping,
@@ -84,7 +93,7 @@ export default function CreateScreen() {
       const saleoffer = {
         saleOfferId: uuidv4().toString(),
         userId: user!.userId,
-        title: titleRef.current,
+        title: title,
         description: offerDescription,
         category: selectedCategory,
         shipping: shipping,
@@ -111,9 +120,9 @@ export default function CreateScreen() {
       // setPrice(0);
       // navigate to offer page
       router.push({ pathname: `/offer/${saleOfferRef.id}` });
-      setLoading(false);
+      setLoadingShare(false);
     } catch (error) {
-      setLoading(false);
+      setLoadingShare(false);
       if (error instanceof ZodError) {
         Alert.alert("Create offer", error.errors[0].message);
       }
@@ -205,28 +214,6 @@ export default function CreateScreen() {
     }
   };
 
-  const handleSetZipCode = async (value: string) => {
-    if (/^\d{4}$/.test(value)) {
-      try {
-        await axios.get(`https://api.dataforsyningen.dk/postnumre/${value}`).then((response) => {
-          console.log("postnr", response.data.nr);
-          console.log("by", response.data.navn);
-          console.log("kommuner", response.data.kommuner);
-          console.log("X", response.data.visueltcenter[1]);
-          console.log("Y", response.data.visueltcenter[0]);
-          setCityInfo({
-            zipCode: response.data.nr,
-            city: response.data.navn,
-            x: response.data.visueltcenter[1],
-            y: response.data.visueltcenter[0],
-          });
-        });
-      } catch (error: any) {
-        console.log("error", error.message);
-      }
-    }
-  };
-
   const handleClearFields = async () => {
     Alert.alert("Clear fields", "Are you sure you want to clear all fields?", [
       {
@@ -248,7 +235,7 @@ export default function CreateScreen() {
               });
           }
           // clear fields
-          titleRef.current = "";
+          setTitle("");
           setOfferDescription("");
           setSelectedCategory("Select a category");
           setShipping(false);
@@ -290,6 +277,55 @@ export default function CreateScreen() {
     ]);
   };
 
+  const onChange = (key: string, value: string | boolean | number) => {
+    console.log("value", value);
+    console.log("key", key);
+    try {
+      const currentSaleOffer = saleOfferInCreationStore.saleOfferInCreation;
+      if (currentSaleOffer) {
+        if (key === "cityInfo") {
+          if (/^\d{4}$/.test(value as string)) {
+            axios
+              .get(`https://api.dataforsyningen.dk/postnumre/${value}`)
+              .then((response) => {
+                const newCityInfo = {
+                  zipCode: response.data.nr,
+                  city: response.data.navn,
+                  x: response.data.x,
+                  y: response.data.y,
+                };
+                const newSaleOffer = {
+                  ...currentSaleOffer,
+                  cityInfo: newCityInfo,
+                };
+                saleOfferInCreationStore.setSaleOfferInCreation(newSaleOffer);
+              })
+              .catch((error: any) => {
+                console.log("error", error.message);
+              });
+          } else {
+            saleOfferInCreationStore.setSaleOfferInCreation({
+              ...currentSaleOffer,
+              cityInfo: {
+                zipCode: value as string,
+                city: "",
+                x: 0,
+                y: 0,
+              },
+            });
+          }
+        } else {
+          const newSaleOffer = {
+            ...currentSaleOffer,
+            [key]: value,
+          };
+          saleOfferInCreationStore.setSaleOfferInCreation(newSaleOffer);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating sale offer:", error);
+    }
+  };
   return (
     <CustomKeyboardView>
       <View className="flex-1 bg-[#eee] gap-4 p-4 pb-[100px]">
@@ -303,13 +339,7 @@ export default function CreateScreen() {
         {/* OFFER TITLE */}
         <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
           <TextInput
-            onChangeText={(text) => {
-              saleOfferInCreationStore.setSaleOfferInCreation({
-                ...saleOfferInCreationStore.saleOfferInCreation!,
-                title: text,
-              });
-              titleRef.current = text;
-            }}
+            onChangeText={(text) => onChange("title", text)}
             className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Title"
             autoCapitalize="none"
@@ -320,7 +350,7 @@ export default function CreateScreen() {
         {/* OFFER DESCRIPTION */}
         <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl">
           <TextInput
-            onChangeText={(value) => setOfferDescription(value)}
+            onChangeText={(value) => onChange("description", value)}
             className="bg-white p-2 rounded-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Add offer description"
             autoCapitalize="none"
@@ -329,6 +359,7 @@ export default function CreateScreen() {
             numberOfLines={10}
             style={{ height: 200, textAlignVertical: "top", padding: 10 }}
             scrollEnabled={true}
+            value={saleOfferInCreationStore.saleOfferInCreation?.description}
           />
           <Text
             className={`absolute bottom-2 right-2 font-light text-[12px] text-gray-400 ${
@@ -359,8 +390,8 @@ export default function CreateScreen() {
           {/* Have a list of categories */}
           <View className="rounded-lg bg-[#EEE] py-8">
             <Picker
-              selectedValue={selectedCategory}
-              onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
+              selectedValue={saleOfferInCreationStore.saleOfferInCreation?.category}
+              onValueChange={(itemValue) => onChange("category", itemValue)}
             >
               <Picker.Item enabled={false} label={"Please select a category"} value={"Select a category"} />
               {categories.sort().map((category) => (
@@ -374,13 +405,17 @@ export default function CreateScreen() {
         {/* OFFER SHIPPING */}
         <View className="flex-row items-center justify-between rounded-xl px-4 py-3">
           <Text>Do you offer shipping?</Text>
-          <Checkbox value={shipping} onValueChange={setShipping} />
+          <Checkbox
+            value={saleOfferInCreationStore.saleOfferInCreation?.shipping}
+            onValueChange={(value) => onChange("shipping", value)}
+          />
         </View>
 
         {/* OFFER ZIP */}
         <View className="flex-row items-center justify-between rounded-xl">
           <TextInput
-            onChangeText={(value) => handleSetZipCode(value)}
+            onChangeText={(value) => onChange("cityInfo", value)}
+            value={saleOfferInCreationStore.saleOfferInCreation?.cityInfo?.zipCode}
             className="bg-white py-4 px-2 rounded-l-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Enter a zip code"
             autoCapitalize="none"
@@ -390,14 +425,15 @@ export default function CreateScreen() {
             placeholder="Chosen city"
             autoCapitalize="none"
             editable={false}
-            value={cityInfo && cityInfo.city}
+            value={saleOfferInCreationStore.saleOfferInCreation?.cityInfo?.city}
           />
         </View>
 
         {/* OFFER PRICE */}
         <View className="flex-row items-center justify-between rounded-xl">
           <TextInput
-            onChangeText={(value) => setPrice(parseInt(value))}
+            onChangeText={(value) => onChange("price", +value)}
+            value={saleOfferInCreationStore.saleOfferInCreation?.price.toString()}
             placeholder="Enter a price"
             className="bg-white py-4 px-2 flex-1 rounded-md font-semibold text-neutral-700"
             autoCapitalize="none"
@@ -461,7 +497,7 @@ export default function CreateScreen() {
         </Modal>
 
         {/* OFFER SHARE BTN */}
-        {loading ? (
+        {loadingShare ? (
           <View className="flex-row justify-around rounded-lg bg-[#EEE] py-2">
             <Loading size={hp(8)} />
           </View>
