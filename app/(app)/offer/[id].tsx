@@ -75,7 +75,7 @@ export default function SpecificFO() {
   };
 
   return (
-    <View className="flex-1 items-center bg-[#eee]">
+    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 100 }}>
       {/* IMAGE SLIDER */}
       {saleOffer.images && saleOffer.images.length > 0 ? (
         <>
@@ -134,21 +134,54 @@ export default function SpecificFO() {
         <Text className="text-lg leading-7 font-medium">{saleOffer.title}</Text>
         <Text className="text-2xl leading-8 font-semibold">{formatCurrencyDA(saleOffer.price)}</Text>
         <Text className="text-sm font-light">{saleOffer.description}</Text>
+        <Text className="text-sm font-light">{saleOffer.shipping ? "Shipping" : "Not shipping"}</Text>
+      </View>
+
+      {/* SELLER DETAILS */}
+      <View className="w-full h-28 bg-[#D9D9D9] my-2 rounded-lg flex-row">
+        {/* PROFILE PIC */}
+        <View className="w-20 h-20 rounded-full bg-[#D9D9D9]"></View>
+        {/* SELLER INFO */}
+        <View>
+          {/* SELLER NAME */}
+          <Text className="text-lg font-medium">Seller name</Text>
+          {/* SELLER SINCE */}
+          <Text className="text-sm font-light">Member since</Text>
+          {/* SELLER LOCATION */}
+          <Text className="text-sm font-light">Location</Text>
+          {/* SELLER RATING */}
+        </View>
+      </View>
+
+      {/* MESSAGING */}
+      <View>
+        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
+          <Text className="text-lg font-medium">Message seller</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
+          <Text className="text-lg font-medium">Message seller</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
+          <Text className="text-lg font-medium">Message seller</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
+          <Text className="text-lg font-medium">Message seller</Text>
+        </TouchableOpacity>
       </View>
 
       <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
         <Marker
           coordinate={initialRegion}
-          title="Seller location"
+          title="Offer location"
           description={`${saleOffer.cityInfo.city}, ${saleOffer.cityInfo.zipCode}`}
         />
       </MapView>
-
-      {/* SELLER DETAILS */}
-      <View></View>
-
-      {/* MESSAGING */}
-      <View></View>
-    </View>
+    </ScrollView>
   );
 }

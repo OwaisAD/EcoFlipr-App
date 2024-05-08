@@ -53,7 +53,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
       <View className="flex flex-col justify-between p-2">
         <View className="flex flex-col">
           <Text className={`${isGrid ? "text-sm" : "text-lg"} font-light`}>{saleOffer.title}</Text>
-          {!isGrid && <Text className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>{saleOffer.description}</Text>}
+          {!isGrid && <Text className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>{saleOffer.description.slice(0,30)}...</Text>}
         </View>
 
         <View className="flex flex-row items-center justify-between space-x-12">
