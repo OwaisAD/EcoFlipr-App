@@ -2,14 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { FlatList, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { OfferType } from "../../types/offerType";
 import { useAuth } from "../../context/authContext";
-import { DocumentData, getDocs, query, where } from "firebase/firestore";
-import { saleOfferRef } from "../../firebaseConfig";
 import { StatusTypes } from "../../constants/StatusTypes";
 import SaleOffer from "../SaleOffer";
+import { getUserSaleOffersByUserId } from "../../helperMethods/saleoffer.methods";
 
 export const Active = () => {
   const { user } = useAuth();
-  const [offers, setOffers] = useState<OfferType[]>([]);
+  const [activeOffers, setActiveOffers] = useState<OfferType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -24,44 +23,9 @@ export const Active = () => {
     const fetchOffers = async () => {
       setLoading(true);
       if (user) {
-        // Query the sale offers collection for the user's offers
-        const userOffersQuery = query(
-          saleOfferRef,
-          where("userId", "==", user.userId),
-          where("status", "==", StatusTypes.ACTIVE)
-        );
-
         try {
-          // Execute the query
-          const offersSnapshot = await getDocs(userOffersQuery);
-          // Extract the data from the documents
-          const offersData: OfferType[] = offersSnapshot.docs.map((doc) => {
-            const data = doc.data() as DocumentData; // Assuming DocumentData is the type of your Firestore documents
-            return {
-              saleOfferId: data.saleOfferId,
-              title: data.title,
-              description: data.description,
-              category: data.category,
-              shipping: data.shipping,
-              zipCode: data.zipCode,
-              price: data.price,
-              status: data.status,
-              createdAt: data.createdAt,
-              updatedAt: data.updatedAt,
-              userId: data.userId,
-              id: data.id,
-              images: data.images,
-              cityInfo: data.cityInfo
-                ? {
-                    x: data.cityInfo.x,
-                    y: data.cityInfo.y,
-                    city: data.cityInfo.city,
-                    zipCode: data.cityInfo.zipCode,
-                  }
-                : undefined,
-            };
-          });
-          setOffers(offersData);
+          const activeOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.ACTIVE);
+          setActiveOffers(activeOffers);
           setLoading(false);
         } catch (error) {
           setLoading(false);
@@ -80,10 +44,10 @@ export const Active = () => {
       ) : (
         <FlatList
           className=""
-          data={offers}
+          data={activeOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} />
+              <SaleOffer saleOffer={item} user={user} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

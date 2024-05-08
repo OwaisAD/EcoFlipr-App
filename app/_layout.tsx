@@ -97,6 +97,17 @@ const MainLayout = () => {
           },
         }}
       />
+      <Stack.Screen
+        name="(app)/offer/[id]"
+        options={{
+          headerShown: true,
+          headerTitle: "",
+          headerBackTitle: "",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
       {/* why does the above not work? */}
     </Stack>
   );

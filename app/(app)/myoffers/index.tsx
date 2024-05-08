@@ -53,10 +53,12 @@ export default function MyOffersScreen() {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="flex-1 gap-2 p-4 bg-[#EEE]">
+      <View className="flex-1 space-y-2 p-4 bg-[#EEE]">
         <Text className="text-2xl font-light">My offers</Text>
 
-        <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <View>
+          <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
+        </View>
 
         <View className="py-4 flex-1 bg-[#EEE]">{displayContent()}</View>
 
