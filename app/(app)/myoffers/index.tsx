@@ -3,7 +3,6 @@ import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../../context/authContext";
 import { db, saleOfferRef } from "../../../firebaseConfig";
 import { DocumentData, getDocs, query, where } from "firebase/firestore";
-import MapView, { Marker } from "react-native-maps";
 import { OfferType } from "../../../types/offerType";
 import { Active } from "../../../components/myoffers/Active";
 import { Inactive } from "../../../components/myoffers/Inactive";
@@ -15,12 +14,7 @@ export default function MyOffersScreen() {
   const { user } = useAuth();
   const [offers, setOffers] = useState<OfferType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [initialRegion, setInitialRegion] = useState({
-    latitude: 37.78825, // Default to San Francisco
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+
 
   useEffect(() => {
     if (offers.length > 0 && offers[0].cityInfo) {
@@ -62,11 +56,7 @@ export default function MyOffersScreen() {
 
         <View className="py-4 flex-1 bg-[#EEE]">{displayContent()}</View>
 
-        {/* 
 
-<MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
-<Marker coordinate={initialRegion} title="Seller location" description="Description" />
-</MapView> */}
       </View>
     </SafeAreaView>
   );

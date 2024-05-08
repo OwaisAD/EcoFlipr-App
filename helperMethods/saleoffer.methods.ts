@@ -18,22 +18,54 @@ export const getUserSaleOffersByUserId = async (userId: string, status: StatusTy
         zipCode: data.zipCode,
         price: data.price,
         status: data.status,
+        createdAt: data.createdAt ,
+        updatedAt: data.updatedAt,
+        userId: data.userId,
+        id: data.id,
+        images: data.images,
+        cityInfo: {
+          x: data.cityInfo.x,
+          y: data.cityInfo.y,
+          city: data.cityInfo.city,
+          zipCode: data.cityInfo.zipCode,
+        },
+      };
+    });
+    return offersData;
+  } catch (error: any) {
+    throw new Error("Something went wrong", error);
+  }
+};
+
+export const getSaleOfferById = async (saleOfferId: string) => {
+  try {
+    const saleOfferQuery = query(saleOfferRef, where("saleOfferId", "==", saleOfferId));
+    const saleOfferSnapshot = await getDocs(saleOfferQuery);
+    const saleOfferData = saleOfferSnapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        saleOfferId: data.saleOfferId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        shipping: data.shipping,
+        zipCode: data.zipCode,
+        price: data.price,
+        status: data.status,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
         userId: data.userId,
         id: data.id,
         images: data.images,
-        cityInfo: data.cityInfo
-          ? {
-              x: data.cityInfo.x,
-              y: data.cityInfo.y,
-              city: data.cityInfo.city,
-              zipCode: data.cityInfo.zipCode,
-            }
-          : undefined,
+        cityInfo: {
+          x: data.cityInfo.x,
+          y: data.cityInfo.y,
+          city: data.cityInfo.city,
+          zipCode: data.cityInfo.zipCode,
+        },
       };
     });
-    return offersData;
+    return saleOfferData;
   } catch (error: any) {
     throw new Error("Something went wrong", error);
   }
