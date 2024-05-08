@@ -133,6 +133,14 @@ export default function CreateScreen() {
 
   const handleTakePicture = async () => {
     try {
+      if (images.length >= 6) {
+        alert(
+          "You have reached the maximum number of images allowed on a saleoffer (6). Click on an image to remove it."
+        );
+        setImageUploadModalVisible(false);
+        return;
+      }
+
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -156,6 +164,13 @@ export default function CreateScreen() {
 
   const handleAddFromGallery = async () => {
     try {
+      if (images.length >= 6) {
+        alert(
+          "You have reached the maximum number of images allowed on a saleoffer (6). Click on an image to remove it."
+        );
+        setImageUploadModalVisible(false);
+        return;
+      }
       await ImagePicker.requestMediaLibraryPermissionsAsync();
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -204,7 +219,13 @@ export default function CreateScreen() {
               });
           }
           // clear fields
-          saleOfferInCreationStore.resetSaleOfferInCreation();
+          setTitle("");
+          setOfferDescription("");
+          setSelectedCategory("Select a category");
+          setShipping(false);
+          setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
+          setPrice(0);
+          setImages([]);
 
           showMessage({
             message: `Cleared all fields successfully`,
@@ -379,7 +400,9 @@ export default function CreateScreen() {
             <TouchableOpacity onPress={() => setImageUploadModalVisible(true)}>
               <Text>Click to upload images</Text>
             </TouchableOpacity>
-            <Text className="text-xs font-light">{images && images.length}/6</Text>
+            <Text className={`text-xs font-light ${images.length == 6 && "text-red-500"}`}>
+              {images && images.length}/6
+            </Text>
           </View>
           {/* IMAGES UPLOADED GRID VIEW HERE */}
           <View>
