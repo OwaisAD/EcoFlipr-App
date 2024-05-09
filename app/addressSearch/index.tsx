@@ -1,15 +1,16 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Image,
   ImageBackground,
-  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
   View,
   FlatList,
+  Platform,
+  LogBox,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -56,6 +57,10 @@ export default function AddressSearch() {
     }
   };
 
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+
   const renderSuggestionItem = ({ item }: { item: AddressFromEndpoint }) => (
     <TouchableOpacity onPress={() => handleAddressSelection(item)} className="w-full bg-[#76CFD5] mb-4 rounded-lg">
       <Text style={{ fontSize: 16, padding: 10 }}>{item.tekst}</Text>
@@ -79,6 +84,8 @@ export default function AddressSearch() {
     addressStore.setAddress(addressObject);
     router.back();
   };
+
+  const ios = Platform.OS === "ios";
 
   return (
     <ImageBackground
