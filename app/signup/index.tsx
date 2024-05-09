@@ -70,7 +70,15 @@ export default function SignUp() {
         emailRef.current,
         passwordRef.current,
         phoneNumberRef.current,
-        addressStore.address
+        {
+          tekst: addressStore.address.tekst,
+          vejnavn: addressStore.address.vejnavn,
+          husnr: addressStore.address.husnr,
+          postnr: addressStore.address.postnr,
+          postnrnavn: addressStore.address.postnrnavn,
+          x: addressStore.address.x,
+          y: addressStore.address.y,
+        }
       );
       setLoading(false);
 

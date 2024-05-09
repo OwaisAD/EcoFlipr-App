@@ -1,19 +1,25 @@
 import { create } from "zustand";
 
-export interface Address {
-  addresse: {
-    id?: string | null;
-    kommunekode?: string | null;
-    postnr?: string | null;
-    postnrnavn?: string | null;
-    vejnavn?: string | null;
-    husnr?: string | null;
-    etage?: string | null;
-    dør?: string | null;
-    x?: number | null;
-    y?: number | null;
+export interface AddressFromEndpoint {
+  tekst: string;
+  adresse: {
+    vejnavn: string;
+    husnr: string;
+    postnr: string;
+    postnrnavn: string;
+    x: string;
+    y: string;
   };
-  tekst?: string | null;
+}
+
+export interface Address {
+  tekst: string;
+  vejnavn: string;
+  husnr: string;
+  postnr: string;
+  postnrnavn: string;
+  x: string;
+  y: string;
 }
 
 interface addressStore {

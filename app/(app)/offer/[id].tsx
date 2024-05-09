@@ -7,8 +7,12 @@ import MapView, { Marker } from "react-native-maps";
 import Moment from "react-moment";
 import { formatFirebaseDate } from "../../../utils/formatDate";
 import { formatCurrencyDA } from "../../../utils/currencyFormat";
+import { useAuth } from "../../../context/authContext";
+import { getUserById } from "../../../helperMethods/user.methods";
+import moment from "moment";
 
-export default function SpecificFO() {
+export default function ViewSaleOffer() {
+  const { user } = useAuth();
   const search = useLocalSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [images, setImages] = useState([]);
@@ -36,6 +40,26 @@ export default function SpecificFO() {
       zipCode: "",
     },
   });
+  const [seller, setSeller] = useState({
+    userId: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    address: {
+      tekst: "",
+      addresse: {
+        postnr: "",
+        postnrnavn: "",
+        x: "",
+        y: "",
+      },
+    },
+    createdAt: "",
+    updatedAt: "",
+    profileUrl: "",
+  });
+
   const [initialRegion, setInitialRegion] = useState({
     latitude: 55.676098,
     longitude: 12.568337,
@@ -43,7 +67,7 @@ export default function SpecificFO() {
     longitudeDelta: 0.0421,
   });
 
-  const getSaleOffer = async () => {
+  const getSaleOfferAndSellerInfo = async () => {
     try {
       const saleOfferId = search.id as string;
       console.log(saleOfferId);
@@ -55,13 +79,17 @@ export default function SpecificFO() {
         longitudeDelta: 0.0421,
       });
       setSaleOffer(saleOffer[0]);
+
+      const sellerId = saleOffer[0].userId;
+      const seller = await getUserById(sellerId);
+      setSeller(seller[0]);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    getSaleOffer();
+    getSaleOfferAndSellerInfo();
   }, []);
 
   const handleImagePress = () => {
@@ -75,7 +103,9 @@ export default function SpecificFO() {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 100 }}>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 100 }}
+    >
       {/* IMAGE SLIDER */}
       {saleOffer.images && saleOffer.images.length > 0 ? (
         <>
@@ -108,11 +138,11 @@ export default function SpecificFO() {
                   {currentIndex + 1}/{saleOffer.images.length}
                 </Text>
               </View>
-              {/* {saleOffer.userId !== user?.userId && ( */}
-              <TouchableOpacity className="bg-white rounded-full p-1" onPress={handleSaveOffer}>
-                <Feather name="bookmark" size={14} color="gray" />
-              </TouchableOpacity>
-              {/* )} */}
+              {saleOffer.userId !== user?.userId && (
+                <TouchableOpacity className="bg-white rounded-full p-1" onPress={handleSaveOffer}>
+                  <Feather name="bookmark" size={14} color="gray" />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </>
@@ -138,20 +168,44 @@ export default function SpecificFO() {
       </View>
 
       {/* SELLER DETAILS */}
-      <View className="w-full h-28 bg-[#D9D9D9] my-2 rounded-lg flex-row">
+      <TouchableOpacity
+        className="w-full h-28 bg-[#D9D9D9] my-2 rounded-lg flex-row items-center p-4 space-x-4"
+        style={{ width: Dimensions.get("window").width - 24 }}
+      >
         {/* PROFILE PIC */}
-        <View className="w-20 h-20 rounded-full bg-[#D9D9D9]"></View>
+        <View className="w-20 h-20 rounded-full bg-[#D9D9D9]">
+          <Image
+            source={{ uri: seller.profileUrl || "https://via.placeholder.com/150" }}
+            className="w-full h-full rounded-full"
+            style={{ width: 80, height: 80 }}
+          />
+        </View>
         {/* SELLER INFO */}
-        <View>
+        <View className="flex-col">
           {/* SELLER NAME */}
-          <Text className="text-lg font-medium">Seller name</Text>
+          <Text className="text-lg font-medium">
+            {seller.firstName} {seller.lastName}
+          </Text>
           {/* SELLER SINCE */}
-          <Text className="text-sm font-light">Member since</Text>
+          <Text className="text-sm font-light">
+            Member for {moment(seller.createdAt).fromNow(true)} since{" "}
+            {new Date(seller.createdAt)
+              .toLocaleDateString("da-DK", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })
+              .replace(/\./g, "-")}
+          </Text>
           {/* SELLER LOCATION */}
-          <Text className="text-sm font-light">Location</Text>
+          {seller.address && (
+            <Text className="text-sm font-light">
+              {seller.address.addresse.postnr} {seller.address.addresse.postnrnavn}
+            </Text>
+          )}
           {/* SELLER RATING */}
         </View>
-      </View>
+      </TouchableOpacity>
 
       {/* MESSAGING */}
       <View>

@@ -175,7 +175,7 @@ export default function CreateScreen() {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         aspect: [1, 1],
-        quality: 0.1,
+        quality: 0.4,
         selectionLimit: 6,
         allowsMultipleSelection: true,
       });
@@ -317,6 +317,7 @@ export default function CreateScreen() {
             numberOfLines={10}
             style={{ height: 200, textAlignVertical: "top", padding: 10 }}
             scrollEnabled={true}
+            value={offerDescription}
           />
           <Text
             className={`absolute bottom-2 right-2 font-light text-[12px] text-gray-400 ${
@@ -372,6 +373,8 @@ export default function CreateScreen() {
             className="bg-white py-4 px-2 rounded-l-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Enter a zip code"
             autoCapitalize="none"
+            keyboardType="number-pad"
+            maxLength={4}
           />
           <TextInput
             className="bg-[#D1D5DB] py-4 px-2 rounded-r-md w-full flex-1 font-semibold text-white"

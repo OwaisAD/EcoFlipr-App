@@ -132,6 +132,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         address,
         phoneNumber,
         email,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
 
       return { success: true, data: response.user };

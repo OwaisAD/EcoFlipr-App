@@ -25,7 +25,7 @@ export const Active = () => {
       if (user) {
         try {
           const activeOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.ACTIVE);
-          setActiveOffers(activeOffers);
+          setActiveOffers(activeOffers.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds));
           setLoading(false);
         } catch (error) {
           setLoading(false);

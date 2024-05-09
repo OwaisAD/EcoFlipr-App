@@ -1,4 +1,4 @@
-import { DocumentData, getDocs, query, where } from "firebase/firestore";
+import { DocumentData, getDocs, orderBy, query, where } from "firebase/firestore";
 import { StatusTypes } from "../constants/StatusTypes";
 import { saleOfferRef } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
@@ -18,7 +18,7 @@ export const getUserSaleOffersByUserId = async (userId: string, status: StatusTy
         zipCode: data.zipCode,
         price: data.price,
         status: data.status,
-        createdAt: data.createdAt ,
+        createdAt: data.createdAt,
         updatedAt: data.updatedAt,
         userId: data.userId,
         id: data.id,

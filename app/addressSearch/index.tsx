@@ -16,14 +16,22 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import { useRouter } from "expo-router";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
 import axios from "axios";
-import { Address, useAddressStore } from "../../stores/addressStore";
+import { Address, AddressFromEndpoint, useAddressStore } from "../../stores/addressStore";
 
 export default function AddressSearch() {
   const addressStore = useAddressStore();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [suggestions, setSuggestions] = useState<AddressFromEndpoint[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<{
+    tekst: string;
+    vejnavn: string;
+    husnr: string;
+    postnr: string;
+    postnrnavn: string;
+    x: string;
+    y: string;
+  } | null>(null);
 
   const addressRef = useRef("");
 
@@ -56,15 +64,27 @@ export default function AddressSearch() {
     }
   };
 
-  const renderSuggestionItem = ({ item }: { item: Address }) => (
+  const renderSuggestionItem = ({ item }: { item: AddressFromEndpoint }) => (
     <TouchableOpacity onPress={() => handleAddressSelection(item)} className="w-full bg-[#76CFD5] mb-4 rounded-lg">
       <Text style={{ fontSize: 16, padding: 10 }}>{item.tekst}</Text>
     </TouchableOpacity>
   );
 
-  const handleAddressSelection = (address: Address) => {
-    setSelectedAddress(address);
-    addressStore.setAddress(address);
+  const handleAddressSelection = (address: AddressFromEndpoint) => {
+    console.log(address);
+
+    const addressObject = {
+      tekst: address.tekst,
+      vejnavn: address.adresse.vejnavn,
+      husnr: address.adresse.husnr,
+      postnr: address.adresse.postnr,
+      postnrnavn: address.adresse.postnrnavn,
+      x: address.adresse.x,
+      y: address.adresse.y,
+    };
+    console.log(addressObject);
+    setSelectedAddress(addressObject);
+    addressStore.setAddress(addressObject);
     router.back();
   };
 
@@ -120,7 +140,7 @@ export default function AddressSearch() {
                   <FlatList
                     data={suggestions}
                     renderItem={renderSuggestionItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, idx) => idx.toString()}
                     style={{ marginTop: 10 }}
                   />
                 )
