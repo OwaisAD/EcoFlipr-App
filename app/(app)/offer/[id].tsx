@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, Image, Dimensions } from "react-native";
@@ -10,6 +10,7 @@ import { formatCurrencyDA } from "../../../utils/currencyFormat";
 import { useAuth } from "../../../context/authContext";
 import { getUserById } from "../../../helperMethods/user.methods";
 import moment from "moment";
+import SaleOfferMenu from "../../../components/SaleOfferMenu";
 
 export default function ViewSaleOffer() {
   const { user } = useAuth();
@@ -149,13 +150,18 @@ export default function ViewSaleOffer() {
       )}
 
       {/* OFFER DETAILS */}
-      <View className="w-full flex-row my-2 justify-between px-2">
+      <View className="w-full flex-row my-2 justify-between px-2 items-center">
         <Text className="text-sm font-light">
           {saleOffer.cityInfo.city}, {saleOffer.cityInfo.zipCode}
         </Text>
-        <Moment element={Text} fromNow className="text-sm font-light">
-          {formatFirebaseDate(saleOffer.createdAt)}
-        </Moment>
+        <View className="flex-row space-x-2 items-center">
+          <Moment element={Text} fromNow className="text-sm font-light">
+            {formatFirebaseDate(saleOffer.createdAt)}
+          </Moment>
+          <View>
+            <SaleOfferMenu isOwner={saleOffer.userId == user?.userId} />
+          </View>
+        </View>
       </View>
 
       <View className="w-full p-2 space-y-1">
@@ -231,7 +237,6 @@ export default function ViewSaleOffer() {
       </TouchableOpacity>
 
       {/* MESSAGING */}
-
       <TouchableOpacity
         className="bg-[#1DAEFF] w-full p-2 rounded-lg my-2"
         style={{ width: Dimensions.get("window").width - 24 }}

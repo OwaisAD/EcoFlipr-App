@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { AuthContext, AuthContextProvider, useAuth } from "../context/authContext";
 import FlashMessage from "react-native-flash-message";
 import { View } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -135,9 +136,11 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthContextProvider>
-      <MainLayout />
-      <FlashMessage position="bottom" style={{ backgroundColor: "#333" }} />
-    </AuthContextProvider>
+    <MenuProvider>
+      <AuthContextProvider>
+        <MainLayout />
+        <FlashMessage position="bottom" style={{ backgroundColor: "#333" }} />
+      </AuthContextProvider>
+    </MenuProvider>
   );
 }
