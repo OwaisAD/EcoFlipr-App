@@ -29,8 +29,8 @@ export default function AddressSearch() {
     husnr: string;
     postnr: string;
     postnrnavn: string;
-    x: string;
-    y: string;
+    x: number;
+    y: number;
   } | null>(null);
 
   const addressRef = useRef("");
@@ -79,8 +79,8 @@ export default function AddressSearch() {
       husnr: address.adresse.husnr,
       postnr: address.adresse.postnr,
       postnrnavn: address.adresse.postnrnavn,
-      x: address.adresse.x,
-      y: address.adresse.y,
+      x: +address.adresse.x,
+      y: +address.adresse.y,
     };
     console.log(addressObject);
     setSelectedAddress(addressObject);

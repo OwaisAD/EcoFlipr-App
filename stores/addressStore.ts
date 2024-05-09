@@ -7,8 +7,8 @@ export interface AddressFromEndpoint {
     husnr: string;
     postnr: string;
     postnrnavn: string;
-    x: string;
-    y: string;
+    x: number;
+    y: number;
   };
 }
 
@@ -18,8 +18,8 @@ export interface Address {
   husnr: string;
   postnr: string;
   postnrnavn: string;
-  x: string;
-  y: string;
+  x: number;
+  y: number;
 }
 
 interface addressStore {

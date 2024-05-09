@@ -15,7 +15,6 @@ export default function ViewSaleOffer() {
   const { user } = useAuth();
   const search = useLocalSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [images, setImages] = useState([]);
   const [saleOffer, setSaleOffer] = useState({
     saleOfferId: "",
     title: "",
@@ -48,12 +47,10 @@ export default function ViewSaleOffer() {
     phoneNumber: "",
     address: {
       tekst: "",
-      addresse: {
-        postnr: "",
-        postnrnavn: "",
-        x: "",
-        y: "",
-      },
+      postnr: "",
+      postnrnavn: "",
+      x: "",
+      y: "",
     },
     createdAt: "",
     updatedAt: "",
@@ -174,12 +171,27 @@ export default function ViewSaleOffer() {
       >
         {/* PROFILE PIC */}
         <View className="w-20 h-20 rounded-full bg-[#D9D9D9]">
-          <Image
-            source={{ uri: seller.profileUrl || "https://via.placeholder.com/150" }}
-            className="w-full h-full rounded-full"
-            style={{ width: 80, height: 80 }}
-          />
+          {seller.profileUrl ? (
+            <>
+              <Image
+                source={{ uri: seller.profileUrl || "https://via.placeholder.com/150" }}
+                className="w-full h-full rounded-full"
+                style={{ width: 80, height: 80 }}
+              />
+            </>
+          ) : (
+            <>
+              <View className="w-20 h-20 rounded-full bg-[#009ADB] items-center justify-center">
+                {/* <Avatar name={"asd"} size={"45px"} round color={`#009ADB`} /> */}
+                <Text className="text-3xl font-medium text-white">
+                  {seller.firstName.charAt(0).toUpperCase()}
+                  {seller.lastName.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
+
         {/* SELLER INFO */}
         <View className="flex-col">
           {/* SELLER NAME */}
@@ -198,12 +210,10 @@ export default function ViewSaleOffer() {
               .replace(/\./g, "-")}
           </Text>
           {/* SELLER LOCATION */}
-          {seller.address && (
-            <Text className="text-sm font-light">
-              {seller.address.addresse.postnr} {seller.address.addresse.postnrnavn}
-            </Text>
-          )}
-          {/* SELLER RATING */}
+
+          <Text className="text-sm font-light">
+            {seller.address.tekst} {seller.address.postnrnavn}
+          </Text>
         </View>
       </TouchableOpacity>
 
@@ -213,22 +223,8 @@ export default function ViewSaleOffer() {
           <Text className="text-lg font-medium">Message seller</Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
-          <Text className="text-lg font-medium">Message seller</Text>
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
-          <Text className="text-lg font-medium">Message seller</Text>
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
-          <Text className="text-lg font-medium">Message seller</Text>
-        </TouchableOpacity>
-      </View>
 
+      <Text>Offer location</Text>
       <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
         <Marker
           coordinate={initialRegion}

@@ -8,7 +8,6 @@ import { FontAwesome5, Feather } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-import Avatar from 'react-avatar';
 
 interface SaleOfferProps {
   saleOffer: OfferType;
@@ -42,6 +41,16 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
     );
   };
 
+  const renderLeftActions = () => {
+    return (
+      <View className="flex-row items-center mr-4">
+        <TouchableOpacity className="bg-blue-500 justify-center items-center rounded-lg w-10 h-10">
+          <Feather name="message-circle" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   const handleDeleteOffer = async () => {
     try {
       Alert.alert("Delete offer", "Are you sure you want to delete this offer?", [
@@ -68,7 +77,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
 
   return (
     <GestureHandlerRootView>
-      <Swipeable renderRightActions={renderRightActions}>
+      <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
         <TouchableOpacity
           className={`flex-1 ${
             isGrid ? "flex-col h-[180px] w-[180px]" : "flex-row h-28"
