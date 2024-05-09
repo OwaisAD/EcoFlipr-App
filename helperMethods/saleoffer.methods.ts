@@ -78,40 +78,49 @@ interface Pagination {
 
 export const searchForSaleOffers = async (searchText: string, pagination: Pagination) => {
   try {
+    const searchTextLowerCase = searchText.toLowerCase();
+
     const saleOffersQuery = query(
       saleOfferRef,
-      where("title_lowercase", ">=", searchText.toLowerCase()),
-      where("title_lowercase", "<=", searchText.toLowerCase() + "\uf8ff"),
+      // where("title_lowercase", ">=", searchText.toLowerCase()),
+      // where("title_lowercase", "<=", searchText.toLowerCase() + "~"),
       orderBy("title"),
       startAfter(pagination.startAfter),
       limit(pagination.limit)
     );
 
     const saleOffersSnapshot = await getDocs(saleOffersQuery);
-    const saleOffersData = saleOffersSnapshot.docs.map((doc) => {
-      const data = doc.data() as DocumentData;
-      return {
-        saleOfferId: data.saleOfferId,
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        shipping: data.shipping,
-        zipCode: data.zipCode,
-        price: data.price,
-        status: data.status,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-        userId: data.userId,
-        id: data.id,
-        images: data.images,
-        cityInfo: {
-          x: data.cityInfo.x,
-          y: data.cityInfo.y,
-          city: data.cityInfo.city,
-          zipCode: data.cityInfo.zipCode,
-        },
-      };
-    });
+    const saleOffersData = saleOffersSnapshot.docs
+      .filter((doc) => {
+        const data = doc.data() as DocumentData;
+        const titleLowerCase = data.title.toLowerCase();
+        const descriptionLowerCase = data.description.toLowerCase();
+        return titleLowerCase.includes(searchTextLowerCase) || descriptionLowerCase.includes(searchTextLowerCase);
+      })
+      .map((doc) => {
+        const data = doc.data() as DocumentData;
+        return {
+          saleOfferId: data.saleOfferId,
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          shipping: data.shipping,
+          zipCode: data.zipCode,
+          price: data.price,
+          status: data.status,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          userId: data.userId,
+          id: data.id,
+          images: data.images,
+          cityInfo: {
+            x: data.cityInfo.x,
+            y: data.cityInfo.y,
+            city: data.cityInfo.city,
+            zipCode: data.cityInfo.zipCode,
+          },
+        };
+      });
     return saleOffersData;
   } catch (error: any) {
     console.log(error.message);
