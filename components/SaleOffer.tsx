@@ -23,33 +23,37 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
   const handleSaveOffer = async () => {};
 
   const renderRightActions = () => {
-    return (
-      <View className="flex-row items-center ml-4">
-        <TouchableOpacity
-          className="bg-blue-500 justify-center items-center rounded-l-lg w-10 h-10"
-          onPress={() => router.push(`/editoffer/${saleOffer.saleOfferId}`)}
-        >
-          <Feather name="edit" size={20} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="bg-red-500 justify-center items-center rounded-r-lg w-10 h-10"
-          onPress={handleDeleteOffer}
-        >
-          <EvilIcons name="trash" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
-    );
+    if (user?.userId === saleOffer.userId) {
+      return (
+        <View className="flex-row items-center ml-4">
+          <TouchableOpacity
+            className="bg-blue-500 justify-center items-center rounded-l-lg w-10 h-10"
+            onPress={() => router.push(`/editoffer/${saleOffer.saleOfferId}`)}
+          >
+            <Feather name="edit" size={20} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="bg-red-500 justify-center items-center rounded-r-lg w-10 h-10"
+            onPress={handleDeleteOffer}
+          >
+            <EvilIcons name="trash" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
   };
 
   const renderLeftActions = () => {
-    return (
-      <View className="flex-row items-center mr-4">
-        <TouchableOpacity className="bg-blue-500 justify-center items-center rounded-lg w-10 h-10">
-          <Feather name="message-circle" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
+    if (user?.userId === saleOffer.userId) {
+      return (
+        <View className="flex-row items-center mr-4">
+          <TouchableOpacity className="bg-blue-500 justify-center items-center rounded-lg w-10 h-10">
+            <Feather name="message-circle" size={20} color="white" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
 
   const handleDeleteOffer = async () => {
     try {

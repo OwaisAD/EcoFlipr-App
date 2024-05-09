@@ -167,8 +167,10 @@ export default function ViewSaleOffer() {
       <View className="w-full p-2 space-y-1">
         <Text className="text-lg leading-7 font-medium">{saleOffer.title}</Text>
         <Text className="text-2xl leading-8 font-semibold">{formatCurrencyDA(saleOffer.price)}</Text>
+        <Text className="text-sm font-light">
+          {saleOffer.shipping ? "Seller offers shipping" : "Seller does not offer shipping"}
+        </Text>
         <Text className="text-sm font-light">{saleOffer.description}</Text>
-        <Text className="text-sm font-light">{saleOffer.shipping ? "Shipping" : "Not shipping"}</Text>
       </View>
 
       {/* SELLER DETAILS */}

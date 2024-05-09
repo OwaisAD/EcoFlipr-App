@@ -1,22 +1,22 @@
 export interface OfferType {
-  saleOfferId: string;
+  saleOfferId?: string;
   title: string;
   description: string;
   category: string;
   shipping: boolean;
-  zipCode: string;
+  zipCode?: string;
   price: number;
-  status: string;
-  createdAt: {
+  status?: string;
+  createdAt?: {
     nanoseconds: number;
     seconds: number;
   };
-  updatedAt: {
+  updatedAt?: {
     nanoseconds: number;
     seconds: number;
   };
-  userId: string;
-  id: string;
+  userId?: string;
+  id?: string;
   cityInfo?: {
     x: number;
     y: number;

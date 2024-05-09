@@ -1,4 +1,4 @@
-import { DocumentData, getDocs, orderBy, query, where } from "firebase/firestore";
+import { DocumentData, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import { StatusTypes } from "../constants/StatusTypes";
 import { saleOfferRef } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
@@ -67,6 +67,54 @@ export const getSaleOfferById = async (saleOfferId: string) => {
     });
     return saleOfferData;
   } catch (error: any) {
+    throw new Error("Something went wrong", error);
+  }
+};
+
+interface Pagination {
+  startAfter: any;
+  limit: number;
+}
+
+export const searchForSaleOffers = async (searchText: string, pagination: Pagination) => {
+  try {
+    const saleOffersQuery = query(
+      saleOfferRef,
+      where("title_lowercase", ">=", searchText.toLowerCase()),
+      where("title_lowercase", "<=", searchText.toLowerCase() + "\uf8ff"),
+      orderBy("title"),
+      startAfter(pagination.startAfter),
+      limit(pagination.limit)
+    );
+
+    const saleOffersSnapshot = await getDocs(saleOffersQuery);
+    const saleOffersData = saleOffersSnapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        saleOfferId: data.saleOfferId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        shipping: data.shipping,
+        zipCode: data.zipCode,
+        price: data.price,
+        status: data.status,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        userId: data.userId,
+        id: data.id,
+        images: data.images,
+        cityInfo: {
+          x: data.cityInfo.x,
+          y: data.cityInfo.y,
+          city: data.cityInfo.city,
+          zipCode: data.cityInfo.zipCode,
+        },
+      };
+    });
+    return saleOffersData;
+  } catch (error: any) {
+    console.log(error.message);
     throw new Error("Something went wrong", error);
   }
 };

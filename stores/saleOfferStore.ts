@@ -4,6 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export interface SaleOfferType {
   title: string;
   description: string;
+  title_lowercase?: string;
+  description_lowercase?: string;
   category: string;
   shipping: boolean;
   cityInfo: {

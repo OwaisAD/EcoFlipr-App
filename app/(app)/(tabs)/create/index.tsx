@@ -76,6 +76,8 @@ export default function CreateScreen() {
         createdAt: new Date(),
         lastUpdated: new Date(),
         status: StatusTypes.ACTIVE,
+        title_lowercase: title.toLowerCase(),
+        description_lowercase: offerDescription.toLowerCase(),
       };
 
       const saleOfferRef = await addDoc(collection(db, "saleoffers"), saleoffer);
