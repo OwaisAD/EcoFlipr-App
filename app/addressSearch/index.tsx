@@ -23,15 +23,7 @@ export default function AddressSearch() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<AddressFromEndpoint[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<{
-    tekst: string;
-    vejnavn: string;
-    husnr: string;
-    postnr: string;
-    postnrnavn: string;
-    x: number;
-    y: number;
-  } | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<any>(null);
 
   const addressRef = useRef("");
 
@@ -70,7 +62,7 @@ export default function AddressSearch() {
     </TouchableOpacity>
   );
 
-  const handleAddressSelection = (address: AddressFromEndpoint) => {
+  const handleAddressSelection = async (address: AddressFromEndpoint) => {
     console.log(address);
 
     const addressObject = {

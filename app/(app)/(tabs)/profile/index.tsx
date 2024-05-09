@@ -218,13 +218,13 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          <View className="bg-[#eee]">
+          <View className="bg-[#eee] w-[200px]">
             <Text className="font-semibold text-base">
               {user?.firstName} {user?.lastName}
             </Text>
             <Text className="text-base font-light">{user?.email}</Text>
             <Text className="text-base font-light">{user?.phoneNumber}</Text>
-            <Text className="text-base font-light">{user?.address ? user.address.tekst : ""}</Text>
+            <Text className="text-sm font-light">{user?.address ? user.address.tekst : ""}</Text>
             <Text className="text-sm font-light">
               Member since{" "}
               <Moment element={Text} fromNow>

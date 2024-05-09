@@ -15,6 +15,7 @@ export default function ViewSaleOffer() {
   const { user } = useAuth();
   const search = useLocalSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [viewContactDetails, setViewContactDetails] = useState(false);
   const [saleOffer, setSaleOffer] = useState({
     saleOfferId: "",
     title: "",
@@ -101,7 +102,7 @@ export default function ViewSaleOffer() {
 
   return (
     <ScrollView
-      contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 100 }}
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 33 }}
     >
       {/* IMAGE SLIDER */}
       {saleOffer.images && saleOffer.images.length > 0 ? (
@@ -212,19 +213,37 @@ export default function ViewSaleOffer() {
           {/* SELLER LOCATION */}
 
           <Text className="text-sm font-light">
-            {seller.address.tekst} {seller.address.postnrnavn}
+            {seller.address.postnrnavn}, {seller.address.postnr}
           </Text>
+          <View className="">
+            {!viewContactDetails ? (
+              <TouchableOpacity onPress={() => setViewContactDetails(true)}>
+                <Text>View contact details</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity className="flex-row space-x-2" onPress={() => setViewContactDetails(false)}>
+                <Text className="text-sm font-light">{seller.email}</Text>
+                <Text className="text-sm font-light">{seller.phoneNumber}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
 
       {/* MESSAGING */}
-      <View>
-        <TouchableOpacity className="bg-[#D9D9D9] w-full p-2 rounded-lg">
-          <Text className="text-lg font-medium">Message seller</Text>
-        </TouchableOpacity>
-      </View>
 
-      <Text>Offer location</Text>
+      <TouchableOpacity
+        className="bg-[#1DAEFF] w-full p-2 rounded-lg my-2"
+        style={{ width: Dimensions.get("window").width - 24 }}
+      >
+        <Text className="text-lg font-medium text-center uppercase text-white">
+          {user?.userId == seller.userId ? "My Messages" : "Message Seller"}
+        </Text>
+      </TouchableOpacity>
+
+      <View className="w-full h-10 items-center justify-center">
+        <Text className="text-center text-xl shadow-lg font-light">Offer location</Text>
+      </View>
       <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
         <Marker
           coordinate={initialRegion}

@@ -7,6 +7,9 @@ export const getUserById = async (userId: string) => {
     const userSnapshot = await getDocs(userQuery);
     const userData = userSnapshot.docs.map((doc) => {
       const data = doc.data() as DocumentData;
+
+      console.log("WE IN HERE", data);
+
       return {
         userId: data.userId,
         firstName: data.firstName,
@@ -14,13 +17,7 @@ export const getUserById = async (userId: string) => {
         email: data.email,
         phoneNumber: data.phoneNumber,
         profileUrl: data.profileUrl,
-        address: {
-          tekst: data.address?.tekst || "",
-          postnr: data.address?.addresse?.postnr || "",
-          postnrnavn: data.address?.addresse?.postnrnavn || "",
-          x: data.address?.addresse?.x || 0,
-          y: data.address?.addresse?.y || 0,
-        },
+        address: data.address,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
       };

@@ -31,7 +31,7 @@ export const AuthContext = createContext(
       email: string,
       password: string,
       phoneNumber: string,
-      address: Address
+      address: any
     ) => Promise<{ success: boolean; data: User; msg?: undefined } | { success: boolean; msg: any; data?: undefined }>;
     logout: () => Promise<
       { success: boolean; msg?: undefined; error?: undefined } | { success: boolean; msg: any; error: any }
@@ -114,7 +114,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string,
     phoneNumber: string,
-    address: Address
+    address: any
   ) => {
     // createUserWithEmailAndPassword is a Firebase method that creates a new user with the provided email and password.
     try {

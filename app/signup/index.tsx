@@ -1,16 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
-import {
-  Alert,
-  Image,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Image, ImageBackground, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AntDesign, Entypo, Feather, Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
@@ -61,8 +51,6 @@ export default function SignUp() {
         phoneNumber: phoneNumberRef.current,
       });
 
-      console.log(addressStore.address);
-
       // register process
       let response = await register(
         firstNameRef.current,
@@ -81,9 +69,6 @@ export default function SignUp() {
         }
       );
       setLoading(false);
-
-      console.log("got result", response);
-
       if (!response.success) {
         Alert.alert("Sign up", response.msg);
       }
