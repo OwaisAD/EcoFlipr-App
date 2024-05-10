@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, SafeAreaView, ScrollView, TextInput } from "react-native";
+import { FlatList, RefreshControl, SafeAreaView, ScrollView, TextInput, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../../../../components/Themed";
 import { useCallback, useState } from "react";
@@ -51,7 +51,7 @@ export default function SearchScreen() {
       console.log(error.message);
       console.error("Error fetching search results:", error);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -76,15 +76,15 @@ export default function SearchScreen() {
           </View>
 
           <View className="flex-row items-center bg-[#eee] gap-2">
-            <View className="bg-[#eee]">
+            <TouchableOpacity className="bg-[#eee]">
               <Entypo name="grid" size={30} color="black" />
-            </View>
-            <View className="bg-[#eee]">
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-[#eee]">
               <FontAwesome5 name="list-ul" size={24} color="black" />
-            </View>
-            <View className="bg-[#eee]">
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-[#eee]">
               <Ionicons name="filter-circle" size={30} color="black" />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         {/* SEARCH RESULTS */}
@@ -98,7 +98,7 @@ export default function SearchScreen() {
             data={searchResults}
             renderItem={({ item }) => (
               <View className="mb-2 bg-[#eee]">
-                <SaleOffer saleOffer={item} user={user} refetch={handleRefresh}/>
+                <SaleOffer saleOffer={item} user={user} refetch={handleRefresh} />
               </View>
             )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

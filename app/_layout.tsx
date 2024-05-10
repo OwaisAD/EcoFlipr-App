@@ -109,7 +109,17 @@ const MainLayout = () => {
           },
         }}
       />
-      {/* why does the above not work? */}
+      <Stack.Screen
+        name="(app)/messages/[id]"
+        options={{
+          headerShown: true,
+          headerTitle: "Messages",
+          headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
     </Stack>
   );
 };

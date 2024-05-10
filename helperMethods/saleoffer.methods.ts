@@ -120,6 +120,12 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
             zipCode: data.cityInfo.zipCode,
           },
         };
+      })
+      .sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return b.createdAt.seconds - a.createdAt.seconds;
+        }
+        return 0;
       });
     return saleOffersData;
   } catch (error: any) {
@@ -130,9 +136,6 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
 
 export const deleteSaleOffer = async (saleOfferId: string, sellerUserId: string, userId: string) => {
   try {
-    console.log("saleOfferId", saleOfferId);
-    console.log("sellerUserId", sellerUserId);
-    console.log("userId", userId);
     if (sellerUserId !== userId) {
       throw new Error("You do not have permission to delete this offer");
     }

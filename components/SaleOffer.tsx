@@ -1,14 +1,17 @@
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import { OfferType } from "../types/offerType";
 import Moment from "react-moment";
 import { formatFirebaseDate } from "../utils/formatDate";
 import { formatCurrencyDA } from "../utils/currencyFormat";
 import { useRouter } from "expo-router";
-import { FontAwesome5, Feather } from "@expo/vector-icons";
+import { FontAwesome5, Feather, FontAwesome } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
 import { deleteSaleOffer } from "../helperMethods/saleoffer.methods";
+import { useState } from "react";
+import Loading from "./Loading";
+import Modal from "react-native-modal";
 
 interface SaleOfferProps {
   saleOffer: OfferType;
@@ -19,6 +22,8 @@ interface SaleOfferProps {
 
 const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps) => {
   const router = useRouter();
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   console.log("saleOffer", saleOffer);
 
@@ -55,7 +60,10 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
           >
             <Feather name="message-circle" size={20} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity className="bg-indigo-500 justify-center items-center rounded-r-lg w-10 h-10">
+          <TouchableOpacity
+            className="bg-indigo-500 justify-center items-center rounded-r-lg w-10 h-10"
+            onPress={() => setStatusModalOpen(true)}
+          >
             <Feather name="repeat" size={20} color="white" />
           </TouchableOpacity>
         </View>
@@ -109,6 +117,49 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
 
   return (
     <GestureHandlerRootView>
+      <Modal
+        isVisible={statusModalOpen}
+        onBackdropPress={() => setStatusModalOpen(false)}
+        animationIn={"fadeInUp"}
+        animationOut={"fadeOutDown"}
+        className="gap-4"
+      >
+        {loading ? (
+          <>
+            <View className="bg-[#EEE] rounded-lg  items-center py-8">
+              <Loading size={100} />
+            </View>
+          </>
+        ) : (
+          <>
+            <View className="bg-[#EEE] rounded-lg items-center py-2 w-full">
+              <Text className="text-xl">Change offer status</Text>
+            </View>
+            <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-4 w-full">
+              {/* ACTIVE */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+                <FontAwesome name="toggle-on" size={24} color="black" />
+                <Text>Active</Text>
+              </TouchableOpacity>
+              {/* INACTIVE */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+                <FontAwesome name="toggle-off" size={24} color="black" />
+                <Text>Inactive</Text>
+              </TouchableOpacity>
+              {/* SOLD */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+                <Feather name="check-circle" size={24} color="black" />
+                <Text>Sold</Text>
+              </TouchableOpacity>
+              {/* ARCHIVED */}
+              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+                <FontAwesome name="archive" size={24} color="black" />
+                <Text>Archive</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </Modal>
       <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
         <TouchableOpacity
           className={`flex-1 ${
@@ -154,7 +205,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
               <View>
                 <Text className="text-sm font-light">{saleOffer.zipCode}</Text>
                 <Moment element={Text} fromNow className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>
-                  {formatFirebaseDate(saleOffer.createdAt)}
+                  {saleOffer.createdAt && formatFirebaseDate(saleOffer.createdAt)}
                 </Moment>
                 <Text className="text-sm font-light">
                   {saleOffer.cityInfo?.zipCode} {saleOffer.cityInfo?.city}
