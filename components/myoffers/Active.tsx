@@ -7,7 +7,11 @@ import SaleOffer from "../SaleOffer";
 import { getUserSaleOffersByUserId } from "../../helperMethods/saleoffer.methods";
 import Loading from "../Loading";
 
-export const Active = () => {
+interface ActiveProps {
+  setActiveTab: React.Dispatch<React.SetStateAction<StatusTypes>>;
+}
+
+export const Active = ({ setActiveTab }: ActiveProps) => {
   const { user } = useAuth();
   const [activeOffers, setActiveOffers] = useState<OfferType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,7 +61,7 @@ export const Active = () => {
           data={activeOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} setActiveTab={setActiveTab} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

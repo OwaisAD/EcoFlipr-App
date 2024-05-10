@@ -1,4 +1,15 @@
-import { DocumentData, deleteDoc, doc, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import {
+  DocumentData,
+  deleteDoc,
+  doc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { StatusTypes } from "../constants/StatusTypes";
 import { db, saleOfferRef } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
@@ -147,6 +158,19 @@ export const deleteSaleOffer = async (saleOfferId: string, sellerUserId: string,
       .catch((error) => {
         console.error("Error removing document: ", error);
       });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error.message);
+    return { success: false, msg: error.message };
+  }
+};
+
+export const updateSaleOfferStatus = async (saleOfferId: string, status: StatusTypes) => {
+  try {
+    const offerRef = doc(db, "saleoffers", saleOfferId);
+    await updateDoc(offerRef, {
+      status: status,
+    });
     return { success: true };
   } catch (error: any) {
     console.log(error.message);

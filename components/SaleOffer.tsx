@@ -8,19 +8,21 @@ import { FontAwesome5, Feather, FontAwesome } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-import { deleteSaleOffer } from "../helperMethods/saleoffer.methods";
+import { deleteSaleOffer, updateSaleOfferStatus } from "../helperMethods/saleoffer.methods";
 import { useState } from "react";
 import Loading from "./Loading";
 import Modal from "react-native-modal";
+import { StatusTypes } from "../constants/StatusTypes";
 
 interface SaleOfferProps {
   saleOffer: OfferType;
   user: any;
   isGrid?: boolean;
   refetch: () => Promise<void>;
+  setActiveTab?: React.Dispatch<React.SetStateAction<StatusTypes>>;
 }
 
-const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps) => {
+const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: SaleOfferProps) => {
   const router = useRouter();
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -115,6 +117,35 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
     }
   };
 
+  const handleChangeOfferStatus = async (status: string) => {
+    try {
+      Alert.alert(
+        "Change offer status",
+        `Are you sure you want to change the status of the offer to ${status.toLowerCase()}?`,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Change",
+            onPress: async () => {
+              setLoading(true);
+              if (!saleOffer.id) throw new Error("No offer id found");
+              await updateSaleOfferStatus(saleOffer.id, status as StatusTypes);
+              setLoading(false);
+              setStatusModalOpen(false);
+              setActiveTab && setActiveTab(status as StatusTypes);
+            },
+          },
+        ]
+      );
+    } catch (error: any) {
+      setLoading(false);
+      console.error("Error changing offer status:", error);
+    }
+  };
+
   return (
     <GestureHandlerRootView>
       <Modal
@@ -126,7 +157,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
       >
         {loading ? (
           <>
-            <View className="bg-[#EEE] rounded-lg  items-center py-8">
+            <View className="bg-[#EEE] rounded-lg items-center py-8 w-full">
               <Loading size={100} />
             </View>
           </>
@@ -137,22 +168,46 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps)
             </View>
             <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-4 w-full">
               {/* ACTIVE */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer.status === StatusTypes.ACTIVE && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer.status === StatusTypes.ACTIVE}
+                onPress={() => handleChangeOfferStatus(StatusTypes.ACTIVE)}
+              >
                 <FontAwesome name="toggle-on" size={24} color="black" />
                 <Text>Active</Text>
               </TouchableOpacity>
               {/* INACTIVE */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer.status === StatusTypes.INACTIVE && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer.status === StatusTypes.INACTIVE}
+                onPress={() => handleChangeOfferStatus(StatusTypes.INACTIVE)}
+              >
                 <FontAwesome name="toggle-off" size={24} color="black" />
                 <Text>Inactive</Text>
               </TouchableOpacity>
               {/* SOLD */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer.status === StatusTypes.SOLD && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer.status === StatusTypes.SOLD}
+                onPress={() => handleChangeOfferStatus(StatusTypes.SOLD)}
+              >
                 <Feather name="check-circle" size={24} color="black" />
                 <Text>Sold</Text>
               </TouchableOpacity>
               {/* ARCHIVED */}
-              <TouchableOpacity className="items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center">
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer.status === StatusTypes.ARCHIVED && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer.status === StatusTypes.ARCHIVED}
+                onPress={() => handleChangeOfferStatus(StatusTypes.ARCHIVED)}
+              >
                 <FontAwesome name="archive" size={24} color="black" />
                 <Text>Archive</Text>
               </TouchableOpacity>

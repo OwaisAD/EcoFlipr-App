@@ -7,7 +7,11 @@ import { StatusTypes } from "../../constants/StatusTypes";
 import SaleOffer from "../SaleOffer";
 import Loading from "../Loading";
 
-export const Inactive = () => {
+interface InactiveProps {
+  setActiveTab: React.Dispatch<React.SetStateAction<StatusTypes>>;
+}
+
+export const Inactive = ({ setActiveTab }: InactiveProps) => {
   const { user } = useAuth();
   const [inactiveOffers, setInactiveOffers] = useState<OfferType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,7 +61,7 @@ export const Inactive = () => {
           data={inactiveOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} setActiveTab={setActiveTab} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

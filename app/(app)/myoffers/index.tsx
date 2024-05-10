@@ -1,47 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../../context/authContext";
-import { db, saleOfferRef } from "../../../firebaseConfig";
-import { DocumentData, getDocs, query, where } from "firebase/firestore";
 import { OfferType } from "../../../types/offerType";
 import { Active } from "../../../components/myoffers/Active";
 import { Inactive } from "../../../components/myoffers/Inactive";
 import { Sold } from "../../../components/myoffers/Sold";
 import { Archived } from "../../../components/myoffers/Archived";
 import Tabs from "../../../components/Tabs";
+import { StatusTypes } from "../../../constants/StatusTypes";
 
 export default function MyOffersScreen() {
-  const { user } = useAuth();
-  const [offers, setOffers] = useState<OfferType[]>([]);
-  const [loading, setLoading] = useState(false);
-
-
-  useEffect(() => {
-    if (offers.length > 0 && offers[0].cityInfo) {
-      setInitialRegion({
-        latitude: offers[0].cityInfo.x,
-        longitude: offers[0].cityInfo.y,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  }, [offers]);
-
-  const options = ["Active", "Inactive", "Sold", "Archived"];
+  const options = [StatusTypes.ACTIVE, StatusTypes.INACTIVE, StatusTypes.SOLD, StatusTypes.ARCHIVED];
   const [activeTab, setActiveTab] = useState(options[0]);
 
   const displayContent = () => {
     switch (activeTab) {
-      case "Active":
-        return <Active />;
-      case "Inactive":
-        return <Inactive />;
-      case "Sold":
-        return <Sold />;
-      case "Archived":
-        return <Archived />;
+      case StatusTypes.ACTIVE:
+        return <Active setActiveTab={setActiveTab} />;
+      case StatusTypes.INACTIVE:
+        return <Inactive setActiveTab={setActiveTab} />;
+      case StatusTypes.SOLD:
+        return <Sold setActiveTab={setActiveTab} />;
+      case StatusTypes.ARCHIVED:
+        return <Archived setActiveTab={setActiveTab} />;
       default:
-        return <Active />;
+        return <Active setActiveTab={setActiveTab} />;
     }
   };
 
@@ -55,8 +38,6 @@ export default function MyOffersScreen() {
         </View>
 
         <View className="py-4 flex-1 bg-[#EEE]">{displayContent()}</View>
-
-
       </View>
     </SafeAreaView>
   );

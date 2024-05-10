@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { TouchableOpacity, FlatList, Text, View } from "react-native";
+import { StatusTypes } from "../constants/StatusTypes";
 
 interface TabButtonProps {
   name: string;
-  activeTab: string;
+  activeTab: StatusTypes;
   onHandleSearchType: () => void;
 }
 
 interface TabsProps {
   tabs: string[];
   activeTab: string;
-  setActiveTab: (tab: string) => void;
+  setActiveTab: (tab: StatusTypes) => void;
 }
 
 const TabButton = ({ name, activeTab, onHandleSearchType }: TabButtonProps) => {
@@ -21,7 +22,7 @@ const TabButton = ({ name, activeTab, onHandleSearchType }: TabButtonProps) => {
         activeTab === name ? "bg-[#1DAEFF]" : ""
       }`}
     >
-      <Text className="text-sm font-medium">{name}</Text>
+      <Text className="text-sm font-medium">{name.charAt(0) + name.slice(1).toLowerCase()}</Text>
     </TouchableOpacity>
   );
 };
@@ -32,7 +33,11 @@ const Tabs = ({ tabs, activeTab, setActiveTab }: TabsProps) => {
       <FlatList
         data={tabs}
         renderItem={({ item }) => (
-          <TabButton name={item} activeTab={activeTab} onHandleSearchType={() => setActiveTab(item)} />
+          <TabButton
+            name={item}
+            activeTab={activeTab as StatusTypes}
+            onHandleSearchType={() => setActiveTab(item as StatusTypes)}
+          />
         )}
         horizontal
         showsHorizontalScrollIndicator={false}

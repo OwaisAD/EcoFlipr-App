@@ -7,7 +7,11 @@ import { StatusTypes } from "../../constants/StatusTypes";
 import SaleOffer from "../SaleOffer";
 import Loading from "../Loading";
 
-export const Archived = () => {
+interface ArchivedProps {
+  setActiveTab: React.Dispatch<React.SetStateAction<StatusTypes>>;
+}
+
+export const Archived = ({ setActiveTab }: ArchivedProps) => {
   const { user } = useAuth();
   const [archivedOffers, setArchivedOffers] = useState<OfferType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,7 +61,7 @@ export const Archived = () => {
           data={archivedOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} setActiveTab={setActiveTab} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
