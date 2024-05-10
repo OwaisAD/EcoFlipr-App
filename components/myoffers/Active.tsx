@@ -5,6 +5,7 @@ import { useAuth } from "../../context/authContext";
 import { StatusTypes } from "../../constants/StatusTypes";
 import SaleOffer from "../SaleOffer";
 import { getUserSaleOffersByUserId } from "../../helperMethods/saleoffer.methods";
+import Loading from "../Loading";
 
 export const Active = () => {
   const { user } = useAuth();
@@ -47,7 +48,9 @@ export const Active = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-[#eee]">
       {loading ? (
-        <Text>Loading...</Text>
+        <View className="items-center">
+          <Loading size={100} />
+        </View>
       ) : (
         <FlatList
           className=""
@@ -58,7 +61,11 @@ export const Active = () => {
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          ListEmptyComponent={<Text>You currently have no active offers</Text>}
+          ListEmptyComponent={
+            <View className="flex-1 items-center">
+              <Text className="text-center text-lg font-light">You currently have no active offers</Text>
+            </View>
+          }
         />
       )}
     </SafeAreaView>

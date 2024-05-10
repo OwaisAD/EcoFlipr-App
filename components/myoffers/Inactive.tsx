@@ -5,6 +5,7 @@ import { OfferType } from "../../types/offerType";
 import { getUserSaleOffersByUserId } from "../../helperMethods/saleoffer.methods";
 import { StatusTypes } from "../../constants/StatusTypes";
 import SaleOffer from "../SaleOffer";
+import Loading from "../Loading";
 
 export const Inactive = () => {
   const { user } = useAuth();
@@ -19,39 +20,52 @@ export const Inactive = () => {
     }, 2000);
   }, []);
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      setLoading(true);
-      if (user) {
-        try {
-          const inactiveOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.INACTIVE);
-          setInactiveOffers(inactiveOffers);
-          setLoading(false);
-        } catch (error) {
-          setLoading(false);
-          console.error("Error fetching offers:", error);
-        }
+  const fetchOffers = async () => {
+    setLoading(true);
+    if (user) {
+      try {
+        const activeOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.INACTIVE);
+        setInactiveOffers(
+          activeOffers.sort((a, b) => {
+            if (a.createdAt && b.createdAt) {
+              return b.createdAt.seconds - a.createdAt.seconds;
+            }
+            return 0;
+          })
+        );
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching offers:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchOffers();
   }, [user]);
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-[#eee]">
       {loading ? (
-        <Text>Loading...</Text>
+        <View className="items-center">
+          <Loading size={100} />
+        </View>
       ) : (
         <FlatList
           className=""
           data={inactiveOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} user={user} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          ListEmptyComponent={<Text>You currently have no inactive offers</Text>}
+          ListEmptyComponent={
+            <View className="flex-1 items-center">
+              <Text className="text-center text-lg font-light">You currently have no inactive offers</Text>
+            </View>
+          }
         />
       )}
     </SafeAreaView>
