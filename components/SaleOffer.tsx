@@ -8,7 +8,7 @@ import { FontAwesome5, Feather, FontAwesome } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-import { deleteSaleOffer, updateSaleOfferStatus } from "../helperMethods/saleoffer.methods";
+import { deleteSaleOffer, saveOffer, unsaveOffer, updateSaleOfferStatus } from "../helperMethods/saleoffer.methods";
 import { useState } from "react";
 import Loading from "./Loading";
 import Modal from "react-native-modal";
@@ -26,10 +26,35 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
   const router = useRouter();
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
-  console.log("saleOffer", saleOffer);
+  const handleSaveOffer = async () => {
+    try {
+      if (!saleOffer.id || !user.userId) throw new Error("No offer id or user id found");
 
-  const handleSaveOffer = async () => {};
+      if (user.savedOffers.includes(saleOffer.id)) {
+        await unsaveOffer(saleOffer.id, user.savedOffers, user.userId);
+        setIsSaved(false);
+        showMessage({
+          message: "Offer unsaved",
+          type: "info",
+        });
+        return;
+      }
+
+      await saveOffer(saleOffer.id, user.savedOffers, user.userId);
+      setIsSaved(true);
+      showMessage({
+        message: "Offer saved",
+        type: "info",
+      });
+    } catch (error: any) {
+      showMessage({
+        message: "Error saving offer. Please try again.",
+        type: "danger",
+      });
+    }
+  };
 
   const renderRightActions = () => {
     if (user?.userId === saleOffer.userId) {
@@ -144,7 +169,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
     } catch (error: any) {
       setLoading(false);
       console.error("Error changing offer status:", error);
-    } 
+    }
   };
 
   return (
@@ -275,7 +300,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           {/* Save button - only show on offers made by others */}
           {saleOffer.userId !== user?.userId && (
             <TouchableOpacity className="absolute right-1 bottom-1 bg-white rounded-full p-1" onPress={handleSaveOffer}>
-              <Feather name="bookmark" size={14} color="gray" />
+              <Feather name="bookmark" size={14} color={isSaved ? "blue" : "gray"} />
             </TouchableOpacity>
           )}
         </TouchableOpacity>

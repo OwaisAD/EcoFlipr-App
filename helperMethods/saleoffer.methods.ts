@@ -177,3 +177,38 @@ export const updateSaleOfferStatus = async (saleOfferId: string, status: StatusT
     return { success: false, msg: error.message };
   }
 };
+
+export const saveOffer = async (saleOfferId: string, savedOffers: string[], userId: string) => {
+  try {
+    if (savedOffers.includes(saleOfferId)) {
+      throw new Error("Offer already saved");
+    }
+    savedOffers.push(saleOfferId);
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      savedOffers: savedOffers,
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error.message);
+    return { success: false, msg: error.message };
+  }
+};
+
+export const unsaveOffer = async (saleOfferId: string, savedOffers: string[], userId: string) => {
+  try {
+    if (!savedOffers.includes(saleOfferId)) {
+      throw new Error("Offer not saved");
+    }
+    const index = savedOffers.indexOf(saleOfferId);
+    savedOffers.splice(index, 1);
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+      savedOffers: savedOffers,
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error.message);
+    return { success: false, msg: error.message };
+  }
+};

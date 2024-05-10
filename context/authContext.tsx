@@ -22,6 +22,7 @@ export const AuthContext = createContext(
       address: Address;
       profileUrl?: string;
       createdAt?: string;
+      savedOffers: string[];
     };
     isAuthenticated: undefined | boolean;
     login: (email: string, password: string) => Promise<{ success: boolean; msg?: any }>;
@@ -71,6 +72,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         phoneNumber: data.phoneNumber,
         profileUrl: data.profileUrl,
         address: data.address,
+        savedOffers: data.savedOffers,
       };
 
       // Get user data from Firebase Authentication
@@ -134,6 +136,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         email,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        savedOffers: [],
       });
 
       return { success: true, data: response.user };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
-import { Image, Pressable, View } from "react-native";
+import { Image, Pressable, View, Text } from "react-native";
 
 import Colors from "../../../constants/Colors";
 import { useColorScheme } from "../../../components/useColorScheme";
@@ -208,7 +208,16 @@ export default function TabLayout() {
           },
           tabBarActiveTintColor: "#1DAEFF",
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="bookmark" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+            <View>
+              <View>
+                <Feather name="bookmark" size={focused ? 26 : 24} color={focused ? "#1DAEFF" : color} />
+              </View>
+              {user?.savedOffers && user.savedOffers.length > 0 && (
+                <View className="absolute top-[-2px] right-[-4px] bg-blue-400 px-[6px] py-[2px] rounded-full">
+                  <Text className="text-[10px] text-white font-medium">{user.savedOffers.length}</Text>
+                </View>
+              )}
+            </View>
           ),
           headerLeft: () => (
             <Image
