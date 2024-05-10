@@ -100,6 +100,7 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
       .map((doc) => {
         const data = doc.data() as DocumentData;
         return {
+          id: doc.id,
           saleOfferId: data.saleOfferId,
           title: data.title,
           description: data.description,
@@ -111,7 +112,6 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
           userId: data.userId,
-          id: data.id,
           images: data.images,
           cityInfo: {
             x: data.cityInfo.x,

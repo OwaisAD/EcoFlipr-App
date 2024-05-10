@@ -39,6 +39,20 @@ export default function SearchScreen() {
     }
   };
 
+  const handleRefresh = async () => {
+    try {
+      setLoading(true);
+      const searchResults = await searchForSaleOffers(search, { limit: 10, startAfter: null });
+      setSearchResults(searchResults);
+      setSearchResultMessage(`Found ${searchResults.length} ${searchResults.length == 1 ? "result" : "results"}`);
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      console.log(error.message);
+      console.error("Error fetching search results:", error);
+    }
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View className="bg-[#EEE] flex-1 px-4">
@@ -84,7 +98,7 @@ export default function SearchScreen() {
             data={searchResults}
             renderItem={({ item }) => (
               <View className="mb-2 bg-[#eee]">
-                <SaleOffer saleOffer={item} user={user} />
+                <SaleOffer saleOffer={item} user={user} refetch={handleRefresh}/>
               </View>
             )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
