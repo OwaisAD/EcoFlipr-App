@@ -136,6 +136,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               setLoading(false);
               setStatusModalOpen(false);
               setActiveTab && setActiveTab(status as StatusTypes);
+              !setActiveTab && refetch();
             },
           },
         ]
@@ -143,7 +144,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
     } catch (error: any) {
       setLoading(false);
       console.error("Error changing offer status:", error);
-    }
+    } 
   };
 
   return (
