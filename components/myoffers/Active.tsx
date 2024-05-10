@@ -19,21 +19,28 @@ export const Active = () => {
     }, 2000);
   }, []);
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      setLoading(true);
-      if (user) {
-        try {
-          const activeOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.ACTIVE);
-          setActiveOffers(activeOffers.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds));
-          setLoading(false);
-        } catch (error) {
-          setLoading(false);
-          console.error("Error fetching offers:", error);
-        }
+  const fetchOffers = async () => {
+    setLoading(true);
+    if (user) {
+      try {
+        const activeOffers = await getUserSaleOffersByUserId(user.userId, StatusTypes.ACTIVE);
+        setActiveOffers(
+          activeOffers.sort((a, b) => {
+            if (a.createdAt && b.createdAt) {
+              return b.createdAt.seconds - a.createdAt.seconds;
+            }
+            return 0;
+          })
+        );
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching offers:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchOffers();
   }, [user]);
 
@@ -47,7 +54,7 @@ export const Active = () => {
           data={activeOffers}
           renderItem={({ item }) => (
             <View className="my-[6px]">
-              <SaleOffer saleOffer={item} user={user} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

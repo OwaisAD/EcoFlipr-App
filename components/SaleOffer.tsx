@@ -8,14 +8,16 @@ import { FontAwesome5, Feather } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
+import { deleteSaleOffer } from "../helperMethods/saleoffer.methods";
 
 interface SaleOfferProps {
   saleOffer: OfferType;
   user: any;
   isGrid?: boolean;
+  refetch: () => Promise<void>;
 }
 
-const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
+const SaleOffer = ({ saleOffer, user, isGrid = false, refetch }: SaleOfferProps) => {
   const router = useRouter();
 
   console.log("saleOffer", saleOffer);
@@ -47,8 +49,14 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
     if (user?.userId === saleOffer.userId) {
       return (
         <View className="flex-row items-center mr-4">
-          <TouchableOpacity className="bg-blue-500 justify-center items-center rounded-lg w-10 h-10">
+          <TouchableOpacity
+            className="bg-blue-500 justify-center items-center rounded-l-lg w-10 h-10"
+            onPress={() => router.push(`/messages/${saleOffer.saleOfferId}`)}
+          >
             <Feather name="message-circle" size={20} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-indigo-500 justify-center items-center rounded-r-lg w-10 h-10">
+            <Feather name="repeat" size={20} color="white" />
           </TouchableOpacity>
         </View>
       );
@@ -64,18 +72,38 @@ const SaleOffer = ({ saleOffer, user, isGrid = false }: SaleOfferProps) => {
         },
         {
           text: "Delete",
-          onPress: () => {
+          onPress: async () => {
+            // Make the onPress function async
             console.log("Deleting offer");
-            // await deleteSaleOffer(saleOffer.saleOfferId);
-            showMessage({
-              message: `Removed offer: ${saleOffer.title}`,
-              type: "info",
-            });
+            if (!saleOffer.id || !saleOffer.userId) return;
+
+            // Await the deleteSaleOffer function
+            const deletionResult = await deleteSaleOffer(saleOffer.id, saleOffer.userId, user.userId);
+
+            // Check deletion success
+            if (deletionResult.success) {
+              // If deletion is successful, refetch data and show a success message
+              refetch();
+              showMessage({
+                message: `Offer: ${saleOffer.title} was deleted successfully.`,
+                type: "info",
+              });
+            } else {
+              // If deletion fails, show an error message
+              showMessage({
+                message: "Error deleting offer. Please try again.",
+                type: "danger",
+              });
+            }
           },
         },
       ]);
-    } catch (error) {
-      console.error("Error deleting offer:", error);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      showMessage({
+        message: "Error deleting offer. Please try again.",
+        type: "danger",
+      });
     }
   };
 

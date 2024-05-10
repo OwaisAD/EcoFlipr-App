@@ -15,6 +15,7 @@ export default function SearchScreen() {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SaleOfferType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -29,6 +30,7 @@ export default function SearchScreen() {
       setSearch(text);
       const searchResults = await searchForSaleOffers(text, { limit: 10, startAfter: null });
       setSearchResults(searchResults);
+      setSearchResultMessage(`Found ${searchResults.length} ${searchResults.length == 1 ? "result" : "results"}`);
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
@@ -56,13 +58,7 @@ export default function SearchScreen() {
         {/* FILTER SECTION */}
         <View className="flex-row items-center justify-between bg-[#eee]">
           <View className="bg-[#eee]">
-            {searchResults.length == 0 ? (
-              <Text className="text-sm">Found 0 results</Text>
-            ) : (
-              <Text className="text-sm">
-                Found {searchResults.length} {searchResults.length == 1 ? "result" : "results"}
-              </Text>
-            )}
+            <Text>{searcResulthMessage}</Text>
           </View>
 
           <View className="flex-row items-center bg-[#eee] gap-2">
@@ -92,7 +88,11 @@ export default function SearchScreen() {
               </View>
             )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            ListEmptyComponent={<Text>Search for offers on EcoFlipr</Text>}
+            ListEmptyComponent={
+              <View className="items-center bg-[#eee] mt-10">
+                <Text className="text-lg">Search for offers on EcoFlipr</Text>
+              </View>
+            }
           />
         )}
       </View>

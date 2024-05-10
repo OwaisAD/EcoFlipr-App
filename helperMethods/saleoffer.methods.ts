@@ -1,6 +1,6 @@
-import { DocumentData, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
+import { DocumentData, deleteDoc, doc, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import { StatusTypes } from "../constants/StatusTypes";
-import { saleOfferRef } from "../firebaseConfig";
+import { db, saleOfferRef } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
 
 export const getUserSaleOffersByUserId = async (userId: string, status: StatusTypes) => {
@@ -10,6 +10,7 @@ export const getUserSaleOffersByUserId = async (userId: string, status: StatusTy
     const offersData: OfferType[] = offersSnapshot.docs.map((doc) => {
       const data = doc.data() as DocumentData;
       return {
+        id: doc.id,
         saleOfferId: data.saleOfferId,
         title: data.title,
         description: data.description,
@@ -21,7 +22,6 @@ export const getUserSaleOffersByUserId = async (userId: string, status: StatusTy
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
         userId: data.userId,
-        id: data.id,
         images: data.images,
         cityInfo: {
           x: data.cityInfo.x,
@@ -125,5 +125,28 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
   } catch (error: any) {
     console.log(error.message);
     throw new Error("Something went wrong", error);
+  }
+};
+
+export const deleteSaleOffer = async (saleOfferId: string, sellerUserId: string, userId: string) => {
+  try {
+    console.log("saleOfferId", saleOfferId);
+    console.log("sellerUserId", sellerUserId);
+    console.log("userId", userId);
+    if (sellerUserId !== userId) {
+      throw new Error("You do not have permission to delete this offer");
+    }
+    const offerRef = doc(db, "saleoffers", saleOfferId);
+    await deleteDoc(offerRef)
+      .then(() => {
+        console.log("Document successfully deleted!");
+      })
+      .catch((error) => {
+        console.error("Error removing document: ", error);
+      });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error.message);
+    return { success: false, msg: error.message };
   }
 };
