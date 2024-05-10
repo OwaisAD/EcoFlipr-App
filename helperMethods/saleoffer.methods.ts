@@ -181,34 +181,36 @@ export const updateSaleOfferStatus = async (saleOfferId: string, status: StatusT
 export const saveOffer = async (saleOfferId: string, savedOffers: string[], userId: string) => {
   try {
     if (savedOffers.includes(saleOfferId)) {
-      throw new Error("Offer already saved");
+      const index = savedOffers.indexOf(saleOfferId);
+      savedOffers.splice(index, 1);
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        savedOffers: savedOffers,
+      });
+      return { msg: "Offer removed", success: true };
     }
     savedOffers.push(saleOfferId);
     const userRef = doc(db, "users", userId);
     await updateDoc(userRef, {
       savedOffers: savedOffers,
     });
-    return { success: true };
+    return { msg: "Offer saved", success: true };
   } catch (error: any) {
     console.log(error.message);
     return { success: false, msg: error.message };
   }
 };
 
-export const unsaveOffer = async (saleOfferId: string, savedOffers: string[], userId: string) => {
+export const getSavedOffers = async (savedOffers: string[]) => {
   try {
-    if (!savedOffers.includes(saleOfferId)) {
-      throw new Error("Offer not saved");
+    const savedOffersData: OfferType[] = [];
+    for (const offerId of savedOffers) {
+      const offer = await getSaleOfferById(offerId);
+      savedOffersData.push(offer[0]);
     }
-    const index = savedOffers.indexOf(saleOfferId);
-    savedOffers.splice(index, 1);
-    const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
-      savedOffers: savedOffers,
-    });
-    return { success: true };
+    return savedOffersData;
   } catch (error: any) {
     console.log(error.message);
-    return { success: false, msg: error.message };
+    throw new Error("Something went wrong", error);
   }
 };

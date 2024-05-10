@@ -74,6 +74,7 @@ const MainLayout = () => {
         }}
       />
       <Stack.Screen name="notificationModalScreen" options={{ presentation: "modal", headerShown: false }} />
+      <Stack.Screen name="searchFilterModalScreen" options={{ presentation: "modal", headerShown: false }} />
       <Stack.Screen
         name="(app)/offersinteractedwith/index"
         options={{

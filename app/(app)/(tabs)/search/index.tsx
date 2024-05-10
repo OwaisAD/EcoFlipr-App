@@ -8,9 +8,11 @@ import { SaleOfferType } from "../../../../stores/saleOfferStore";
 import SaleOffer from "../../../../components/SaleOffer";
 import { useAuth } from "../../../../context/authContext";
 import Loading from "../../../../components/Loading";
+import { useRouter } from "expo-router";
 
 export default function SearchScreen() {
   const { user } = useAuth();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SaleOfferType[]>([]);
@@ -82,7 +84,7 @@ export default function SearchScreen() {
             <TouchableOpacity className="bg-[#eee]">
               <FontAwesome5 name="list-ul" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="bg-[#eee]">
+            <TouchableOpacity className="bg-[#eee]" onPress={() => router.push("/searchFilterModalScreen")}>
               <Ionicons name="filter-circle" size={30} color="black" />
             </TouchableOpacity>
           </View>

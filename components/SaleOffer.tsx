@@ -18,7 +18,7 @@ interface SaleOfferProps {
   saleOffer: OfferType;
   user: any;
   isGrid?: boolean;
-  refetch: () => Promise<void>;
+  refetch?: () => Promise<void>;
   setActiveTab?: React.Dispatch<React.SetStateAction<StatusTypes>>;
 }
 
@@ -30,24 +30,22 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
 
   const handleSaveOffer = async () => {
     try {
-      if (!saleOffer.id || !user.userId) throw new Error("No offer id or user id found");
+      if (!saleOffer.saleOfferId || !user.userId) throw new Error("No offer id or user id found");
 
-      if (user.savedOffers.includes(saleOffer.id)) {
-        await unsaveOffer(saleOffer.id, user.savedOffers, user.userId);
-        setIsSaved(false);
-        showMessage({
-          message: "Offer unsaved",
-          type: "info",
-        });
-        return;
-      }
+      const res = await saveOffer(saleOffer.saleOfferId, user.savedOffers, user.userId);
 
-      await saveOffer(saleOffer.id, user.savedOffers, user.userId);
-      setIsSaved(true);
       showMessage({
-        message: "Offer saved",
+        message: res.msg,
         type: "info",
       });
+
+      if (res.msg.includes("removed")) {
+        setIsSaved(false);
+      }
+
+      if (res.msg.includes("saved")) {
+        setIsSaved(true);
+      }
     } catch (error: any) {
       showMessage({
         message: "Error saving offer. Please try again.",
@@ -118,7 +116,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
             // Check deletion success
             if (deletionResult.success) {
               // If deletion is successful, refetch data and show a success message
-              refetch();
+              refetch && refetch();
               showMessage({
                 message: `Offer: ${saleOffer.title} was deleted successfully.`,
                 type: "info",
@@ -161,7 +159,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               setLoading(false);
               setStatusModalOpen(false);
               setActiveTab && setActiveTab(status as StatusTypes);
-              !setActiveTab && refetch();
+              !setActiveTab && refetch && refetch();
             },
           },
         ]
@@ -196,9 +194,9 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               {/* ACTIVE */}
               <TouchableOpacity
                 className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
-                  saleOffer.status === StatusTypes.ACTIVE && "bg-green-400 opacity-50"
+                  saleOffer && saleOffer.status === StatusTypes.ACTIVE && "bg-green-400 opacity-50"
                 }`}
-                disabled={saleOffer.status === StatusTypes.ACTIVE}
+                disabled={saleOffer && saleOffer.status === StatusTypes.ACTIVE}
                 onPress={() => handleChangeOfferStatus(StatusTypes.ACTIVE)}
               >
                 <FontAwesome name="toggle-on" size={24} color="black" />
@@ -207,9 +205,9 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               {/* INACTIVE */}
               <TouchableOpacity
                 className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
-                  saleOffer.status === StatusTypes.INACTIVE && "bg-green-400 opacity-50"
+                  saleOffer && saleOffer.status === StatusTypes.INACTIVE && "bg-green-400 opacity-50"
                 }`}
-                disabled={saleOffer.status === StatusTypes.INACTIVE}
+                disabled={saleOffer && saleOffer.status === StatusTypes.INACTIVE}
                 onPress={() => handleChangeOfferStatus(StatusTypes.INACTIVE)}
               >
                 <FontAwesome name="toggle-off" size={24} color="black" />
@@ -218,9 +216,9 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               {/* SOLD */}
               <TouchableOpacity
                 className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
-                  saleOffer.status === StatusTypes.SOLD && "bg-green-400 opacity-50"
+                  saleOffer && saleOffer.status === StatusTypes.SOLD && "bg-green-400 opacity-50"
                 }`}
-                disabled={saleOffer.status === StatusTypes.SOLD}
+                disabled={saleOffer && saleOffer.status === StatusTypes.SOLD}
                 onPress={() => handleChangeOfferStatus(StatusTypes.SOLD)}
               >
                 <Feather name="check-circle" size={24} color="black" />
@@ -229,9 +227,9 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               {/* ARCHIVED */}
               <TouchableOpacity
                 className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
-                  saleOffer.status === StatusTypes.ARCHIVED && "bg-green-400 opacity-50"
+                  saleOffer && saleOffer.status === StatusTypes.ARCHIVED && "bg-green-400 opacity-50"
                 }`}
-                disabled={saleOffer.status === StatusTypes.ARCHIVED}
+                disabled={saleOffer && saleOffer.status === StatusTypes.ARCHIVED}
                 onPress={() => handleChangeOfferStatus(StatusTypes.ARCHIVED)}
               >
                 <FontAwesome name="archive" size={24} color="black" />
@@ -300,7 +298,11 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           {/* Save button - only show on offers made by others */}
           {saleOffer.userId !== user?.userId && (
             <TouchableOpacity className="absolute right-1 bottom-1 bg-white rounded-full p-1" onPress={handleSaveOffer}>
-              <Feather name="bookmark" size={14} color={isSaved ? "blue" : "gray"} />
+              {isSaved || user.savedOffers.includes(saleOffer.saleOfferId) ? (
+                <Feather name="bookmark" size={14} color={"blue"} />
+              ) : (
+                <Feather name="bookmark" size={14} color={"gray"} />
+              )}
             </TouchableOpacity>
           )}
         </TouchableOpacity>
