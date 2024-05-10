@@ -225,7 +225,6 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           <View className="absolute shadow-sm right-0 bg-white rounded-bl-2xl rounded-tr-lg flex-row items-center py-1 px-2 gap-1 z-10">
             {saleOffer.shipping ? (
               <>
-                {!isGrid && <Text className="text-[10px]">{saleOffer.shipping ? "Shippable" : "No shipping"}</Text>}
                 <FontAwesome5 name="shipping-fast" size={10} color="black" />
               </>
             ) : (

@@ -78,6 +78,7 @@ export const getSaleOfferById = async (saleOfferId: string) => {
     });
     return saleOfferData;
   } catch (error: any) {
+    console.log(error.message);
     throw new Error("Something went wrong", error);
   }
 };
@@ -93,8 +94,7 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
 
     const saleOffersQuery = query(
       saleOfferRef,
-      // where("title_lowercase", ">=", searchText.toLowerCase()),
-      // where("title_lowercase", "<=", searchText.toLowerCase() + "~"),
+      where("status", "==", StatusTypes.ACTIVE),
       orderBy("title"),
       startAfter(pagination.startAfter),
       limit(pagination.limit)
@@ -140,7 +140,7 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
       });
     return saleOffersData;
   } catch (error: any) {
-    console.log(error.message);
+    console.log(error);
     throw new Error("Something went wrong", error);
   }
 };

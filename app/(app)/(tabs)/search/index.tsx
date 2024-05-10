@@ -48,7 +48,7 @@ export default function SearchScreen() {
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      console.log(error.message);
+      console.log(error);
       console.error("Error fetching search results:", error);
     }
   };
