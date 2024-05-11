@@ -49,7 +49,7 @@ export default function SavedScreen() {
           data={savedOffers}
           renderItem={({ item }) => (
             <View className="my-[6px] bg-[#EEE] flex-1">
-              <SaleOffer saleOffer={item} user={user} />
+              <SaleOffer saleOffer={item} user={user} refetch={fetchSavedOffers} />
             </View>
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

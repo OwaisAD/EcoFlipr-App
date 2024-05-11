@@ -104,7 +104,7 @@ const MainLayout = () => {
         options={{
           headerShown: true,
           headerTitle: "",
-          headerBackTitle: "",
+          headerBackTitle: "Back",
           headerStyle: {
             backgroundColor: "#EEE",
           },

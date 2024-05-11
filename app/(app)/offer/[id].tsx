@@ -1,8 +1,8 @@
-import { Entypo, Feather } from "@expo/vector-icons";
+import { Entypo, Feather, FontAwesome } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View, Image, Dimensions } from "react-native";
-import { getSaleOfferById } from "../../../helperMethods/saleoffer.methods";
+import { ScrollView, Text, TouchableOpacity, View, Image, Dimensions, Alert } from "react-native";
+import { getSaleOfferById, saveOffer, updateSaleOfferStatus } from "../../../helperMethods/saleoffer.methods";
 import MapView, { Marker } from "react-native-maps";
 import Moment from "react-moment";
 import { formatFirebaseDate } from "../../../utils/formatDate";
@@ -11,12 +11,19 @@ import { useAuth } from "../../../context/authContext";
 import { getUserById } from "../../../helperMethods/user.methods";
 import moment from "moment";
 import SaleOfferMenu from "../../../components/SaleOfferMenu";
+import { showMessage } from "react-native-flash-message";
+import Modal from "react-native-modal";
+import { StatusTypes } from "../../../constants/StatusTypes";
+import Loading from "../../../components/Loading";
 
 export default function ViewSaleOffer() {
   const { user } = useAuth();
   const search = useLocalSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewContactDetails, setViewContactDetails] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [saleOffer, setSaleOffer] = useState({
     saleOfferId: "",
     title: "",
@@ -96,15 +103,134 @@ export default function ViewSaleOffer() {
     console.log("Image clicked");
   };
 
-  const handleSaveOffer = () => {
-    // Implement logic to save the offer
-    console.log("Offer saved");
+  const handleSaveOffer = async () => {
+    try {
+      if (!user) throw new Error("User not found");
+      if (!saleOffer.saleOfferId || !user.userId) throw new Error("No offer id or user id found");
+
+      const res = await saveOffer(saleOffer.saleOfferId, user.savedOffers, user.userId);
+
+      showMessage({
+        message: res.msg,
+        type: "info",
+      });
+
+      if (res.msg.includes("removed")) {
+        setIsSaved(false);
+      }
+
+      if (res.msg.includes("saved")) {
+        setIsSaved(true);
+      }
+    } catch (error: any) {
+      showMessage({
+        message: "Error saving offer. Please try again.",
+        type: "danger",
+      });
+    }
+  };
+
+  const handleChangeOfferStatus = async (status: string) => {
+    try {
+      Alert.alert(
+        "Change offer status",
+        `Are you sure you want to change the status of the offer to ${status.toLowerCase()}?`,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Change",
+            onPress: async () => {
+              setLoading(true);
+              if (!saleOffer.id) throw new Error("No offer id found");
+              await updateSaleOfferStatus(saleOffer.id, status as StatusTypes);
+              setLoading(false);
+              await getSaleOfferAndSellerInfo();
+              setStatusModalOpen(false);
+            },
+          },
+        ]
+      );
+    } catch (error: any) {
+      setLoading(false);
+      console.error("Error changing offer status:", error);
+    }
   };
 
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 33 }}
     >
+      <Modal
+        isVisible={statusModalOpen}
+        onBackdropPress={() => setStatusModalOpen(false)}
+        animationIn={"fadeInUp"}
+        animationOut={"fadeOutDown"}
+        className="gap-4"
+      >
+        {loading ? (
+          <>
+            <View className="bg-[#EEE] rounded-lg items-center py-8 w-full">
+              <Loading size={100} />
+            </View>
+          </>
+        ) : (
+          <>
+            <View className="bg-[#EEE] rounded-lg items-center py-2 w-full">
+              <Text className="text-xl">Change offer status</Text>
+            </View>
+            <View className="flex-row justify-around rounded-lg bg-[#EEE] py-8 px-4 w-full">
+              {/* ACTIVE */}
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer && saleOffer.status === StatusTypes.ACTIVE && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer && saleOffer.status === StatusTypes.ACTIVE}
+                onPress={() => handleChangeOfferStatus(StatusTypes.ACTIVE)}
+              >
+                <FontAwesome name="toggle-on" size={24} color="black" />
+                <Text>Active</Text>
+              </TouchableOpacity>
+              {/* INACTIVE */}
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer && saleOffer.status === StatusTypes.INACTIVE && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer && saleOffer.status === StatusTypes.INACTIVE}
+                onPress={() => handleChangeOfferStatus(StatusTypes.INACTIVE)}
+              >
+                <FontAwesome name="toggle-off" size={24} color="black" />
+                <Text>Inactive</Text>
+              </TouchableOpacity>
+              {/* SOLD */}
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer && saleOffer.status === StatusTypes.SOLD && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer && saleOffer.status === StatusTypes.SOLD}
+                onPress={() => handleChangeOfferStatus(StatusTypes.SOLD)}
+              >
+                <Feather name="check-circle" size={24} color="black" />
+                <Text>Sold</Text>
+              </TouchableOpacity>
+              {/* ARCHIVED */}
+              <TouchableOpacity
+                className={`items-center p-3 bg-[#e1dcdc] rounded-lg h-20 w-20 justify-center ${
+                  saleOffer && saleOffer.status === StatusTypes.ARCHIVED && "bg-green-400 opacity-50"
+                }`}
+                disabled={saleOffer && saleOffer.status === StatusTypes.ARCHIVED}
+                onPress={() => handleChangeOfferStatus(StatusTypes.ARCHIVED)}
+              >
+                <FontAwesome name="archive" size={24} color="black" />
+                <Text>Archive</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </Modal>
+
       {/* IMAGE SLIDER */}
       {saleOffer.images && saleOffer.images.length > 0 ? (
         <>
@@ -139,7 +265,11 @@ export default function ViewSaleOffer() {
               </View>
               {saleOffer.userId !== user?.userId && (
                 <TouchableOpacity className="bg-white rounded-full p-1" onPress={handleSaveOffer}>
-                  <Feather name="bookmark" size={14} color="gray" />
+                  {isSaved || user!.savedOffers.includes(saleOffer.saleOfferId) ? (
+                    <Feather name="bookmark" size={14} color={"blue"} />
+                  ) : (
+                    <Feather name="bookmark" size={14} color={"gray"} />
+                  )}
                 </TouchableOpacity>
               )}
             </View>
@@ -158,8 +288,13 @@ export default function ViewSaleOffer() {
           <Moment element={Text} fromNow className="text-sm font-light">
             {formatFirebaseDate(saleOffer.createdAt)}
           </Moment>
+          {saleOffer.userId == user?.userId && (
+            <TouchableOpacity className="px-2 py-1 bg-slate-300 rounded-full" onPress={() => setStatusModalOpen(true)}>
+              <Text className="text-xs font-medium">{saleOffer.status}</Text>
+            </TouchableOpacity>
+          )}
           <View>
-            <SaleOfferMenu isOwner={saleOffer.userId == user?.userId} />
+            <SaleOfferMenu isOwner={saleOffer.userId == user?.userId} setStatusModalVisible={setStatusModalOpen} />
           </View>
         </View>
       </View>

@@ -19,9 +19,8 @@ export const Active = ({ setActiveTab }: ActiveProps) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+    fetchOffers();
+    setRefreshing(false);
   }, []);
 
   const fetchOffers = async () => {

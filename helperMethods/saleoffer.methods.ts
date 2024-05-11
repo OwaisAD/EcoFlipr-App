@@ -55,6 +55,7 @@ export const getSaleOfferById = async (saleOfferId: string) => {
     const saleOfferData = saleOfferSnapshot.docs.map((doc) => {
       const data = doc.data() as DocumentData;
       return {
+        id: doc.id,
         saleOfferId: data.saleOfferId,
         title: data.title,
         description: data.description,
@@ -66,7 +67,6 @@ export const getSaleOfferById = async (saleOfferId: string) => {
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
         userId: data.userId,
-        id: data.id,
         images: data.images,
         cityInfo: {
           x: data.cityInfo.x,

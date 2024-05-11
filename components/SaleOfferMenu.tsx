@@ -13,7 +13,13 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 
-const SaleOfferMenu = ({ isOwner }: { isOwner: boolean }) => {
+const SaleOfferMenu = ({
+  isOwner,
+  setStatusModalVisible,
+}: {
+  isOwner: boolean;
+  setStatusModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const router = useRouter();
 
   return (
@@ -47,7 +53,7 @@ const SaleOfferMenu = ({ isOwner }: { isOwner: boolean }) => {
           <>
             <MenuItem
               text="Change status"
-              action={() => router.navigate("/(app)/(tabs)/profile")}
+              action={() => setStatusModalVisible(true)}
               value={null}
               icon={<Feather name="repeat" size={hp(2.5)} color={"#737373"} />}
             />

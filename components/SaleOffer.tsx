@@ -8,7 +8,7 @@ import { FontAwesome5, Feather, FontAwesome } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-import { deleteSaleOffer, saveOffer, unsaveOffer, updateSaleOfferStatus } from "../helperMethods/saleoffer.methods";
+import { deleteSaleOffer, saveOffer, updateSaleOfferStatus } from "../helperMethods/saleoffer.methods";
 import { useState } from "react";
 import Loading from "./Loading";
 import Modal from "react-native-modal";
@@ -41,10 +41,12 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
 
       if (res.msg.includes("removed")) {
         setIsSaved(false);
+        refetch && refetch();
       }
 
       if (res.msg.includes("saved")) {
         setIsSaved(true);
+        refetch && refetch();
       }
     } catch (error: any) {
       showMessage({
