@@ -291,7 +291,7 @@ export default function ViewSaleOffer() {
               showsHorizontalScrollIndicator={false}
               onScroll={(event) => {
                 const contentOffsetX = event.nativeEvent.contentOffset.x;
-                const index = Math.round(contentOffsetX / 500); // Assuming images are full width
+                const index = Math.round(contentOffsetX / Dimensions.get("screen").width); 
                 setCurrentIndex(index);
               }}
               style={{ width: "100%", height: "100%" }}
