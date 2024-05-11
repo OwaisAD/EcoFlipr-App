@@ -2,6 +2,7 @@ import {
   DocumentData,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -152,8 +153,13 @@ export const deleteSaleOffer = async (saleOfferId: string, sellerUserId: string,
       throw new Error("You do not have permission to delete this offer");
     }
     const offerRef = doc(db, "saleoffers", saleOfferId);
+    const offerSnap = await getDoc(offerRef);
+    if (!offerSnap.exists()) {
+      throw new Error("Offer does not exist");
+    }
+    const offerData = offerSnap.data() as DocumentData;
     //  get the offer, delete the images from storage, then delete the offer
-    const images = (await getSaleOfferById(saleOfferId))[0].images;
+    const images = offerData.images;
     for (let i = 0; i < images.length; i++) {
       // delete image from storage
       deleteObject(ref(storage, images[i]))
