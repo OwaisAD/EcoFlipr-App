@@ -11,8 +11,9 @@ import {
   where,
 } from "firebase/firestore";
 import { StatusTypes } from "../constants/StatusTypes";
-import { db, saleOfferRef } from "../firebaseConfig";
+import { db, saleOfferRef, storage } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
+import { deleteObject, ref } from "firebase/storage";
 
 export const getUserSaleOffersByUserId = async (userId: string, status: StatusTypes) => {
   try {
@@ -151,6 +152,18 @@ export const deleteSaleOffer = async (saleOfferId: string, sellerUserId: string,
       throw new Error("You do not have permission to delete this offer");
     }
     const offerRef = doc(db, "saleoffers", saleOfferId);
+    //  get the offer, delete the images from storage, then delete the offer
+    const images = (await getSaleOfferById(saleOfferId))[0].images;
+    for (let i = 0; i < images.length; i++) {
+      // delete image from storage
+      deleteObject(ref(storage, images[i]))
+        .then(() => {
+          console.log("Image removed successfully");
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    }
     await deleteDoc(offerRef)
       .then(() => {
         console.log("Document successfully deleted!");

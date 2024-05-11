@@ -16,9 +16,11 @@ import { useRouter } from "expo-router";
 const SaleOfferMenu = ({
   isOwner,
   setStatusModalVisible,
+  handleDeleteOffer,
 }: {
   isOwner: boolean;
   setStatusModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  handleDeleteOffer: () => void;
 }) => {
   const router = useRouter();
 
@@ -67,7 +69,7 @@ const SaleOfferMenu = ({
             <Divider />
             <MenuItem
               text="Delete offer"
-              action={() => console.log("deleting offer")}
+              action={() => handleDeleteOffer()}
               value={null}
               icon={<Feather name="trash" size={hp(2.5)} color={"#737373"} />}
             />

@@ -1,8 +1,13 @@
 import { Entypo, Feather, FontAwesome } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, Image, Dimensions, Alert } from "react-native";
-import { getSaleOfferById, saveOffer, updateSaleOfferStatus } from "../../../helperMethods/saleoffer.methods";
+import {
+  deleteSaleOffer,
+  getSaleOfferById,
+  saveOffer,
+  updateSaleOfferStatus,
+} from "../../../helperMethods/saleoffer.methods";
 import MapView, { Marker } from "react-native-maps";
 import Moment from "react-moment";
 import { formatFirebaseDate } from "../../../utils/formatDate";
@@ -18,6 +23,7 @@ import Loading from "../../../components/Loading";
 
 export default function ViewSaleOffer() {
   const { user } = useAuth();
+  const router = useRouter();
   const search = useLocalSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewContactDetails, setViewContactDetails] = useState(false);
@@ -159,6 +165,50 @@ export default function ViewSaleOffer() {
     }
   };
 
+  const handleDeleteOffer = async () => {
+    try {
+      Alert.alert("Delete offer", "Are you sure you want to delete this offer?", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            // Make the onPress function async
+            console.log("Deleting offer");
+            if (!saleOffer.id || !saleOffer.userId) return;
+
+            // Await the deleteSaleOffer function
+            const deletionResult = await deleteSaleOffer(saleOffer.id, saleOffer.userId, user!.userId);
+
+            // Check deletion success
+            if (deletionResult.success) {
+              showMessage({
+                message: `Offer: ${saleOffer.title} was deleted successfully.`,
+                type: "info",
+              });
+              // Redirect to the offers page
+              router.back();
+            } else {
+              // If deletion fails, show an error message
+              showMessage({
+                message: "Error deleting offer. Please try again.",
+                type: "danger",
+              });
+            }
+          },
+        },
+      ]);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      showMessage({
+        message: "Error deleting offer. Please try again.",
+        type: "danger",
+      });
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, alignItems: "center", backgroundColor: "#eee", paddingBottom: 33 }}
@@ -294,7 +344,11 @@ export default function ViewSaleOffer() {
             </TouchableOpacity>
           )}
           <View>
-            <SaleOfferMenu isOwner={saleOffer.userId == user?.userId} setStatusModalVisible={setStatusModalOpen} />
+            <SaleOfferMenu
+              isOwner={saleOffer.userId == user?.userId}
+              setStatusModalVisible={setStatusModalOpen}
+              handleDeleteOffer={handleDeleteOffer}
+            />
           </View>
         </View>
       </View>

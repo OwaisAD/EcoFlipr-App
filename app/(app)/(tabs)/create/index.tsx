@@ -43,11 +43,12 @@ export default function CreateScreen() {
     x: 0,
     y: 0,
   });
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState("");
   const [imageUploadModalVisible, setImageUploadModalVisible] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingShare, setLoadingShare] = useState(false);
+  const [zipCode, setZipCode] = useState("");
 
   const handleCreateOffer = async () => {
     try {
@@ -58,13 +59,15 @@ export default function CreateScreen() {
         description: offerDescription,
         category: selectedCategory,
         shipping: shipping,
-        zipCode: cityInfo.zipCode ? +cityInfo.zipCode : 0,
-        price: price,
+        zipCode: +zipCode,
+        price: +price,
       });
+
+      const saleOfferId = uuidv4().toString();
 
       // create offer
       const saleoffer = {
-        saleOfferId: uuidv4().toString(),
+        saleOfferId: saleOfferId,
         userId: user!.userId,
         title: title,
         description: offerDescription,
@@ -81,16 +84,17 @@ export default function CreateScreen() {
       };
 
       const saleOfferRef = await addDoc(collection(db, "saleoffers"), saleoffer);
-      console.log("Document written with ID: ", saleOfferRef.id);
       // clear fields
       setTitle("");
       setOfferDescription("");
       setSelectedCategory("Select a category");
       setShipping(false);
+
       setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
-      setPrice(0);
-      // navigate to offer page
-      router.push({ pathname: `/offer/${saleOfferRef.id}` });
+      setZipCode("");
+      setPrice("");
+      setImages([]);
+      router.push({ pathname: `/offer/${saleOfferId}` });
       setLoadingShare(false);
     } catch (error) {
       setLoadingShare(false);
@@ -226,7 +230,8 @@ export default function CreateScreen() {
           setSelectedCategory("Select a category");
           setShipping(false);
           setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
-          setPrice(0);
+          setPrice("");
+          setZipCode("");
           setImages([]);
 
           showMessage({
@@ -371,12 +376,16 @@ export default function CreateScreen() {
         {/* OFFER ZIP */}
         <View className="flex-row items-center justify-between rounded-xl">
           <TextInput
-            onChangeText={(value) => handleSetZipCode(value)}
+            onChangeText={(value) => {
+              handleSetZipCode(value);
+              setZipCode(value);
+            }}
             className="bg-white py-4 px-2 rounded-l-md w-full flex-1 font-semibold text-neutral-700"
             placeholder="Enter a zip code"
             autoCapitalize="none"
             keyboardType="number-pad"
             maxLength={4}
+            value={zipCode}
           />
           <TextInput
             className="bg-[#D1D5DB] py-4 px-2 rounded-r-md w-full flex-1 font-semibold text-white"
@@ -390,11 +399,12 @@ export default function CreateScreen() {
         {/* OFFER PRICE */}
         <View className="flex-row items-center justify-between rounded-xl">
           <TextInput
-            onChangeText={(value) => setPrice(Number(value))}
+            onChangeText={(value) => setPrice(value)}
             placeholder="Enter a price"
             className="bg-white py-4 px-2 flex-1 rounded-md font-semibold text-neutral-700"
             autoCapitalize="none"
             keyboardType="number-pad"
+            value={price}
           />
           <Text className="font-light text-neutral-700 absolute right-2">,-</Text>
         </View>
