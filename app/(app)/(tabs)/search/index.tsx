@@ -1,7 +1,7 @@
 import { FlatList, RefreshControl, SafeAreaView, ScrollView, TextInput, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../../../../components/Themed";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { searchForSaleOffers } from "../../../../helperMethods/saleoffer.methods";
 import { SaleOfferType } from "../../../../stores/saleOfferStore";
@@ -11,6 +11,7 @@ import Loading from "../../../../components/Loading";
 import { useRouter } from "expo-router";
 
 export default function SearchScreen() {
+  const inputRef = useRef<TextInput | null>();
   const { user } = useAuth();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
@@ -18,6 +19,10 @@ export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState<SaleOfferType[]>([]);
   const [loading, setLoading] = useState(false);
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
+
+  setTimeout(() => {
+    inputRef.current?.focus();
+  }, 100);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -64,6 +69,10 @@ export default function SearchScreen() {
             autoCapitalize="none"
             value={search}
             onChangeText={(text) => handleSearch(text)}
+            keyboardAppearance="dark"
+            ref={(ref) => {
+              inputRef.current = ref;
+            }}
           />
           <View className="px-1">
             <FontAwesome5 name="search" size={20} color="#1DAEFF" />
