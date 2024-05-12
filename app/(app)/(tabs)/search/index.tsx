@@ -19,10 +19,10 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(false);
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
 
-  const onRefresh = useCallback(() => {
-    // setRefreshing(true);
-    // handleRefresh();
-    // setRefreshing(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await handleRefresh();
+    setRefreshing(false);
   }, []);
 
   const handleSearch = async (text: string) => {

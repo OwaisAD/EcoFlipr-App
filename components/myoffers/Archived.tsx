@@ -17,9 +17,9 @@ export const Archived = ({ setActiveTab }: ArchivedProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    fetchOffers();
+    await fetchOffers();
     setRefreshing(false);
   }, []);
 

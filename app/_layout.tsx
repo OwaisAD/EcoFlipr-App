@@ -8,6 +8,8 @@ import { AuthContext, AuthContextProvider, useAuth } from "../context/authContex
 import FlashMessage from "react-native-flash-message";
 import { View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -111,6 +113,17 @@ const MainLayout = () => {
         }}
       />
       <Stack.Screen
+        name="(app)/editoffer/[id]"
+        options={{
+          headerShown: true,
+          headerTitle: "",
+          headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen
         name="(app)/messages/[id]"
         options={{
           headerShown: true,
@@ -147,11 +160,13 @@ export default function RootLayout() {
   }
 
   return (
-    <MenuProvider>
-      <AuthContextProvider>
-        <MainLayout />
-        <FlashMessage position="bottom" style={{ backgroundColor: "#333" }} />
-      </AuthContextProvider>
-    </MenuProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <MenuProvider>
+        <AuthContextProvider>
+          <MainLayout />
+          <FlashMessage position="bottom" style={{ backgroundColor: "#333" }} />
+        </AuthContextProvider>
+      </MenuProvider>
+    </GestureHandlerRootView>
   );
 }
