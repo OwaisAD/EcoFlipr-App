@@ -25,12 +25,10 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage
 import { Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
-import { useSaleOfferInCreationStore } from "../../../../stores/saleOfferStore";
 
 export default function CreateScreen() {
   const { user } = useAuth();
   const router = useRouter();
-  const saleOfferInCreationStore = useSaleOfferInCreationStore();
   const MAX_DESCRIPTION_LENGTH = 2000;
   const [title, setTitle] = useState("");
   const [offerDescription, setOfferDescription] = useState("");
