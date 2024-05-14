@@ -4,7 +4,7 @@ import Moment from "react-moment";
 import { formatFirebaseDate } from "../utils/formatDate";
 import { formatCurrencyDA } from "../utils/currencyFormat";
 import { useRouter } from "expo-router";
-import { FontAwesome5, Feather, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome5, Feather, FontAwesome, Entypo } from "@expo/vector-icons";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { EvilIcons } from "@expo/vector-icons";
 import { showMessage } from "react-native-flash-message";
@@ -255,7 +255,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               </>
             ) : (
               <>
-                <Text className="text-[10px]">{saleOffer.shipping ? "Shippable" : "Not shipping"}</Text>
+                <Text className="text-[10px] font-light">Not shipping</Text>
               </>
             )}
           </View>

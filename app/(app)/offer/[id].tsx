@@ -348,6 +348,7 @@ export default function ViewSaleOffer() {
               isOwner={saleOffer.userId == user?.userId}
               setStatusModalVisible={setStatusModalOpen}
               handleDeleteOffer={handleDeleteOffer}
+              saleOfferId={saleOffer.saleOfferId}
             />
           </View>
         </View>
@@ -366,6 +367,7 @@ export default function ViewSaleOffer() {
       <TouchableOpacity
         className="w-full h-28 bg-[#D9D9D9] my-2 rounded-lg flex-row items-center p-4 space-x-4"
         style={{ width: Dimensions.get("window").width - 24 }}
+        onPress={() => router.push(`/profile/${seller.userId}`)}
       >
         {/* PROFILE PIC */}
         <View className="w-20 h-20 rounded-full bg-[#D9D9D9]">
@@ -428,14 +430,38 @@ export default function ViewSaleOffer() {
       </TouchableOpacity>
 
       {/* MESSAGING */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         className="bg-[#1DAEFF] w-full p-2 rounded-lg my-2"
         style={{ width: Dimensions.get("window").width - 24 }}
       >
-        <Text className="text-lg font-medium text-center uppercase text-white">
-          {user?.userId == seller.userId ? "My Messages" : "Message Seller"}
-        </Text>
-      </TouchableOpacity>
+        {user?.userId == seller.userId ? (
+          <Text className="text-lg font-medium text-center uppercase text-white">My Messages</Text>
+        ) : (
+          <Text className="text-lg font-medium text-center uppercase text-white">Message Seller</Text>
+        )}
+      </TouchableOpacity> */}
+      {user?.userId == seller.userId ? (
+        <TouchableOpacity
+          className="bg-[#1DAEFF] w-full p-2 rounded-lg my-2"
+          style={{ width: Dimensions.get("window").width - 24 }}
+          onPress={() => router.push(`/messages/${saleOffer.saleOfferId}`)}
+        >
+          <Text className="text-lg font-medium text-center uppercase text-white">My Messages</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          className="bg-[#1DAEFF] w-full p-2 rounded-lg my-2"
+          style={{ width: Dimensions.get("window").width - 24 }}
+          onPress={() =>
+            router.push({
+              pathname: `/thread/${saleOffer.saleOfferId}`,
+              params: { sellerId: seller.userId, senderId: user?.userId },
+            })
+          }
+        >
+          <Text className="text-lg font-medium text-center uppercase text-white">Message Seller</Text>
+        </TouchableOpacity>
+      )}
 
       <View className="w-full h-10 items-center justify-center">
         <Text className="text-center text-xl shadow-lg font-light">Offer location</Text>

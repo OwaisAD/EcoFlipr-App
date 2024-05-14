@@ -17,10 +17,12 @@ const SaleOfferMenu = ({
   isOwner,
   setStatusModalVisible,
   handleDeleteOffer,
+  saleOfferId,
 }: {
   isOwner: boolean;
   setStatusModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   handleDeleteOffer: () => void;
+  saleOfferId: string;
 }) => {
   const router = useRouter();
 
@@ -62,7 +64,7 @@ const SaleOfferMenu = ({
             <Divider />
             <MenuItem
               text="Edit offer"
-              action={() => router.navigate("/(app)/(tabs)/profile")}
+              action={() => router.navigate(`(app)/editoffer/${saleOfferId}`)}
               value={null}
               icon={<Feather name="edit" size={hp(2.5)} color={"#737373"} />}
             />

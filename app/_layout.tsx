@@ -8,8 +8,8 @@ import { AuthContext, AuthContextProvider, useAuth } from "../context/authContex
 import FlashMessage from "react-native-flash-message";
 import { View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
-import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -128,6 +128,17 @@ const MainLayout = () => {
         options={{
           headerShown: true,
           headerTitle: "Messages",
+          headerBackTitle: "Back",
+          headerStyle: {
+            backgroundColor: "#EEE",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="(app)/thread/[id]"
+        options={{
+          headerShown: true,
+          headerTitle: "",
           headerBackTitle: "Back",
           headerStyle: {
             backgroundColor: "#EEE",
