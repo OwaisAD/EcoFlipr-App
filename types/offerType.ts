@@ -1,4 +1,5 @@
 export interface OfferType {
+  id?: string;
   saleOfferId?: string;
   title: string;
   description: string;
@@ -16,7 +17,6 @@ export interface OfferType {
     seconds: number;
   };
   userId?: string;
-  id?: string;
   cityInfo?: {
     x: number;
     y: number;
