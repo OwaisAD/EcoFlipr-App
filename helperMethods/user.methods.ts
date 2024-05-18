@@ -8,8 +8,6 @@ export const getUserById = async (userId: string) => {
     const userData = userSnapshot.docs.map((doc) => {
       const data = doc.data() as DocumentData;
 
-      console.log("WE IN HERE", data);
-
       return {
         userId: data.userId,
         firstName: data.firstName,
