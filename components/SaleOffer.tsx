@@ -173,7 +173,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
   };
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className={`${isGrid && "w-[180px]"}`}>
       <Modal
         isVisible={statusModalOpen}
         onBackdropPress={() => setStatusModalOpen(false)}
@@ -248,14 +248,14 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           } bg-[#D1D5DB]  rounded-xl border-[0.2px] border-indigo-200 shadow-sm`}
           onPress={() => router.push(`/offer/${saleOffer.saleOfferId}`)}
         >
-          <View className="absolute shadow-sm right-0 bg-white rounded-bl-2xl rounded-tr-lg flex-row items-center py-1 px-2 gap-1 z-10">
+          <View className="absolute shadow-sm right-[-1px] bg-white rounded-bl-2xl rounded-tr-lg flex-row items-center py-1 px-2 gap-1 z-10">
             {saleOffer.shipping ? (
               <>
                 <FontAwesome5 name="shipping-fast" size={10} color="black" />
               </>
             ) : (
               <>
-                <Text className="text-[10px] font-light">Not shipping</Text>
+                <Text className="text-[10px] font-light">No shipping</Text>
               </>
             )}
           </View>
@@ -268,11 +268,11 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
                 : require("../assets/images/No-Image.png")
             }
             className={`h-full ${
-              isGrid ? "h-28 w-full" : "h-full w-28 rounded-bl-xl rounded-br-[31px] rounded-tl-xl"
+              isGrid ? "h-28 w-full rounded-t-lg" : "h-full w-28 rounded-bl-xl rounded-br-[31px] rounded-tl-xl"
             }  object-contain`}
           />
-          <View className="flex flex-col justify-between px-4 py-1">
-            <View className="flex flex-col">
+          <View className="flex flex-col justify-between px-4 mt-1 ">
+            <View className="flex flex-col ">
               <Text className={`${isGrid ? "text-sm" : "text-lg"} font-light`}>{saleOffer.title}</Text>
               {!isGrid && (
                 <Text className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>
@@ -281,19 +281,21 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               )}
             </View>
 
-            <View className="flex flex-row items-center justify-between space-x-12">
+            <View className={`flex flex-row justify-between space-x-12 ${isGrid && "space-x-4"} `}>
               <View>
                 <Text className="text-sm font-light">{saleOffer.zipCode}</Text>
                 <Moment element={Text} fromNow className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>
                   {saleOffer.createdAt && formatFirebaseDate(saleOffer.createdAt)}
                 </Moment>
-                <Text className="text-sm font-light">
+                <Text className={`text-sm font-light ${isGrid && "text-xs"}`}>
                   {saleOffer.cityInfo?.zipCode} {saleOffer.cityInfo?.city}
                 </Text>
               </View>
 
               <View>
-                <Text className="text-lg font-bold">{formatCurrencyDA(saleOffer.price)}</Text>
+                <Text className={`${isGrid ? "text-xs" : "text-sm"} font-semibold`}>
+                  {formatCurrencyDA(saleOffer.price)}
+                </Text>
               </View>
             </View>
           </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -19,6 +19,7 @@ import { getUserById } from "../../../helperMethods/user.methods";
 import { Image } from "react-native";
 import { useAuth } from "../../../context/authContext";
 import CustomKeyboardView from "../../../components/CustomKeyboardView";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface UserType {
   userId: string;
@@ -37,6 +38,7 @@ export default function Thread() {
   const [threadId, setThreadId] = useState<string | null>(null);
   const [sellerData, setSellerData] = useState<UserType | null>(null);
   const [buyerData, setBuyerData] = useState<UserType | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     const fetchSellerData = async () => {
@@ -133,32 +135,40 @@ export default function Thread() {
 
   return (
     <CustomKeyboardView>
-      <ScrollView className="flex-1 px-4 mt-4">
-        {messages.map((message) => (
-          <View className="mb-2" key={message.id}>
-            <View>
-              <View
-                key={message.id}
-                className={`mb-1 px-4 py-2 rounded-2xl max-w-[300px] ${
-                  message.senderId === user?.userId ? "self-end bg-blue-500" : "self-start bg-gray-200"
-                }`}
-              >
-                <Text className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}>
-                  {message.text}
-                </Text>
+      {messages && (
+        <ScrollView
+          className="flex-1 px-4 mt-2"
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd()}
+          ref={scrollViewRef}
+        >
+          {messages.map((message) => (
+            <View className="mb-2" key={message.id}>
+              <View>
+                <View
+                  key={message.id}
+                  className={`mb-1 px-4 py-2 rounded-2xl max-w-[300px] ${
+                    message.senderId === user?.userId ? "self-end bg-blue-500" : "self-start bg-gray-200"
+                  }`}
+                >
+                  <Text className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}>
+                    {message.text}
+                  </Text>
+                </View>
               </View>
-            </View>
 
-            <Text className={`text-[10px] font-light ${message.senderId === user?.userId ? "self-end" : "self-start"}`}>
-              {message.senderId === user?.userId
-                ? "You"
-                : `${buyerData?.userId === user?.userId ? sellerData?.firstName : buyerData?.firstName}`}{" "}
-              at {message.createdAt && new Date(message.createdAt.toDate()).toLocaleString("da-DK")}
-            </Text>
-          </View>
-        ))}
-      </ScrollView>
-      <View className="flex-row items-center p-2 border-t border-gray-300 bg-[#eee] space-x-2">
+              <Text
+                className={`text-[10px] font-light ${message.senderId === user?.userId ? "self-end" : "self-start"}`}
+              >
+                {message.senderId === user?.userId
+                  ? "You"
+                  : `${buyerData?.userId === user?.userId ? sellerData?.firstName : buyerData?.firstName}`}{" "}
+                at {message.createdAt && new Date(message.createdAt.toDate()).toLocaleString("da-DK")}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+      <View className="flex-row items-center p-2 border-t border-gray-300 bg-[#eee] space-x-2 mb-10">
         <TextInput
           value={newMessage}
           onChangeText={setNewMessage}

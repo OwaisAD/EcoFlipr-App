@@ -19,6 +19,7 @@ export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState<SaleOfferType[]>([]);
   const [loading, setLoading] = useState(false);
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
+  const [isGrid, setIsGrid] = useState(false);
 
   setTimeout(() => {
     inputRef.current?.focus();
@@ -86,10 +87,10 @@ export default function SearchScreen() {
           </View>
 
           <View className="flex-row items-center bg-[#eee] gap-2">
-            <TouchableOpacity className="bg-[#eee]">
+            <TouchableOpacity className="bg-[#eee]" onPress={() => setIsGrid(true)}>
               <Entypo name="grid" size={30} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="bg-[#eee]">
+            <TouchableOpacity className="bg-[#eee]" onPress={() => setIsGrid(false)}>
               <FontAwesome5 name="list-ul" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity className="bg-[#eee]" onPress={() => router.push("/searchFilterModalScreen")}>
@@ -99,16 +100,17 @@ export default function SearchScreen() {
         </View>
         {/* SEARCH RESULTS */}
         {loading ? (
-          <View className="bg-[#eee] items-center">
+          <View className={`bg-[#eee]`}>
             <Loading size={100} />
           </View>
         ) : (
           <FlatList
-            className="mt-4"
+            className={`mt-4`}
+            contentContainerStyle={isGrid ? { flexDirection: "row", flexWrap: "wrap" } : {}}
             data={searchResults}
             renderItem={({ item }) => (
-              <View className="mb-2 bg-[#eee]">
-                <SaleOffer saleOffer={item} user={user} refetch={handleRefresh} />
+              <View className={`mb-2 bg-[#eee] ${isGrid ? "w-1/2 p-2" : ""}`}>
+                <SaleOffer saleOffer={item} user={user} refetch={handleRefresh} isGrid={isGrid} />
               </View>
             )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
