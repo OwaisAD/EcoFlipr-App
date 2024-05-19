@@ -60,6 +60,11 @@ export default function OffersInteractedWithScreen() {
           renderItem={({ item }) => <SaleOffer saleOffer={item} user={user} />}
           keyExtractor={(item) => item.id}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center">
+              <Text className="text-lg text-gray-500">No offers interacted with</Text>
+            </View>
+          }
         />
       )}
     </SafeAreaView>

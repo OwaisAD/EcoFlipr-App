@@ -9,6 +9,9 @@ import SaleOffer from "../../../../components/SaleOffer";
 import { useAuth } from "../../../../context/authContext";
 import Loading from "../../../../components/Loading";
 import { useRouter } from "expo-router";
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Asyncstorage: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 export default function SearchScreen() {
   const inputRef = useRef<TextInput | null>();

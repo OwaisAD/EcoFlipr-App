@@ -3,7 +3,7 @@ import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 import { useRouter } from "expo-router";
 import Moment from "react-moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -20,7 +20,26 @@ export default function ProfileScreen() {
   const [image, setImage] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(user?.profileUrl ? user?.profileUrl : null);
+  const [cachedImage, setCachedImage] = useState<any>(null);
 
+  useEffect(() => {
+    // Preload image when the tab is mounted
+    if (user?.profileUrl) {
+      const preloadImage = async () => {
+        try {
+          const response = await fetch(user.profileUrl as string);
+          if (response.ok) {
+            const blob = await response.blob();
+            setCachedImage(URL.createObjectURL(blob));
+          }
+        } catch (error) {
+          console.error("Error preloading image:", error);
+        }
+      };
+      preloadImage();
+    }
+  }, [user?.profileUrl]);
+  
   console.log("here", user);
 
   const handleLogout = async () => {
@@ -209,7 +228,7 @@ export default function ProfileScreen() {
                 source={
                   imageUrl
                     ? {
-                        uri: imageUrl,
+                        uri: cachedImage || imageUrl,
                       }
                     : require("../../../../assets/images/default_profile_icon.jpg")
                 }

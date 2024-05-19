@@ -129,12 +129,14 @@ export default function Messages() {
                       }
                       className="w-12 h-12 rounded-full"
                     />
-                    <View className="space-y-1">
+                    <View className="space-y-1 flex-1">
                       <Text>
                         {buyers[index]?.firstName} {buyers[index]?.lastName}
                       </Text>
-                      <Text>Latest message: </Text>
+                      {/* <Text>Latest message: </Text> */}
                     </View>
+                    {/* red dot indicating new messages */}
+                    <View className="w-3 h-3 bg-red-500 rounded-full"></View>
                   </View>
                 </TouchableOpacity>
               ))}
