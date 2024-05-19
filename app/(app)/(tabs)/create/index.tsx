@@ -157,6 +157,7 @@ export default function CreateScreen() {
       if (!result.canceled) {
         setLoading(true);
         await saveImage(result.assets[0].uri);
+        setImages([...images, result.assets[0].uri]);
         setLoading(false);
         setImageUploadModalVisible(false);
       }

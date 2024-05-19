@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Alert, TextInput, Button, ScrollView } from "react-native";
-import { getSaleOfferById } from "../../../helperMethods/saleoffer.methods";
+import { getSaleOfferById, updateSaleOffer, updateSaleOfferImages } from "../../../helperMethods/saleoffer.methods";
 import { OfferType } from "../../../types/offerType";
 import { useAuth } from "../../../context/authContext";
 import CustomKeyboardView from "../../../components/CustomKeyboardView";
@@ -18,6 +18,10 @@ import Checkbox from "expo-checkbox";
 import { Image } from "react-native";
 import Loading from "../../../components/Loading";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { createOfferSchema } from "../../../validations/createOfferSchema";
+import { v4 as uuidv4 } from "uuid";
+import { StatusTypes } from "../../../constants/StatusTypes";
+import { ZodError } from "zod";
 
 export default function EditOffer() {
   const { user } = useAuth();
@@ -49,6 +53,19 @@ export default function EditOffer() {
       console.log(saleOfferId);
       const saleOffer = await getSaleOfferById(saleOfferId);
       setSaleOffer(saleOffer[0]);
+      setTitle(saleOffer[0].title);
+      setOfferDescription(saleOffer[0].description);
+      setSelectedCategory(saleOffer[0].category);
+      setShipping(saleOffer[0].shipping);
+      setCityInfo({
+        zipCode: saleOffer[0].cityInfo.zipCode,
+        city: saleOffer[0].cityInfo.city,
+        x: saleOffer[0].cityInfo.x,
+        y: saleOffer[0].cityInfo.y,
+      });
+      setZipCode(String(saleOffer[0].cityInfo.zipCode));
+      setPrice(String(saleOffer[0].price));
+      setImages(saleOffer[0].images);
     } catch (error) {
       console.error(error);
     }
@@ -58,29 +75,94 @@ export default function EditOffer() {
     getSaleOfferData();
   }, []);
 
-  const handleEditOffer = async () => {};
+  const handleEditOffer = async () => {
+    try {
+      setLoadingShare(true);
+      // Validate
+      createOfferSchema.parse({
+        title: title,
+        description: offerDescription,
+        category: selectedCategory,
+        shipping: shipping,
+        zipCode: +zipCode,
+        price: +price,
+      });
+
+      const saleOfferId = search.id as string;
+
+      // Edit offer new data
+      const saleofferNewData = {
+        title: title,
+        description: offerDescription,
+        category: selectedCategory,
+        shipping: shipping,
+        price: +price,
+        cityInfo: cityInfo,
+        images,
+        status: StatusTypes.ACTIVE,
+        title_lowercase: title.toLowerCase(),
+        description_lowercase: offerDescription.toLowerCase(),
+      };
+
+      // UPDATE OFFER
+      const response = await updateSaleOffer(saleOfferId, saleofferNewData, user!.userId);
+      if (!response.success) {
+        throw new Error(response.msg);
+      }
+
+      // Clear fields
+      setTitle("");
+      setOfferDescription("");
+      setSelectedCategory("Select a category");
+      setShipping(false);
+      setCityInfo({ zipCode: 0, city: "", x: 0, y: 0 });
+      setZipCode("");
+      setPrice("");
+      setImages([]);
+      router.push({ pathname: `/(tabs)/home` });
+      setLoadingShare(false);
+    } catch (error) {
+      setLoadingShare(false);
+      if (error instanceof ZodError) {
+        Alert.alert("Create offer", error.errors[0].message);
+      } else {
+        console.log("error", error);
+        Alert.alert("Error", error.message);
+      }
+    }
+  };
 
   const handleRemoveImage = async (url: string) => {
-    Alert.alert("Remove image", "Are you sure you want to remove this image?", [
+    Alert.alert("Remove image", "Are you sure you want to remove this image? This action cannot be undone. ", [
       {
         text: "Cancel",
         style: "cancel",
       },
       {
         text: "OK",
-        onPress: () => {
+        onPress: async () => {
           deleteObject(ref(storage, url))
             .then(() => {
               //remove from state
               setImages(images.filter((image) => image !== url));
-              showMessage({
-                message: `Image removed successfully`,
-                type: "info",
-              });
             })
             .catch((error) => {
               console.log("error", error);
             });
+
+          const saleOfferId = search.id as string;
+          await updateSaleOfferImages(
+            saleOfferId,
+            images.filter((image) => image !== url),
+            user!.userId
+          );
+
+          setImages(images.filter((image) => image !== url));
+
+          showMessage({
+            message: `Image removed successfully`,
+            type: "info",
+          });
         },
       },
     ]);
@@ -162,6 +244,7 @@ export default function EditOffer() {
       if (!result.canceled) {
         setLoading(true);
         await saveImage(result.assets[0].uri);
+        setImages([...images, result.assets[0].uri]);
         setLoading(false);
         setImageUploadModalVisible(false);
       }
@@ -250,7 +333,7 @@ export default function EditOffer() {
     <CustomKeyboardView>
       <View className="flex-1 bg-[#eee] gap-4 p-4 pb-[100px]">
         <View className="flex-row items-center justify-between bg-[#eee]">
-          <Text className="text-2xl font-light">Editing sale offer</Text>
+          <Text className="text-2xl font-light">Create new sale offer</Text>
           <TouchableOpacity className="bg-[#eee]" onPress={handleClearFields}>
             <MaterialCommunityIcons name="broom" size={24} color="black" />
           </TouchableOpacity>
@@ -291,7 +374,7 @@ export default function EditOffer() {
         </View>
 
         {/* OFFER CATEGORY */}
-        <View className="rounded-xl px-4 py-1">
+        <View className="rounded-xl px-4 py-1 bg-white">
           <TouchableOpacity
             onPress={() => setCategoryModalVisible(true)}
             className="flex-row space-x-5 items-center h-9"
@@ -323,7 +406,7 @@ export default function EditOffer() {
         </Modal>
 
         {/* OFFER SHIPPING */}
-        <View className="flex-row items-center justify-between rounded-xl px-4 py-3">
+        <View className="flex-row items-center justify-between rounded-xl px-4 py-3 bg-white">
           <Text>Do you offer shipping?</Text>
           <Checkbox value={shipping} onValueChange={(value) => setShipping(value)} />
         </View>
@@ -365,7 +448,7 @@ export default function EditOffer() {
         </View>
 
         {/* OFFER IMAGES */}
-        <View className="rounded-md">
+        <View className="rounded-md bg-white">
           <View className="rounded-md flex-row items-center justify-between p-4">
             <TouchableOpacity onPress={() => setImageUploadModalVisible(true)}>
               <Text>Click to upload images</Text>
@@ -380,7 +463,10 @@ export default function EditOffer() {
               {images &&
                 images.map((image, index) => (
                   <TouchableOpacity key={index} className="rounded-md m-2" onPress={() => handleRemoveImage(image)}>
-                    <Image source={{ uri: image }} style={{ width: wp(20), height: hp(10), borderRadius: 10 }} />
+                    <Image
+                      source={image ? { uri: image } : require("../../../assets/images/No-Image.png")}
+                      style={{ width: wp(20), height: hp(10), borderRadius: 10 }}
+                    />
                   </TouchableOpacity>
                 ))}
             </ScrollView>

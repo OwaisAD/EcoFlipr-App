@@ -103,7 +103,7 @@ export default function SearchScreen() {
         </View>
         {/* SEARCH RESULTS */}
         {loading ? (
-          <View className={`bg-[#eee]`}>
+          <View className={`mx-auto bg-[#eee]`}>
             <Loading size={100} />
           </View>
         ) : (
@@ -118,7 +118,7 @@ export default function SearchScreen() {
             )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             ListEmptyComponent={
-              <View className="items-center bg-[#eee] mt-10">
+              <View className="mx-auto items-center bg-[#eee] mt-10">
                 <Text className="text-lg">Search for offers on EcoFlipr</Text>
               </View>
             }

@@ -271,7 +271,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               isGrid ? "h-28 w-full rounded-t-lg" : "h-full w-28 rounded-bl-xl rounded-br-[31px] rounded-tl-xl"
             }  object-contain`}
           />
-          <View className="flex flex-col justify-between px-4 mt-1 ">
+          <View className="flex flex-col px-4 mt-1 ">
             <View className="flex flex-col ">
               <Text className={`${isGrid ? "text-sm" : "text-lg"} font-light`}>{saleOffer.title}</Text>
               {!isGrid && (
@@ -281,8 +281,10 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
               )}
             </View>
 
-            <View className={`flex flex-row justify-between space-x-12 ${isGrid && "space-x-4"} `}>
-              <View>
+            <View
+              className={`flex flex-row justify-between ${isGrid ? "space-x-4" : "space-x-12"} rounded-lg items-start`}
+            >
+              <View className="">
                 <Text className="text-sm font-light">{saleOffer.zipCode}</Text>
                 <Moment element={Text} fromNow className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>
                   {saleOffer.createdAt && formatFirebaseDate(saleOffer.createdAt)}
@@ -292,11 +294,9 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
                 </Text>
               </View>
 
-              <View>
-                <Text className={`${isGrid ? "text-xs" : "text-sm"} font-semibold`}>
-                  {formatCurrencyDA(saleOffer.price)}
-                </Text>
-              </View>
+              <Text className={`${isGrid ? "text-xs" : "text-sm"} font-semibold`}>
+                {formatCurrencyDA(saleOffer.price)}
+              </Text>
             </View>
           </View>
           {/* Save button - only show on offers made by others */}

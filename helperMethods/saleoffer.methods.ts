@@ -286,3 +286,90 @@ export const getSaleOffersInteractedWith = async (userId: string) => {
     throw new Error("Something went wrong", error);
   }
 };
+
+export const updateSaleOffer = async (saleOfferId: string, data: any, userId: string) => {
+  try {
+    const saleOfferQuery = query(saleOfferRef, where("saleOfferId", "==", saleOfferId));
+    const saleOfferSnapshot = await getDocs(saleOfferQuery);
+    const saleOfferData = saleOfferSnapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        id: doc.id,
+        saleOfferId: data.saleOfferId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        shipping: data.shipping,
+        zipCode: data.zipCode,
+        price: data.price,
+        status: data.status,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        userId: data.userId,
+        images: data.images,
+        cityInfo: {
+          x: data.cityInfo.x,
+          y: data.cityInfo.y,
+          city: data.cityInfo.city,
+          zipCode: data.cityInfo.zipCode,
+        },
+      };
+    });
+    const offerData = saleOfferData[0];
+    if (offerData.userId !== userId) {
+      throw new Error("You do not have permission to update this offer");
+    }
+    const offerRef = doc(db, "saleoffers", offerData.id);
+
+    await updateDoc(offerRef, {
+      ...data, // Spread the updated data
+      updatedAt: new Date(),
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error.message);
+    return { success: false, msg: error.message };
+  }
+};
+
+
+export const updateSaleOfferImages = async (saleOfferId: string, images: string[], userId: string) => {
+  try {
+    const saleOfferQuery = query(saleOfferRef, where("saleOfferId", "==", saleOfferId));
+    const saleOfferSnapshot = await getDocs(saleOfferQuery);
+    const saleOfferData = saleOfferSnapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        id: doc.id,
+        saleOfferId: data.saleOfferId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        shipping: data.shipping,
+        zipCode: data.zipCode,
+        price: data.price,
+        status: data.status,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        userId: data.userId,
+        images: data.images,
+        cityInfo: {
+          x: data.cityInfo.x,
+          y: data.cityInfo.y,
+          city: data.cityInfo.city,
+          zipCode: data.cityInfo.zipCode,
+        },
+      };
+    });
+    const offerData = saleOfferData[0];
+    if (offerData.userId !== userId) {
+      throw new Error("You do not have permission to update this offer");
+    }
+    const offerRef = doc(db, "saleoffers", offerData.id);
+
+    await updateDoc(offerRef, {
+      images: images,
+      updatedAt: new Date(),
+    });
+  } catch (error) {}
+};
