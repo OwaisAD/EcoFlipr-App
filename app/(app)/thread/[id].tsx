@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import {
   getFirestore,
@@ -12,11 +12,12 @@ import {
   serverTimestamp,
   orderBy,
   getDocs,
+  updateDoc,
+  doc,
 } from "firebase/firestore";
 import "tailwindcss/tailwind.css";
 import { db } from "../../../firebaseConfig";
 import { getUserById } from "../../../helperMethods/user.methods";
-import { Image } from "react-native";
 import { useAuth } from "../../../context/authContext";
 import CustomKeyboardView from "../../../components/CustomKeyboardView";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -128,10 +129,34 @@ export default function Thread() {
         senderId: user?.userId,
         text: newMessage.trim(),
         createdAt: serverTimestamp(),
+        readBy: user?.userId === buyerData?.userId ? { seller: false, buyer: true } : { seller: true, buyer: false },
       });
       setNewMessage("");
     }
   };
+
+  const markMessageAsRead = async (messageId: string, readBy: any) => {
+    if (user?.userId) {
+      const updatedReadBy = {
+        ...readBy,
+        [user.userId === buyerData?.userId ? "buyer" : "seller"]: true,
+      };
+
+      const messageRef = doc(db, "Messages", messageId);
+      await updateDoc(messageRef, { readBy: updatedReadBy });
+    }
+  };
+
+  useEffect(() => {
+    messages.forEach((message) => {
+      if (
+        (user?.userId === buyerData?.userId && !message.readBy?.buyer) ||
+        (user?.userId === sellerData?.userId && !message.readBy?.seller)
+      ) {
+        markMessageAsRead(message.id, message.readBy);
+      }
+    });
+  }, [messages]);
 
   return (
     <CustomKeyboardView>

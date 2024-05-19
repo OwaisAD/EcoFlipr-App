@@ -4,7 +4,7 @@ import useGetSaleOfferById from "../../../hooks/useGetSaleOfferId";
 import { formatCurrencyDA } from "../../../utils/currencyFormat";
 import { formatFirebaseDate } from "../../../utils/formatDate";
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy, limit } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAuth } from "../../../context/authContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -17,6 +17,7 @@ export default function Messages() {
   const saleOffer = useGetSaleOfferById(search.id as string);
   const [threads, setThreads] = useState<any[]>([]);
   const [buyers, setBuyers] = useState<any[]>([]);
+  const [latestMessages, setLatestMessages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchThreads = async () => {
@@ -26,15 +27,10 @@ export default function Messages() {
         where("participants", "array-contains", user?.userId)
       );
       const threadsSnapshot = await getDocs(threadQuery);
-      const threadsData = threadsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-
-        return {
-          threadId: doc.id,
-          saleOfferId: data.saleOfferId,
-          participants: data.participants,
-        };
-      });
+      const threadsData = threadsSnapshot.docs.map((doc) => ({
+        threadId: doc.id,
+        ...doc.data(),
+      }));
 
       setThreads(threadsData);
     };
@@ -42,22 +38,41 @@ export default function Messages() {
     fetchThreads();
   }, []);
 
-  // when threads are available then fetch buyers
   useEffect(() => {
+    const fetchBuyersAndMessages = async () => {
+      const buyers = await Promise.all(
+        threads.map(async (thread) => {
+          const buyerId = thread.participants.filter((v: string) => v !== user?.userId)[0];
+          const buyer = await getUserById(buyerId);
+          return buyer[0];
+        })
+      );
+
+      setBuyers(buyers);
+
+      const latestMessages = await Promise.all(
+        threads.map(async (thread) => {
+          const messagesQuery = query(
+            collection(db, "Messages"),
+            where("threadId", "==", thread.threadId),
+            orderBy("createdAt", "desc"),
+            limit(1)
+          );
+          const messagesSnapshot = await getDocs(messagesQuery);
+          const latestMessage = messagesSnapshot.docs[0]?.data() || {};
+          return {
+            ...latestMessage,
+            threadId: thread.threadId,
+            isRead: latestMessage.readBy?.seller || false,
+          };
+        })
+      );
+
+      setLatestMessages(latestMessages);
+    };
+
     if (threads.length) {
-      const fetchBuyers = async () => {
-        const buyers = await Promise.all(
-          threads.map(async (thread) => {
-            const buyerId = thread.participants.filter((v: string) => v != user?.userId)[0];
-            const buyer = await getUserById(buyerId);
-            return buyer[0];
-          })
-        );
-
-        setBuyers(buyers);
-      };
-
-      fetchBuyers();
+      fetchBuyersAndMessages();
     }
   }, [threads]);
 
@@ -130,13 +145,12 @@ export default function Messages() {
                       className="w-12 h-12 rounded-full"
                     />
                     <View className="space-y-1 flex-1">
-                      <Text>
+                      <Text className="font-medium">
                         {buyers[index]?.firstName} {buyers[index]?.lastName}
                       </Text>
-                      {/* <Text>Latest message: </Text> */}
+                      <Text className="text-sm text-gray-600">Latest message: {latestMessages[index]?.text || ""}</Text>
                     </View>
-                    {/* red dot indicating new messages */}
-                    <View className="w-3 h-3 bg-red-500 rounded-full"></View>
+                    {!latestMessages[index]?.isRead && <View className="w-3 h-3 bg-red-500 rounded-full"></View>}
                   </View>
                 </TouchableOpacity>
               ))}
