@@ -1,5 +1,6 @@
 import {
   DocumentData,
+  collection,
   deleteDoc,
   doc,
   getDoc,
@@ -230,6 +231,58 @@ export const getSavedOffers = async (savedOffers: string[]) => {
     return savedOffersData;
   } catch (error: any) {
     console.log(error.message);
+    throw new Error("Something went wrong", error);
+  }
+};
+
+export const getSaleOffersInteractedWith = async (userId: string) => {
+  try {
+    const threadQuery = query(collection(db, "Threads"), where("participants", "array-contains", userId));
+    const threadSnapshot = await getDocs(threadQuery);
+    const saleOfferIds: string[] = [];
+    threadSnapshot.docs.forEach((doc) => {
+      const data = doc.data() as DocumentData;
+      saleOfferIds.push(data.saleOfferId);
+    });
+
+    const saleOffersData: OfferType[] = [];
+    for (const saleOfferId of saleOfferIds) {
+      const saleOffer = await getSaleOfferById(saleOfferId);
+      if (saleOffer[0].userId !== userId) {
+        saleOffersData.push(saleOffer[0]);
+      }
+    }
+
+    return saleOffersData;
+
+    // const userOffersQuery = query(saleOfferRef, where("userId", "==", userId), where("status", "==", status));
+    // const offersSnapshot = await getDocs(userOffersQuery);
+    // const offersData: OfferType[] = offersSnapshot.docs.map((doc) => {
+    //   const data = doc.data() as DocumentData;
+    //   return {
+    //     id: doc.id,
+    //     saleOfferId: data.saleOfferId,
+    //     title: data.title,
+    //     description: data.description,
+    //     category: data.category,
+    //     shipping: data.shipping,
+    //     zipCode: data.zipCode,
+    //     price: data.price,
+    //     status: data.status,
+    //     createdAt: data.createdAt,
+    //     updatedAt: data.updatedAt,
+    //     userId: data.userId,
+    //     images: data.images,
+    //     cityInfo: {
+    //       x: data.cityInfo.x,
+    //       y: data.cityInfo.y,
+    //       city: data.cityInfo.city,
+    //       zipCode: data.cityInfo.zipCode,
+    //     },
+    //   };
+    // });
+    // return offersData;
+  } catch (error: any) {
     throw new Error("Something went wrong", error);
   }
 };

@@ -24,4 +24,5 @@ export interface OfferType {
     zipCode: string;
   };
   images: string[];
+  savedOffers?: string[];
 }

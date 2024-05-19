@@ -58,6 +58,7 @@ export const Active = ({ setActiveTab }: ActiveProps) => {
         <FlatList
           className=""
           data={activeOffers}
+          showsVerticalScrollIndicator={true}
           renderItem={({ item }) => (
             <View className="my-[6px]">
               <SaleOffer saleOffer={item} user={user} refetch={fetchOffers} setActiveTab={setActiveTab} />

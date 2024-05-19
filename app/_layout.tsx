@@ -68,7 +68,7 @@ const MainLayout = () => {
         name="(app)/settings/index"
         options={{
           headerShown: true,
-          headerBackTitle: "Back",
+          headerBackTitle: "Profile",
           headerTitle: "",
           headerStyle: {
             backgroundColor: "#EEE",
