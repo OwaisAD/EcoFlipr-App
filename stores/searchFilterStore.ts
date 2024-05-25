@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface FilterStore {
   lowPriceRange: number;
   highPriceRange: number;
-  zipcode: number | nu;
+  zipcode: number;
   distanceFromZipcode: number;
   selectedCategories: string[];
   shippable: boolean;
@@ -19,7 +19,7 @@ interface FilterStore {
 const useFilterStore = create<FilterStore>((set) => ({
   lowPriceRange: 0,
   highPriceRange: 100000,
-  zipcode: null,
+  zipcode: 0,
   distanceFromZipcode: 5,
   selectedCategories: [],
   shippable: true,

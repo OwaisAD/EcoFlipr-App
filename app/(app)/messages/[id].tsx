@@ -81,7 +81,7 @@ export default function Messages() {
       <View className="bg-[#EEE] flex-1 px-4">
         <Text className="text-2xl font-bold my-4">Messages</Text>
         {saleOffer && (
-          <View className="bg-[#D1D5DB] h-16 rounded-lg flex-row space-x-2">
+          <TouchableOpacity className="bg-[#D1D5DB] h-16 rounded-lg flex-row space-x-2" onPress={() => router.back()}>
             {/* IMAGE */}
             <Image
               source={
@@ -105,7 +105,7 @@ export default function Messages() {
                 </Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
 
         {/* hr */}
@@ -124,7 +124,7 @@ export default function Messages() {
               {threads.map((thread, index) => (
                 <TouchableOpacity
                   key={thread.threadId}
-                  className="bg-[#dcdfe4] h-16 rounded-lg flex-row space-x-2 items-center px-4"
+                  className="bg-[#dcdfe4] h-16 rounded-lg flex-row space-x-2 items-center px-4 mb-2"
                   onPress={() =>
                     router.push({
                       pathname: `/thread/${thread.saleOfferId}`,

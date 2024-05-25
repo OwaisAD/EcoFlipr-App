@@ -35,8 +35,25 @@ export default function SearchScreen() {
   const [isGrid, setIsGrid] = useState(false);
   const colorScheme = useColorScheme();
 
-  //@ts-ignore
-  const { lowPriceRange, highPriceRange, zipcode, distanceFromZipcode, selectedCategories, shippable } = route.params;
+  interface RouteParams {
+    lowPriceRange?: number;
+    highPriceRange?: number;
+    zipcode?: number;
+    distanceFromZipcode?: number;
+    selectedCategories?: string[];
+    shippable?: boolean;
+  }
+
+  const {
+    lowPriceRange = 0,
+    highPriceRange = 100000,
+    zipcode = 0,
+    distanceFromZipcode = 0,
+    selectedCategories = [],
+    shippable = true,
+  } = (route.params as RouteParams) ?? {};
+
+  console.log("SearchScreen -> route.params", route.params);
 
   setTimeout(() => {
     inputRef.current?.focus();
