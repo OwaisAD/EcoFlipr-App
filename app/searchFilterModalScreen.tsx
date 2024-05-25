@@ -59,7 +59,13 @@ export default function SearchFilterModalScreen() {
   }, []);
 
   return (
-    <ScrollView className="flex-1 bg-[#eee] p-10">
+    <ScrollView
+      className="flex-1 bg-[#eee] px-10 pt-10 pb-24"
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingBottom: 100,
+      }}
+    >
       <Text className="text-2xl font-light mb-4">Filters</Text>
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
@@ -161,7 +167,7 @@ export default function SearchFilterModalScreen() {
         </View>
         {/* MapView to display chosen location with radius */}
         <MapView
-          style={{ width: "100%", height: 200 }}
+          style={{ width: "100%", height: 200, borderRadius: 10 }}
           region={mapRegion}
           onRegionChange={(region) => setMapRegion(region)}
           zoomEnabled
@@ -183,9 +189,7 @@ export default function SearchFilterModalScreen() {
       </View>
 
       {/* separator line */}
-      <View className="border-b border-gray-300 mb-4" />
-      {/* separator line */}
-      <View className="border-b border-gray-300 mb-4" />
+      <View className="border-b border-gray-300 my-4" />
 
       {/* LOCATION  */}
 
