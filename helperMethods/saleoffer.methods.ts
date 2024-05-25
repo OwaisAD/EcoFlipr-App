@@ -91,7 +91,16 @@ interface Pagination {
   limit: number;
 }
 
-export const searchForSaleOffers = async (searchText: string, pagination: Pagination) => {
+interface Filters {
+  lowPriceRange?: number;
+  highPriceRange?: number;
+  zipcode?: number;
+  distanceFromZipcode?: number;
+  selectedCategories?: string[];
+  shippable?: boolean;
+}
+
+export const searchForSaleOffers = async (searchText: string, pagination: Pagination, filters?: Filters) => {
   try {
     const searchTextLowerCase = searchText.toLowerCase();
 
@@ -331,7 +340,6 @@ export const updateSaleOffer = async (saleOfferId: string, data: any, userId: st
     return { success: false, msg: error.message };
   }
 };
-
 
 export const updateSaleOfferImages = async (saleOfferId: string, images: string[], userId: string) => {
   try {

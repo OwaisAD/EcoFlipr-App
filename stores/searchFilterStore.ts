@@ -33,7 +33,7 @@ const useFilterStore = create<FilterStore>((set) => ({
     set({
       lowPriceRange: 0,
       highPriceRange: 100000,
-      zipcode: null,
+      zipcode: 0,
       distanceFromZipcode: 5,
       selectedCategories: [],
       shippable: true,

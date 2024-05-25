@@ -18,6 +18,7 @@ import { useAuth } from "../../../../context/authContext";
 import Loading from "../../../../components/Loading";
 import { useRouter } from "expo-router";
 import { LogBox } from "react-native";
+import { useRoute } from "@react-navigation/native";
 LogBox.ignoreLogs(["Asyncstorage: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -25,6 +26,7 @@ export default function SearchScreen() {
   const inputRef = useRef<TextInput | null>();
   const { user } = useAuth();
   const router = useRouter();
+  const route = useRoute();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SaleOfferType[]>([]);
@@ -32,6 +34,9 @@ export default function SearchScreen() {
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
   const [isGrid, setIsGrid] = useState(false);
   const colorScheme = useColorScheme();
+
+  //@ts-ignore
+  const { lowPriceRange, highPriceRange, zipcode, distanceFromZipcode, selectedCategories, shippable } = route.params;
 
   setTimeout(() => {
     inputRef.current?.focus();
@@ -47,7 +52,18 @@ export default function SearchScreen() {
     try {
       setLoading(true);
       setSearch(text);
-      const searchResults = await searchForSaleOffers(text, { limit: 10, startAfter: null });
+      const searchResults = await searchForSaleOffers(
+        text,
+        { limit: 10, startAfter: null },
+        {
+          lowPriceRange,
+          highPriceRange,
+          zipcode,
+          distanceFromZipcode,
+          selectedCategories,
+          shippable,
+        }
+      );
       setSearchResults(searchResults);
       setSearchResultMessage(`Found ${searchResults.length} ${searchResults.length == 1 ? "result" : "results"}`);
       setLoading(false);
