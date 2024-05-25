@@ -9,7 +9,7 @@ import { Thumb, Rail, RailSelected, Label, Notch } from "../components/SliderCom
 import { categories } from "../data/categories";
 import MapView, { Marker, Circle } from "react-native-maps";
 import axios from "axios";
-import { showMessage } from "react-native-flash-message";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SearchFilterModalScreen() {
   const router = useRouter();
@@ -25,6 +25,8 @@ export default function SearchFilterModalScreen() {
     latitudeDelta: 2,
     longitudeDelta: 0.0421,
   });
+  const [cityName, setCityName] = useState("Copenhagen");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleToggleShippable = () => {
     setShippable(!shippable);
@@ -40,11 +42,45 @@ export default function SearchFilterModalScreen() {
             latitudeDelta: 2,
             longitudeDelta: 0.0421,
           });
+          setCityName(response.data.navn);
         });
       } catch (error: any) {
         console.log("error", error.message);
         Alert.alert("Error", "Invalid zipcode");
       }
+    }
+  };
+
+  const handleClearFilters = () => {
+    Alert.alert("Clear Filters", "Are you sure you want to clear all filters?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Clear",
+        onPress: () => {
+          setLow(0);
+          setHigh(100_000);
+          setShippable(true);
+          setZipcode("");
+          setDistance(5);
+          setMapRegion({
+            latitude: 55.676098,
+            longitude: 12.568337,
+            latitudeDelta: 2,
+            longitudeDelta: 0.0421,
+          });
+        },
+      },
+    ]);
+  };
+
+  const handleCategoryPress = (categoryName: string) => {
+    if (selectedCategories.includes(categoryName)) {
+      setSelectedCategories(selectedCategories.filter((name) => name !== categoryName));
+    } else {
+      setSelectedCategories([...selectedCategories, categoryName]);
     }
   };
 
@@ -66,14 +102,20 @@ export default function SearchFilterModalScreen() {
         paddingBottom: 100,
       }}
     >
-      <Text className="text-2xl font-light mb-4">Filters</Text>
-
+      <View className="flex-row items-center justify-between bg-[#eee]">
+        <Text className="text-2xl font-light mb-4">Filters</Text>
+        <TouchableOpacity className="bg-[#eee]" onPress={handleClearFilters}>
+          <MaterialCommunityIcons name="broom" size={26} color="black" />
+        </TouchableOpacity>
+      </View>
       {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
 
       {/* PRICE FILTER */}
       <View className="bg-[#eee]">
-        <Text className="text-lg font-light mb-2">Price Range</Text>
+        <View className="flex-row items-center bg-[#eee]">
+          <Text className="text-lg font-light mb-2">Price Range</Text>
+        </View>
 
         <View className="flex-row justify-between items-center mb-4 bg-[#eee]">
           <View className="">
@@ -134,7 +176,10 @@ export default function SearchFilterModalScreen() {
 
         <View className="justify-between space-y-4 bg-[#eee]">
           <View className="flex-row items-center justify-between bg-[#eee]">
-            <Text className="text-sm font-light">Distance (km): {distance} from</Text>
+            <View className="flex-col bg-[#eee]">
+              <Text className="text-sm font-light">Distance (km): {distance} from</Text>
+              <Text className="text-smfo nt-semibold">{cityName}</Text>
+            </View>
             <TextInput
               className="w-28 h-10 border border-gray-300 rounded text-center bg-white p-2"
               keyboardType="numeric"
@@ -152,7 +197,7 @@ export default function SearchFilterModalScreen() {
 
           <RangeSlider
             style={{ width: "100%", height: 40 }}
-            min={1}
+            min={10}
             max={250}
             step={1}
             floatingLabel
@@ -191,15 +236,19 @@ export default function SearchFilterModalScreen() {
       {/* separator line */}
       <View className="border-b border-gray-300 my-4" />
 
-      {/* LOCATION  */}
-
       {/* CATEGORY FILTER */}
       <View className="bg-[#eee]">
         <Text className="text-lg font-light mb-2">Category</Text>
 
         <View className="flex-row flex-wrap bg-[#eee]">
           {categories.map((category) => (
-            <TouchableOpacity key={category.id} className="bg-[#1E40AF] py-2 px-4 rounded-lg m-1" onPress={() => {}}>
+            <TouchableOpacity
+              key={category.id}
+              className={`bg-[#1E40AF] py-2 px-4 rounded-lg m-1 ${
+                selectedCategories.includes(category.name) ? "bg-green-500" : ""
+              }`}
+              onPress={() => handleCategoryPress(category.name)}
+            >
               <Text className="text-white">{category.name}</Text>
             </TouchableOpacity>
           ))}
@@ -231,7 +280,7 @@ export default function SearchFilterModalScreen() {
             router.replace("/(app)/(tabs)/search");
           }}
         >
-          <Text className="text-white text-xl font-semibold">Search</Text>
+          <Text className="text-white text-xl font-semibold">Apply search filters</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
