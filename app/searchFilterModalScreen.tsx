@@ -105,7 +105,7 @@ export default function SearchFilterModalScreen() {
   useEffect(() => {
     setLow(lowPriceRange);
     setHigh(highPriceRange);
-    setZipcode(storeZipcode || "");
+    setZipcode(String(storeZipcode) === "0" ? "" : String(storeZipcode));
     handleSetZipCode(String(storeZipcode));
     setDistance(distanceFromZipcode);
     setSelectedCategories(storeSelectedCategories);
