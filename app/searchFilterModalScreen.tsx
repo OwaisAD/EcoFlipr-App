@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Alert, Platform, ScrollView, Switch, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "../components/Themed";
@@ -10,6 +10,7 @@ import { categories } from "../data/categories";
 import MapView, { Marker, Circle } from "react-native-maps";
 import axios from "axios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import useFilterStore from "../stores/searchFilterStore";
 
 export default function SearchFilterModalScreen() {
   const router = useRouter();
@@ -60,6 +61,7 @@ export default function SearchFilterModalScreen() {
       {
         text: "Clear",
         onPress: () => {
+          resetFilters();
           setLow(0);
           setHigh(100_000);
           setShippable(true);
@@ -82,6 +84,53 @@ export default function SearchFilterModalScreen() {
     } else {
       setSelectedCategories([...selectedCategories, categoryName]);
     }
+  };
+
+  const {
+    lowPriceRange,
+    setLowPriceRange,
+    highPriceRange,
+    setHighPriceRange,
+    zipcode: storeZipcode,
+    setZipcode: setStoreZipcode,
+    distanceFromZipcode,
+    setDistanceFromZipcode,
+    selectedCategories: storeSelectedCategories,
+    setSelectedCategories: setStoreSelectedCategories,
+    shippable: storeShippable,
+    setShippable: setStoreShippable,
+    resetFilters,
+  } = useFilterStore();
+
+  useEffect(() => {
+    setLow(lowPriceRange);
+    setHigh(highPriceRange);
+    setZipcode(storeZipcode || "");
+    handleSetZipCode(String(storeZipcode));
+    setDistance(distanceFromZipcode);
+    setSelectedCategories(storeSelectedCategories);
+    setShippable(storeShippable);
+  }, [lowPriceRange, highPriceRange, storeZipcode, distanceFromZipcode, storeSelectedCategories, storeShippable]);
+
+  const handleSetFilters = () => {
+    setLowPriceRange(low);
+    setHighPriceRange(high);
+    setStoreZipcode(+zipcode);
+    setDistanceFromZipcode(distance);
+    setStoreSelectedCategories(selectedCategories);
+    setStoreShippable(shippable);
+
+    router.replace({
+      pathname: "/search",
+      params: {
+        lowPriceRange: low,
+        highPriceRange: high,
+        zipcode: zipcode,
+        distanceFromZipcode: distance,
+        selectedCategories: selectedCategories,
+        shippable: `${shippable}`,
+      },
+    });
   };
 
   const renderThumb = useCallback(() => <Thumb />, []);
@@ -208,6 +257,7 @@ export default function SearchFilterModalScreen() {
             renderNotch={renderNotch}
             onValueChanged={(value) => setDistance(value)}
             disableRange
+            low={distance}
           />
         </View>
         {/* MapView to display chosen location with radius */}
@@ -276,9 +326,7 @@ export default function SearchFilterModalScreen() {
       <View className="flex-row justify-center mt-4 bg-[#eee]">
         <TouchableOpacity
           className="bg-[#1E40AF] py-2 px-4 rounded-lg w-full justify-center items-center"
-          onPress={() => {
-            router.replace("/(app)/(tabs)/search");
-          }}
+          onPress={handleSetFilters}
         >
           <Text className="text-white text-xl font-semibold">Apply search filters</Text>
         </TouchableOpacity>

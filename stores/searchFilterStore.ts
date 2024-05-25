@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface FilterStore {
   lowPriceRange: number;
   highPriceRange: number;
-  zipcode: number | null;
+  zipcode: number | nu;
   distanceFromZipcode: number;
   selectedCategories: string[];
   shippable: boolean;
