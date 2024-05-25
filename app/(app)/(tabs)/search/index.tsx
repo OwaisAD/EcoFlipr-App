@@ -1,4 +1,12 @@
-import { FlatList, RefreshControl, SafeAreaView, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 
 import { Text, View } from "../../../../components/Themed";
 import { useCallback, useRef, useState } from "react";
@@ -9,8 +17,8 @@ import SaleOffer from "../../../../components/SaleOffer";
 import { useAuth } from "../../../../context/authContext";
 import Loading from "../../../../components/Loading";
 import { useRouter } from "expo-router";
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['Asyncstorage: ...']); // Ignore log notification by message
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Asyncstorage: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 export default function SearchScreen() {
@@ -23,6 +31,7 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(false);
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
   const [isGrid, setIsGrid] = useState(false);
+  const colorScheme = useColorScheme();
 
   setTimeout(() => {
     inputRef.current?.focus();
@@ -73,7 +82,6 @@ export default function SearchScreen() {
             autoCapitalize="none"
             value={search}
             onChangeText={(text) => handleSearch(text)}
-            keyboardAppearance="dark"
             ref={(ref) => {
               inputRef.current = ref;
             }}
@@ -108,11 +116,11 @@ export default function SearchScreen() {
           </View>
         ) : (
           <FlatList
-            className={`mt-4`}
+            className={`mt-4 w-full mb-10`}
             contentContainerStyle={isGrid ? { flexDirection: "row", flexWrap: "wrap" } : {}}
             data={searchResults}
             renderItem={({ item }) => (
-              <View className={`mb-2 bg-[#eee] ${isGrid ? "w-1/2 p-2" : ""}`}>
+              <View className={`mb-2 bg-[#eee] w-full ${isGrid ? "w-1/2 p-2" : ""}`}>
                 <SaleOffer saleOffer={item} user={user} refetch={handleRefresh} isGrid={isGrid} />
               </View>
             )}

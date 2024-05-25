@@ -11,10 +11,12 @@ import { Random } from "../../../../components/homeoffers/Random";
 import { Viewed } from "../../../../components/homeoffers/Viewed";
 import { Saved } from "../../../../components/homeoffers/Saved";
 import Tabs from "../../../../components/Tabs";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
   const options = ["For you", "Recent", "Random", "Viewed", "Saved"];
   const [activeTab, setActiveTab] = useState(options[0]);
+  const router = useRouter();
 
   const displayContent = () => {
     switch (activeTab) {
@@ -35,16 +37,21 @@ export default function HomeScreen() {
 
   return (
     <View className="bg-[#EEE] flex-1 px-4">
-      <View className="flex-row space-x-5 px-2 py-1 items-center rounded-xl border-blue-100 border my-4">
+      <TouchableOpacity
+        onPress={() => router.replace("/search")}
+        className="flex-row space-x-5 px-2 py-1 items-center rounded-xl border-blue-100 border my-4 bg-white"
+      >
         <TextInput
           className="bg-white p-2 rounded-lg w-full flex-1 font-semibold text-neutral-700"
           placeholder="Search on EcoFlipr"
           autoCapitalize="none"
+          editable={false} // Disable editing
+          pointerEvents="none" // Prevent focus
         />
         <View className="px-1">
           <FontAwesome5 name="search" size={20} color="#1DAEFF" />
         </View>
-      </View>
+      </TouchableOpacity>
 
       <Tabs tabs={options} activeTab={activeTab} setActiveTab={setActiveTab} />
 
