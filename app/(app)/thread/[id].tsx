@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { Text, View, TextInput, TouchableOpacity, Platform, ScrollView } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView, Keyboard } from "react-native";
 import {
   getFirestore,
   collection,
@@ -155,47 +155,55 @@ export default function Thread() {
   }, [messages]);
 
   return (
-    <View className="flex-1 bg-[#eee]">
-      <ScrollView
-        ref={scrollViewRef}
-        onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingHorizontal: 16, paddingVertical: 8 }}
-      >
-        {messages.map((message) => (
-          <View key={message.id} className="mb-2">
-            <View
-              className={`mb-1 px-4 py-2 rounded-2xl max-w-[300px] ${
-                message.senderId === user?.userId ? "self-end bg-blue-500" : "self-start bg-gray-200"
-              }`}
-            >
-              <Text className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}>
-                {message.text}
+    <KeyboardAvoidingView
+      behavior={ios ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={80}
+    >
+      <View className="flex-1 bg-[#eee]">
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingHorizontal: 16, paddingVertical: 10 }}
+        >
+          {messages.map((message) => (
+            <View key={message.id} className="mb-2">
+              <View
+                className={`mb-1 px-4 py-2 rounded-2xl max-w-[300px] ${
+                  message.senderId === user?.userId ? "self-end bg-blue-500" : "self-start bg-gray-200"
+                }`}
+              >
+                <Text className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}>
+                  {message.text}
+                </Text>
+              </View>
+              <Text
+                className={`text-[10px] font-light ${message.senderId === user?.userId ? "self-end" : "self-start"}`}
+              >
+                {message.senderId === user?.userId
+                  ? "You"
+                  : `${buyerData?.userId === user?.userId ? sellerData?.firstName : buyerData?.firstName}`}{" "}
+                at {message.createdAt && new Date(message.createdAt.toDate()).toLocaleString("da-DK")}
               </Text>
             </View>
-            <Text
-              className={`text-[10px] font-light ${message.senderId === user?.userId ? "self-end" : "self-start"}`}
-            >
-              {message.senderId === user?.userId
-                ? "You"
-                : `${buyerData?.userId === user?.userId ? sellerData?.firstName : buyerData?.firstName}`}{" "}
-              at {message.createdAt && new Date(message.createdAt.toDate()).toLocaleString("da-DK")}
-            </Text>
+          ))}
+        </ScrollView>
+        <View className="px-2 pt-4 pb-8 bg-[#eee]" style={{ borderTopWidth: 1, borderColor: '#ccc' }}>
+          <View className="flex-row items-center space-x-2">
+            <TextInput
+              value={newMessage}
+              onChangeText={setNewMessage}
+              placeholder="Type your message"
+              className="flex-1 p-2 border border-gray-300 rounded-2xl"
+              multiline
+              numberOfLines={4}
+            />
+            <TouchableOpacity onPress={handleSendMessage} className="bg-blue-500 p-2 rounded">
+              <Text className="text-white">Send</Text>
+            </TouchableOpacity>
           </View>
-        ))}
-      </ScrollView>
-      <View className="flex-row items-center p-2 border-t border-gray-300 space-x-2 mb-10">
-        <TextInput
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type your message"
-          className="flex-1 p-2 border border-gray-300 rounded-2xl"
-          multiline
-          numberOfLines={4}
-        />
-        <TouchableOpacity onPress={handleSendMessage} className="bg-blue-500 p-2 rounded">
-          <Text className="text-white">Send</Text>
-        </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
