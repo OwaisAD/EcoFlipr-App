@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   RefreshControl,
   SafeAreaView,
@@ -167,7 +168,7 @@ export default function SearchScreen() {
           </View>
         ) : (
           <FlatList
-            className={`mt-4 w-full mb-10`}
+            className={`mt-4 w-full mb-10 `}
             contentContainerStyle={isGrid ? { flexDirection: "row", flexWrap: "wrap" } : {}}
             data={searchResults}
             renderItem={({ item }) => (
@@ -178,7 +179,7 @@ export default function SearchScreen() {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             ListEmptyComponent={
               <View className="mx-auto items-center bg-[#eee] mt-10">
-                <Text className="text-lg">Search for offers on EcoFlipr</Text>
+                <Text className="text-lg font-light">Search for offers on EcoFlipr</Text>
               </View>
             }
           />
