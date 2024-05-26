@@ -12,26 +12,28 @@ import { Viewed } from "../../../../components/homeoffers/Viewed";
 import { Saved } from "../../../../components/homeoffers/Saved";
 import Tabs from "../../../../components/Tabs";
 import { useRouter } from "expo-router";
+import { useAuth } from "../../../../context/authContext";
 
 export default function HomeScreen() {
-  const options = ["For you", "Recent", "Random", "Viewed", "Saved"];
+  const { user } = useAuth();
+  const options = ["For you", "Recent", "Random", "Viewed", "Nearby", "Most Viewed"];
   const [activeTab, setActiveTab] = useState(options[0]);
   const router = useRouter();
 
   const displayContent = () => {
     switch (activeTab) {
       case "For you":
-        return <ForYou />;
+        return <ForYou user={user} />;
       case "Recent":
-        return <Recent />;
+        return <Recent user={user} />;
       case "Random":
-        return <Random />;
+        return <Random user={user} />;
       case "Viewed":
-        return <Viewed />;
+        return <Viewed user={user} />;
       case "Saved":
         return <Saved />;
       default:
-        return <ForYou />;
+        return <ForYou user={user} />;
     }
   };
 

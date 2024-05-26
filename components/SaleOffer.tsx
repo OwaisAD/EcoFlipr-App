@@ -309,7 +309,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           {/* Save button - only show on offers made by others */}
           {saleOffer.userId !== user?.userId && (
             <TouchableOpacity className="absolute right-1 bottom-1 bg-white rounded-full p-1" onPress={handleSaveOffer}>
-              {isSaved || user.savedOffers.includes(saleOffer.saleOfferId) ? (
+              {isSaved || user.savedOffers && user.savedOffers.includes(saleOffer.saleOfferId) ? (
                 <Feather name="bookmark" size={14} color={"blue"} />
               ) : (
                 <Feather name="bookmark" size={14} color={"gray"} />
