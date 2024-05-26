@@ -18,13 +18,13 @@ export default function SearchFilterModalScreen() {
   const route = useRoute();
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(100_000);
-  const [shippable, setShippable] = useState(true);
+  const [shippable, setShippable] = useState(false);
   const [zipcode, setZipcode] = useState("");
   const [distance, setDistance] = useState(5); // Default distance is 5 km
   const [mapRegion, setMapRegion] = useState({
     latitude: 55.676098,
     longitude: 12.568337,
-    latitudeDelta: 0.922,
+    latitudeDelta: 1.4,
     longitudeDelta: 0.0421,
   });
   const [cityName, setCityName] = useState("Copenhagen");
@@ -71,13 +71,13 @@ export default function SearchFilterModalScreen() {
           resetFilters();
           setLow(0);
           setHigh(100_000);
-          setShippable(true);
+          setShippable(false);
           setZipcode("");
           setDistance(5);
           setMapRegion({
             latitude: 55.676098,
             longitude: 12.568337,
-            latitudeDelta: 0.922,
+            latitudeDelta: 1.4,
             longitudeDelta: 0.0421,
           });
         },
@@ -273,7 +273,8 @@ export default function SearchFilterModalScreen() {
           style={{ width: "100%", height: 200, borderRadius: 10 }}
           region={mapRegion}
           onRegionChange={(region) => setMapRegion(region)}
-          zoomEnabled
+          zoomEnabled={true} // Enable zooming
+          scrollEnabled={false}
         >
           {/* Marker for the selected location */}
           <Marker
@@ -317,7 +318,7 @@ export default function SearchFilterModalScreen() {
 
       {/* SHIPPABLE SWITCH */}
       <View className="flex-row justify-between items-center bg-[#eee]">
-        <Text className="text-lg font-light">Shippable</Text>
+        <Text className="text-lg font-light">Shippables only</Text>
         <Switch
           value={shippable}
           onValueChange={handleToggleShippable}

@@ -112,13 +112,27 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
     );
 
     if (filters?.lowPriceRange) {
-      console.log("lowPriceRange", filters.lowPriceRange);
       saleOffersQuery = query(saleOffersQuery, where("price", ">=", Number(filters.lowPriceRange)));
     }
 
     if (filters?.highPriceRange) {
-      console.log("highPriceRange", filters.highPriceRange);
       saleOffersQuery = query(saleOffersQuery, where("price", "<=", Number(filters.highPriceRange)));
+    }
+
+    if (filters?.selectedCategories) {
+      const categories = filters.selectedCategories.split(",").map((category) => category.trim());
+      console.log("categories", categories);
+      if (categories.length > 0) {
+        saleOffersQuery = query(saleOffersQuery, where("category", "in", categories));
+      }
+    }
+
+    if (filters?.shippable) {
+      var regexPattern = new RegExp("true");
+      var isValidBoolean = regexPattern.test(filters.shippable.toString());
+      if (isValidBoolean) {
+        saleOffersQuery = query(saleOffersQuery, where("shipping", "==", filters.shippable && true));
+      }
     }
 
     const saleOffersSnapshot = await getDocs(saleOffersQuery);

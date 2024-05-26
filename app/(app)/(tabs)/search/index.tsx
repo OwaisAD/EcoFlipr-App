@@ -39,7 +39,7 @@ export default function SearchScreen() {
     highPriceRange?: number;
     zipcode?: number;
     distanceFromZipcode?: number;
-    selectedCategories?: string[];
+    selectedCategories?: string;
     shippable?: boolean;
     search?: string;
   }
@@ -49,8 +49,8 @@ export default function SearchScreen() {
     highPriceRange = 100000,
     zipcode = 0,
     distanceFromZipcode = 0,
-    selectedCategories = [],
-    shippable = true,
+    selectedCategories = "",
+    shippable = false,
     search: searchFromRoute = "",
   } = (route.params as RouteParams) ?? {};
 
@@ -153,7 +153,7 @@ export default function SearchScreen() {
                 })
               }
             >
-              <Ionicons name="filter-circle" size={30} color="black" />
+              <Ionicons name="filter-circle" size={30} color={"blue"} />
             </TouchableOpacity>
           </View>
         </View>
