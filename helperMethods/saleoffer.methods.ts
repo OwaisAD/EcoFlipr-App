@@ -96,21 +96,30 @@ interface Filters {
   highPriceRange?: number;
   zipcode?: number;
   distanceFromZipcode?: number;
-  selectedCategories?: string[];
+  selectedCategories?: string;
   shippable?: boolean;
 }
 
 export const searchForSaleOffers = async (searchText: string, pagination: Pagination, filters?: Filters) => {
   try {
     const searchTextLowerCase = searchText.toLowerCase();
-
-    const saleOffersQuery = query(
+    let saleOffersQuery: any = query(
       saleOfferRef,
       where("status", "==", StatusTypes.ACTIVE),
       orderBy("title"),
       startAfter(pagination.startAfter),
       limit(pagination.limit)
     );
+
+    if (filters?.lowPriceRange) {
+      console.log("lowPriceRange", filters.lowPriceRange);
+      saleOffersQuery = query(saleOffersQuery, where("price", ">=", Number(filters.lowPriceRange)));
+    }
+
+    if (filters?.highPriceRange) {
+      console.log("highPriceRange", filters.highPriceRange);
+      saleOffersQuery = query(saleOffersQuery, where("price", "<=", Number(filters.highPriceRange)));
+    }
 
     const saleOffersSnapshot = await getDocs(saleOffersQuery);
     const saleOffersData = saleOffersSnapshot.docs
@@ -152,7 +161,7 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
       });
     return saleOffersData;
   } catch (error: any) {
-    console.log(error);
+    console.log(error.message);
     throw new Error("Something went wrong", error);
   }
 };

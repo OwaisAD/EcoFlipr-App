@@ -11,10 +11,11 @@ import MapView, { Marker, Circle } from "react-native-maps";
 import axios from "axios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useFilterStore from "../stores/searchFilterStore";
+import { useRoute } from "@react-navigation/native";
 
 export default function SearchFilterModalScreen() {
   const router = useRouter();
-
+  const route = useRoute();
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(100_000);
   const [shippable, setShippable] = useState(true);
@@ -23,11 +24,17 @@ export default function SearchFilterModalScreen() {
   const [mapRegion, setMapRegion] = useState({
     latitude: 55.676098,
     longitude: 12.568337,
-    latitudeDelta: 2,
+    latitudeDelta: 0.922,
     longitudeDelta: 0.0421,
   });
   const [cityName, setCityName] = useState("Copenhagen");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  interface RouteParams {
+    search?: string;
+  }
+
+  const { search = "" } = (route.params as RouteParams) ?? {};
 
   const handleToggleShippable = () => {
     setShippable(!shippable);
@@ -40,7 +47,7 @@ export default function SearchFilterModalScreen() {
           setMapRegion({
             latitude: response.data.visueltcenter[1],
             longitude: response.data.visueltcenter[0],
-            latitudeDelta: 2,
+            latitudeDelta: 0.922,
             longitudeDelta: 0.0421,
           });
           setCityName(response.data.navn);
@@ -70,7 +77,7 @@ export default function SearchFilterModalScreen() {
           setMapRegion({
             latitude: 55.676098,
             longitude: 12.568337,
-            latitudeDelta: 2,
+            latitudeDelta: 0.922,
             longitudeDelta: 0.0421,
           });
         },
@@ -123,6 +130,7 @@ export default function SearchFilterModalScreen() {
     router.replace({
       pathname: "/search",
       params: {
+        search: search,
         lowPriceRange: low,
         highPriceRange: high,
         zipcode: zipcode,

@@ -71,7 +71,7 @@ export default function CreateScreen() {
         description: offerDescription,
         category: selectedCategory,
         shipping: shipping,
-        price: price,
+        price: +price,
         cityInfo: cityInfo,
         images,
         createdAt: new Date(),

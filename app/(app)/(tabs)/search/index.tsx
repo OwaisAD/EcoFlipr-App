@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { Text, View } from "../../../../components/Themed";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { searchForSaleOffers } from "../../../../helperMethods/saleoffer.methods";
 import { SaleOfferType } from "../../../../stores/saleOfferStore";
@@ -33,7 +33,6 @@ export default function SearchScreen() {
   const [loading, setLoading] = useState(false);
   const [searcResulthMessage, setSearchResultMessage] = useState<string>("");
   const [isGrid, setIsGrid] = useState(false);
-  const colorScheme = useColorScheme();
 
   interface RouteParams {
     lowPriceRange?: number;
@@ -42,6 +41,7 @@ export default function SearchScreen() {
     distanceFromZipcode?: number;
     selectedCategories?: string[];
     shippable?: boolean;
+    search?: string;
   }
 
   const {
@@ -51,9 +51,14 @@ export default function SearchScreen() {
     distanceFromZipcode = 0,
     selectedCategories = [],
     shippable = true,
+    search: searchFromRoute = "",
   } = (route.params as RouteParams) ?? {};
 
-  console.log("SearchScreen -> route.params", route.params);
+  useEffect(() => {
+    if (searchFromRoute) {
+      handleSearch(searchFromRoute);
+    }
+  }, [searchFromRoute]);
 
   setTimeout(() => {
     inputRef.current?.focus();
@@ -137,7 +142,17 @@ export default function SearchScreen() {
             <TouchableOpacity className="bg-[#eee]" onPress={() => setIsGrid(false)}>
               <FontAwesome5 name="list-ul" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="bg-[#eee]" onPress={() => router.push("/searchFilterModalScreen")}>
+            <TouchableOpacity
+              className="bg-[#eee]"
+              onPress={() =>
+                router.push({
+                  pathname: "/searchFilterModalScreen",
+                  params: {
+                    search,
+                  },
+                })
+              }
+            >
               <Ionicons name="filter-circle" size={30} color="black" />
             </TouchableOpacity>
           </View>

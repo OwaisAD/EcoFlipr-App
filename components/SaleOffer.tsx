@@ -244,8 +244,8 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
       <Swipeable renderRightActions={renderRightActions} renderLeftActions={renderLeftActions}>
         <TouchableOpacity
           className={`flex-1 ${
-            isGrid ? "flex-col h-[180px] w-[180px]" : "flex-row h-28"
-          } bg-[#D1D5DB]  rounded-xl border-[0.2px] border-indigo-200 shadow-sm`}
+            isGrid ? "flex-col h-[200px] w-[180px]" : "flex-row h-28"
+          } bg-[#D1D5DB] rounded-xl border-[0.2px] border-indigo-200 shadow-sm`}
           onPress={() => router.push(`/offer/${saleOffer.saleOfferId}`)}
         >
           <View className="absolute shadow-sm right-[-1px] bg-white rounded-bl-2xl rounded-tr-lg flex-row items-center py-1 px-2 gap-1 z-10">
@@ -261,28 +261,39 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           </View>
 
           {/* IMAGE */}
-          <Image
-            source={
-              saleOffer.images && saleOffer.images.length > 0
-                ? { uri: saleOffer.images[0] }
-                : require("../assets/images/No-Image.png")
-            }
-            className={`h-full ${
-              isGrid ? "h-28 w-full rounded-t-lg" : "h-full w-28 rounded-bl-xl rounded-br-[31px] rounded-tl-xl"
-            }  object-contain`}
-          />
-          <View className="flex flex-col px-4 mt-1 ">
+          <View>
+            <Image
+              source={
+                saleOffer.images && saleOffer.images.length > 0
+                  ? { uri: saleOffer.images[0] }
+                  : require("../assets/images/No-Image.png")
+              }
+              className={`h-full ${
+                isGrid ? "h-28 w-full rounded-t-lg" : "h-full w-28 rounded-bl-xl rounded-br-[31px] rounded-tl-xl"
+              }  object-contain`}
+            />
+
+            <View
+              className={`${
+                isGrid ? "text-xs " : "text-sm"
+              } bg-[#eee] shadow-xl font-semibold absolute bottom-2 px-2 py-1 rounded-r-xl`}
+            >
+              <Text>{formatCurrencyDA(saleOffer.price)}</Text>
+            </View>
+          </View>
+
+          <View className="flex flex-col px-4 mt-1 w-full">
             <View className="flex flex-col ">
               <Text className={`${isGrid ? "text-sm" : "text-lg"} font-light`}>{saleOffer.title}</Text>
               {!isGrid && (
-                <Text className={`${isGrid ? "text-xs" : "text-sm"} font-light`}>
-                  {saleOffer.description.slice(0, 20)}...
+                <Text className={`text-xs font-light `}>
+                  {saleOffer.description.replace(/\s+/g, " ").trim().slice(0, 30)}...
                 </Text>
               )}
             </View>
 
             <View
-              className={`flex flex-row justify-between ${isGrid ? "space-x-4" : "space-x-12"} rounded-lg items-start`}
+              className={`flex flex-row justify-between ${isGrid ? "space-x-6" : "space-x-12"} rounded-lg items-start`}
             >
               <View className="">
                 <Text className="text-sm font-light">{saleOffer.zipCode}</Text>
@@ -293,10 +304,6 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
                   {saleOffer.cityInfo?.zipCode} {saleOffer.cityInfo?.city}
                 </Text>
               </View>
-
-              <Text className={`${isGrid ? "text-xs" : "text-sm"} font-semibold`}>
-                {formatCurrencyDA(saleOffer.price)}
-              </Text>
             </View>
           </View>
           {/* Save button - only show on offers made by others */}
