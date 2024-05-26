@@ -40,13 +40,13 @@ export default function SettingsScreen() {
         <Text className="text-lg text-red-500 ml-4">Delete Account</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         className="flex-row items-center py-4 px-6 bg-white rounded-lg mb-4 shadow-md"
         onPress={handleLogout}
       >
         <Ionicons name="log-out-outline" size={24} color="#4299E1" className="mr-4" />
         <Text className="text-lg text-blue-500 ml-4">Log out</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
