@@ -8,6 +8,7 @@ import { useAuth } from "../../../../context/authContext";
 import { OfferType } from "../../../../types/offerType";
 import Loading from "../../../../components/Loading";
 import SaleOffer from "../../../../components/SaleOffer";
+import { Feather } from "@expo/vector-icons";
 
 export default function SavedScreen() {
   const { user } = useAuth();
@@ -54,8 +55,11 @@ export default function SavedScreen() {
           )}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           ListEmptyComponent={
-            <View className="flex-1 items-center bg-[#EEE]">
-              <Text className="text-center text-lg font-light">You saved offers</Text>
+            <View className="flex-1 bg-[#eee] justify-center items-center mt-10">
+              <Text className="text-center text-base font-light">No saved offers</Text>
+              <Text className="font-light text-sm">
+                Save offers by clicking the <Feather name="bookmark" size={14} color={"gray"} /> icon
+              </Text>
             </View>
           }
         />
