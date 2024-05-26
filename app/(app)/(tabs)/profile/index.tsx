@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import Moment from "react-moment";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage, userRef } from "../../../../firebaseConfig";
@@ -39,7 +39,7 @@ export default function ProfileScreen() {
       preloadImage();
     }
   }, [user?.profileUrl]);
-  
+
   console.log("here", user);
 
   const handleLogout = async () => {
@@ -272,7 +272,16 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        <Button title="Logout" onPress={handleLogout} />
+        {/* nice logout button */}
+        <View className="flex items-center justify-center mt-10 bg-[#eee]">
+          <TouchableOpacity
+            onPress={handleLogout}
+            className="flex-row items-center justify-center bg-gray-300 rounded-full py-2 px-4 shadow-md space-x-1"
+          >
+            <Ionicons name="log-out-outline" size={24} color="black" className="mr-2" />
+            <Text className="text-base font-medium">Logout</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </>
   );

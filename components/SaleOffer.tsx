@@ -284,7 +284,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
 
           <View className="flex flex-col px-4 mt-1 w-full">
             <View className="flex flex-col ">
-              <Text className={`${isGrid ? "text-sm" : "text-lg"} font-light`}>{saleOffer.title}</Text>
+              <Text className={`${isGrid ? "text-sm" : "text-base"} font-light`}>{saleOffer.title}</Text>
               {!isGrid && (
                 <Text className={`text-xs font-light `}>
                   {saleOffer.description.replace(/\s+/g, " ").trim().slice(0, 30)}...
@@ -309,7 +309,7 @@ const SaleOffer = ({ saleOffer, user, isGrid = false, refetch, setActiveTab }: S
           {/* Save button - only show on offers made by others */}
           {saleOffer.userId !== user?.userId && (
             <TouchableOpacity className="absolute right-1 bottom-1 bg-white rounded-full p-1" onPress={handleSaveOffer}>
-              {isSaved || user.savedOffers && user.savedOffers.includes(saleOffer.saleOfferId) ? (
+              {isSaved || (user.savedOffers && user.savedOffers.includes(saleOffer.saleOfferId)) ? (
                 <Feather name="bookmark" size={14} color={"blue"} />
               ) : (
                 <Feather name="bookmark" size={14} color={"gray"} />

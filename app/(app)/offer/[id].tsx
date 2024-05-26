@@ -30,6 +30,7 @@ export default function ViewSaleOffer() {
   const [isSaved, setIsSaved] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showFullImage, setShowFullImage] = useState(false);
 
   const [saleOffer, setSaleOffer] = useState({
     saleOfferId: "",
@@ -106,8 +107,7 @@ export default function ViewSaleOffer() {
   }, []);
 
   const handleImagePress = () => {
-    // Implement logic to show the image in full scale
-    console.log("Image clicked");
+    setShowFullImage(!showFullImage);
   };
 
   const handleSaveOffer = async () => {
@@ -285,7 +285,7 @@ export default function ViewSaleOffer() {
       {/* IMAGE SLIDER */}
       {saleOffer.images && saleOffer.images.length > 0 ? (
         <>
-          <View className="w-full h-[300px] bg-slate-500">
+          <View className={`w-full bg-slate-500 ${showFullImage ? "h-full" : "h-[300px]"}`}>
             <ScrollView
               horizontal
               pagingEnabled
@@ -302,8 +302,8 @@ export default function ViewSaleOffer() {
                   <Image
                     source={{ uri: imageUrl }}
                     resizeMode="cover"
-                    className="w-full h-full object-contain"
-                    style={{ width: Dimensions.get("screen").width, height: 300 }}
+                    className={`"w-full h-full"`}
+                    style={{ width: Dimensions.get("screen").width, height: showFullImage ? "100%" : 300, objectFit: showFullImage ? "contain" : "cover"}}
                   />
                 </TouchableOpacity>
               ))}
@@ -467,7 +467,14 @@ export default function ViewSaleOffer() {
       <View className="w-full h-10 items-center justify-center">
         <Text className="text-center text-xl shadow-lg font-light">Offer location</Text>
       </View>
-      <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale showsCompass>
+      <MapView
+        style={{ width: "100%", height: 200 }}
+        region={initialRegion}
+        showsScale
+        showsCompass
+        scrollEnabled={false}
+        zoomEnabled={false}
+      >
         <Marker
           coordinate={initialRegion}
           title="Offer location"
