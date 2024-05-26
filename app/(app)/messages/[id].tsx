@@ -28,7 +28,7 @@ export default function Messages() {
       );
       const threadsSnapshot = await getDocs(threadQuery);
       const threadsData = threadsSnapshot.docs.map((doc) => ({
-        threadId: doc.id,
+        id: doc.id,
         ...doc.data(),
       }));
 
@@ -52,21 +52,23 @@ export default function Messages() {
 
       const latestMessages = await Promise.all(
         threads.map(async (thread) => {
-          const messagesQuery = query(
-            collection(db, "Messages"),
-            where("threadId", "==", thread.threadId),
-            orderBy("createdAt", "desc"),
-            limit(1)
-          );
+          const messagesQuery = query(collection(db, "Messages"), where("threadId", "==", thread.id));
           const messagesSnapshot = await getDocs(messagesQuery);
-          const latestMessage = messagesSnapshot.docs[0]?.data() || {};
+          const latestMessage = messagesSnapshot.docs
+            .filter((doc) => doc.data().createdAt)
+            .sort((a, b) => {
+              return b.data().createdAt - a.data().createdAt;
+            })[0]
+            .data();
           return {
             ...latestMessage,
-            threadId: thread.threadId,
+            threadId: thread.id,
             isRead: latestMessage.readBy?.seller || false,
           };
         })
       );
+
+      console.log("HERE", latestMessages);
 
       setLatestMessages(latestMessages);
     };
@@ -135,7 +137,7 @@ export default function Messages() {
                     })
                   }
                 >
-                  <View className="flex-row space-x-2 items-center">
+                  <View className="flex-row space-x-2 items-center relative">
                     <Image
                       source={
                         buyers[index]?.profileUrl
@@ -148,9 +150,11 @@ export default function Messages() {
                       <Text className="font-medium">
                         {buyers[index]?.firstName} {buyers[index]?.lastName}
                       </Text>
-                      <Text className="text-sm text-gray-600">Latest message: {latestMessages[index]?.text || ""}</Text>
+                      <Text className="text-sm text-gray-600">
+                        Latest: {latestMessages[index]?.text ? latestMessages[index]?.text.slice(0, 20) : ""}
+                      </Text>
                     </View>
-                    {!latestMessages[index]?.isRead && <View className="w-3 h-3 bg-red-500 rounded-full"></View>}
+                    {!latestMessages[index]?.isRead && <View className="w-3 h-3 bg-red-500 rounded-full absolute right-0"></View>}
                   </View>
                 </TouchableOpacity>
               ))}
