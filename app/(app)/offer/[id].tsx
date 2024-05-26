@@ -301,9 +301,12 @@ export default function ViewSaleOffer() {
                 <TouchableOpacity key={index} onPress={handleImagePress}>
                   <Image
                     source={{ uri: imageUrl }}
-                    resizeMode="cover"
                     className={`"w-full h-full"`}
-                    style={{ width: Dimensions.get("screen").width, height: showFullImage ? "100%" : 300, objectFit: showFullImage ? "contain" : "cover"}}
+                    style={{
+                      width: Dimensions.get("screen").width,
+                      height: showFullImage ? "100%" : 300,
+                      objectFit: showFullImage ? "contain" : "cover",
+                    }}
                   />
                 </TouchableOpacity>
               ))}
