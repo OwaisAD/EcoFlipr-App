@@ -335,7 +335,7 @@ export default function SearchFilterModalScreen() {
       {/* Apply button */}
       <View className="flex-row justify-center mt-4 bg-[#eee]">
         <TouchableOpacity
-          className="bg-[#1E40AF] py-2 px-4 rounded-lg w-full justify-center items-center"
+          className="bg-indigo-500 py-2 px-4 rounded-lg w-full justify-center items-center"
           onPress={handleSetFilters}
         >
           <Text className="text-white text-xl font-semibold">Apply search filters</Text>
