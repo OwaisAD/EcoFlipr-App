@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { Text, View, TextInput, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView, Keyboard } from "react-native";
+import { View, TextInput, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView, Keyboard } from "react-native";
+import { Text } from "../../../components/Themed";
 import {
   getFirestore,
   collection,
@@ -155,16 +156,17 @@ export default function Thread() {
   }, [messages]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={ios ? "padding" : "height"}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={80}
-    >
+    <KeyboardAvoidingView behavior={ios ? "padding" : "height"} style={{ flex: 1 }} keyboardVerticalOffset={80}>
       <View className="flex-1 bg-[#eee]">
         <ScrollView
           ref={scrollViewRef}
           onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
-          contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', paddingHorizontal: 16, paddingVertical: 10 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: "flex-end",
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+          }}
         >
           {messages.map((message) => (
             <View key={message.id} className="mb-2">
@@ -173,7 +175,10 @@ export default function Thread() {
                   message.senderId === user?.userId ? "self-end bg-blue-500" : "self-start bg-gray-200"
                 }`}
               >
-                <Text className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}>
+                <Text
+                  className={`text-base ${message.senderId === user?.userId ? "text-white" : "text-black"}`}
+                  selectable
+                >
                   {message.text}
                 </Text>
               </View>
@@ -188,7 +193,7 @@ export default function Thread() {
             </View>
           ))}
         </ScrollView>
-        <View className="px-2 pt-4 pb-8 bg-[#eee]" style={{ borderTopWidth: 1, borderColor: '#ccc' }}>
+        <View className="px-2 pt-4 pb-8 bg-[#eee]" style={{ borderTopWidth: 0.6, borderColor: "#ccc" }}>
           <View className="flex-row items-center space-x-2">
             <TextInput
               value={newMessage}

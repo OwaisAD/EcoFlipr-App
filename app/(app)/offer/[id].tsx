@@ -1,4 +1,4 @@
-import { Entypo, Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, Image, Dimensions, Alert } from "react-native";
@@ -30,6 +30,7 @@ export default function ViewSaleOffer() {
   const [isSaved, setIsSaved] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [saleOffer, setSaleOffer] = useState({
     saleOfferId: "",
     title: "",
@@ -75,7 +76,7 @@ export default function ViewSaleOffer() {
   const [initialRegion, setInitialRegion] = useState({
     latitude: 55.676098,
     longitude: 12.568337,
-    latitudeDelta: 0.0922,
+    latitudeDelta: 2,
     longitudeDelta: 0.0421,
   });
 
@@ -87,7 +88,7 @@ export default function ViewSaleOffer() {
       setInitialRegion({
         latitude: saleOffer[0].cityInfo?.x || 37.78825,
         longitude: saleOffer[0].cityInfo?.y || -122.4324,
-        latitudeDelta: 0.0922,
+        latitudeDelta: 0.9,
         longitudeDelta: 0.0421,
       });
       setSaleOffer(saleOffer[0]);
@@ -466,7 +467,7 @@ export default function ViewSaleOffer() {
       <View className="w-full h-10 items-center justify-center">
         <Text className="text-center text-xl shadow-lg font-light">Offer location</Text>
       </View>
-      <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale>
+      <MapView style={{ width: "100%", height: 200 }} region={initialRegion} showsScale showsCompass>
         <Marker
           coordinate={initialRegion}
           title="Offer location"
