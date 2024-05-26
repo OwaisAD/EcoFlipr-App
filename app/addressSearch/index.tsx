@@ -17,7 +17,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import { useRouter } from "expo-router";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
 import axios from "axios";
-import { Address, AddressFromEndpoint, useAddressStore } from "../../stores/addressStore";
+import {  AddressFromEndpoint, useAddressStore } from "../../stores/addressStore";
 
 export default function AddressSearch() {
   const addressStore = useAddressStore();

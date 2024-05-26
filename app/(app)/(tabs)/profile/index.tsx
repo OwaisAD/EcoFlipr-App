@@ -272,8 +272,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* nice logout button */}
-        <View className="flex items-center justify-center mt-10 bg-[#eee]">
+        {/* <View className="flex items-center justify-center mt-10 bg-[#eee]">
           <TouchableOpacity
             onPress={handleLogout}
             className="flex-row items-center justify-center bg-gray-300 rounded-full py-2 px-4 shadow-md space-x-1"
@@ -281,7 +280,7 @@ export default function ProfileScreen() {
             <Ionicons name="log-out-outline" size={24} color="black" className="mr-2" />
             <Text className="text-base font-medium">Logout</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ScrollView>
     </>
   );

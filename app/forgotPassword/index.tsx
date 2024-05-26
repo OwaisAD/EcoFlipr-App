@@ -1,12 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
-import { Alert, Image, ImageBackground, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
 import Loading from "../../components/Loading";
 import CustomKeyboardView from "../../components/CustomKeyboardView";
-import { openBrowserAsync } from "expo-web-browser";
 import { ZodError } from "zod";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
@@ -15,7 +14,6 @@ import { z } from "zod";
 export default function ForgotPassword() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const emailRef = useRef("");
 

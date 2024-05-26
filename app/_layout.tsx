@@ -4,9 +4,8 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
-import { AuthContext, AuthContextProvider, useAuth } from "../context/authContext";
+import { AuthContextProvider, useAuth } from "../context/authContext";
 import FlashMessage from "react-native-flash-message";
-import { View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-gesture-handler";

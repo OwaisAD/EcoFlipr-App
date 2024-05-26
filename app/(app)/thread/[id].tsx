@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, TextInput, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView, Keyboard } from "react-native";
+import { View, TextInput, TouchableOpacity, Platform, ScrollView, KeyboardAvoidingView } from "react-native";
 import { Text } from "../../../components/Themed";
 import {
-  getFirestore,
   collection,
   query,
   where,
