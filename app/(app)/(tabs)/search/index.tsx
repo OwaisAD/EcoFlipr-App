@@ -37,7 +37,8 @@ export default function SearchScreen() {
   interface RouteParams {
     lowPriceRange?: number;
     highPriceRange?: number;
-    zipcode?: number;
+    locationLatitude?: number;
+    locationLongitude?: number;
     distanceFromZipcode?: number;
     selectedCategories?: string;
     shippable?: boolean;
@@ -47,7 +48,8 @@ export default function SearchScreen() {
   const {
     lowPriceRange = 0,
     highPriceRange = 100000,
-    zipcode = 0,
+    locationLatitude = 0,
+    locationLongitude = 0,
     distanceFromZipcode = 0,
     selectedCategories = "",
     shippable = false,
@@ -80,7 +82,8 @@ export default function SearchScreen() {
         {
           lowPriceRange,
           highPriceRange,
-          zipcode,
+          locationLatitude,
+          locationLongitude,
           distanceFromZipcode,
           selectedCategories,
           shippable,

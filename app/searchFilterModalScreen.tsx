@@ -20,7 +20,7 @@ export default function SearchFilterModalScreen() {
   const [high, setHigh] = useState(100_000);
   const [shippable, setShippable] = useState(false);
   const [zipcode, setZipcode] = useState("");
-  const [distance, setDistance] = useState(5); // Default distance is 5 km
+  const [distance, setDistance] = useState(0); // Default distance is 5 km
   const [mapRegion, setMapRegion] = useState({
     latitude: 55.676098,
     longitude: 12.568337,
@@ -73,7 +73,7 @@ export default function SearchFilterModalScreen() {
           setHigh(100_000);
           setShippable(false);
           setZipcode("");
-          setDistance(5);
+          setDistance(0);
           setMapRegion({
             latitude: 55.676098,
             longitude: 12.568337,
@@ -133,7 +133,8 @@ export default function SearchFilterModalScreen() {
         search: search,
         lowPriceRange: low,
         highPriceRange: high,
-        zipcode: zipcode,
+        locationLatitude: mapRegion.latitude,
+        locationLongitude: mapRegion.longitude,
         distanceFromZipcode: distance,
         selectedCategories: selectedCategories,
         shippable: `${shippable}`,
@@ -254,7 +255,7 @@ export default function SearchFilterModalScreen() {
 
           <RangeSlider
             style={{ width: "100%", height: 40 }}
-            min={10}
+            min={0}
             max={250}
             step={1}
             floatingLabel

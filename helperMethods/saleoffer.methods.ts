@@ -16,6 +16,7 @@ import { StatusTypes } from "../constants/StatusTypes";
 import { db, saleOfferRef, storage } from "../firebaseConfig";
 import { OfferType } from "../types/offerType";
 import { deleteObject, ref } from "firebase/storage";
+import getDistanceBetweenTwoLocations from "../utils/distanceBetweenTwoLongLat";
 
 export const getUserSaleOffersByUserId = async (userId: string, status: StatusTypes) => {
   try {
@@ -94,7 +95,8 @@ interface Pagination {
 interface Filters {
   lowPriceRange?: number;
   highPriceRange?: number;
-  zipcode?: number;
+  locationLatitude?: number;
+  locationLongitude?: number;
   distanceFromZipcode?: number;
   selectedCategories?: string;
   shippable?: boolean;
@@ -141,6 +143,19 @@ export const searchForSaleOffers = async (searchText: string, pagination: Pagina
         const data = doc.data() as DocumentData;
         const titleLowerCase = data.title.toLowerCase();
         const descriptionLowerCase = data.description.toLowerCase();
+
+        if (filters?.locationLatitude && filters.locationLongitude && filters?.distanceFromZipcode && filters?.distanceFromZipcode > 0) {
+          const distance = getDistanceBetweenTwoLocations(
+            data.cityInfo.x,
+            data.cityInfo.y,
+            filters.locationLatitude,
+            filters.locationLongitude
+          );
+          if (distance > filters.distanceFromZipcode) {
+            return false;
+          }
+        }
+
         return titleLowerCase.includes(searchTextLowerCase) || descriptionLowerCase.includes(searchTextLowerCase);
       })
       .map((doc) => {
