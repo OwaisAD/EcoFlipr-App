@@ -1,6 +1,4 @@
-import { FlatList, RefreshControl, ScrollView, StyleSheet } from "react-native";
-
-import EditScreenInfo from "../../../../components/EditScreenInfo";
+import { FlatList, RefreshControl } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useCallback, useEffect, useState } from "react";
 import { getSavedOffers } from "../../../../helperMethods/saleoffer.methods";

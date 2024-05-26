@@ -1,8 +1,5 @@
-import { FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
-
-import EditScreenInfo from "../../../../components/EditScreenInfo";
-import { Text, View } from "../../../../components/Themed";
-import CustomKeyboardView from "../../../../components/CustomKeyboardView";
+import { TextInput, TouchableOpacity } from "react-native";
+import { View } from "../../../../components/Themed";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
 import { ForYou } from "../../../../components/homeoffers/ForYou";

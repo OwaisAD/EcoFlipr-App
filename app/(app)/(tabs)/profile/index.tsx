@@ -1,4 +1,4 @@
-import { Alert, Button, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, Image, ScrollView, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 import { useRouter } from "expo-router";
@@ -8,10 +8,10 @@ import Modal from "react-native-modal";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage, userRef } from "../../../../firebaseConfig";
+import { db, storage } from "../../../../firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import Loading from "../../../../components/Loading";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default function ProfileScreen() {
   const { logout, user } = useAuth();

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
-import { useAuth } from "../../../context/authContext";
-import { OfferType } from "../../../types/offerType";
+import { SafeAreaView, Text, View } from "react-native";
 import { Active } from "../../../components/myoffers/Active";
 import { Inactive } from "../../../components/myoffers/Inactive";
 import { Sold } from "../../../components/myoffers/Sold";

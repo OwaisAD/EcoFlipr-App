@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, SafeAreaView, FlatList, RefreshControl } from "react-native";
-import { OfferType } from "../../../types/offerType";
 import Loading from "../../../components/Loading";
 import SaleOffer from "../../../components/SaleOffer";
 import { useAuth } from "../../../context/authContext";

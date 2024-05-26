@@ -1,13 +1,4 @@
-import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-} from "react-native";
+import { FlatList, RefreshControl, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../../../../components/Themed";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -20,8 +11,8 @@ import Loading from "../../../../components/Loading";
 import { useRouter } from "expo-router";
 import { LogBox } from "react-native";
 import { useRoute } from "@react-navigation/native";
-LogBox.ignoreLogs(["Asyncstorage: ..."]); // Ignore log notification by message
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+LogBox.ignoreLogs(["Asyncstorage: ..."]);
+LogBox.ignoreAllLogs();
 
 export default function SearchScreen() {
   const inputRef = useRef<TextInput | null>();

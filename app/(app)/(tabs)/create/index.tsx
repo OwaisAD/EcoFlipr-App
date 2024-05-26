@@ -1,7 +1,6 @@
-import * as FileSystem from "expo-file-system";
 import { Alert, Button, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import { categories } from "../../../../data/categories";
@@ -14,7 +13,7 @@ import { ZodError } from "zod";
 import axios from "axios";
 import { useAuth } from "../../../../context/authContext";
 import { StatusTypes } from "../../../../constants/StatusTypes";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db, storage } from "../../../../firebaseConfig";
 import { useRouter } from "expo-router";
 import Loading from "../../../../components/Loading";

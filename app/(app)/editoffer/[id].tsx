@@ -19,7 +19,6 @@ import { Image } from "react-native";
 import Loading from "../../../components/Loading";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { createOfferSchema } from "../../../validations/createOfferSchema";
-import { v4 as uuidv4 } from "uuid";
 import { StatusTypes } from "../../../constants/StatusTypes";
 import { ZodError } from "zod";
 
