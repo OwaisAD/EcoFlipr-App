@@ -1,9 +1,9 @@
-import { Alert, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Alert, Image, RefreshControl, ScrollView, TouchableOpacity } from "react-native";
 import { Text, View } from "../../../../components/Themed";
 import { useAuth } from "../../../../context/authContext";
 import { useRouter } from "expo-router";
 import Moment from "react-moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -21,6 +21,14 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(user?.profileUrl ? user?.profileUrl : null);
   const [cachedImage, setCachedImage] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    // await fetchOffers();
+    setRefreshing(false);
+  }, []);
+
 
   useEffect(() => {
     // Preload image when the tab is mounted
@@ -30,7 +38,6 @@ export default function ProfileScreen() {
           const response = await fetch(user.profileUrl as string);
           if (response.ok) {
             const blob = await response.blob();
-            setCachedImage(URL.createObjectURL(blob));
           }
         } catch (error) {
           console.error("Error preloading image:", error);
@@ -220,7 +227,10 @@ export default function ProfileScreen() {
           )}
         </Modal>
       </View>
-      <ScrollView className="flex-1 bg-[#EEE] w-full">
+      <ScrollView
+        className="flex-1 bg-[#EEE] w-full"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         <View className="flex-row justify-evenly w-full bg-[#EEE] items-center mt-10">
           <View className="bg-[#EEE] items-center gap-2">
             <TouchableOpacity onPress={() => setModalVisible(true)} className="shadow-xl">
