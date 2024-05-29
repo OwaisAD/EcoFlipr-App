@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "ReactNativeExam",
-    "slug": "ReactNativeExam",
+    "slug": "ecoflipr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "EcoFliprApp",
+    "scheme": "ecofliprapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/icon.png",
@@ -43,8 +43,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "3b3e6479-864e-432b-bd4a-1b389ca2b1b0"
+        "projectId": "62e98c9a-2812-41b2-8251-fbf3882be964"
       }
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/62e98c9a-2812-41b2-8251-fbf3882be964"
+    },
+    "owner": "owais1"
   }
 }
